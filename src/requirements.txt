@@ -1,0 +1,22 @@
+# Install directions
+# python3 -m venv dataAnalysisEnv
+# source dataAnalysisEnv/bin/activate
+# pip install --upgrade pip
+# pip install -r src/requirements.txt
+# jupyter notebook
+
+
+jupyter
+numpy
+pandas
+matplotlib
+dash
+holoviews
+bokeh
+seaborn
+
+
+# requests
+# Flask
+pylint
+rope
