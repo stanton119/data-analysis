@@ -1,6 +1,6 @@
 dataAnalysisEnv/
 .vscode
-NBAShotSelection/data_kobe.csv
+*/data/*.csv
 
 
 
