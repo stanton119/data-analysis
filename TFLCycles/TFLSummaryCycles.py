@@ -104,11 +104,11 @@ plt.show()
 
 # %%
 # Journeys increasing with time?
-plt.figure(num=None, figsize=(16, 6), dpi=80, facecolor="w", edgecolor="k")
+plt.figure(num=None, figsize=(8, 6), dpi=80, facecolor="w", edgecolor="k")
 plt.scatter(cycle_day_data["datetime"], cycle_day_data["count"], alpha=0.2)
-plt.tight_layout()
 plt.xlabel("Date")
 plt.ylabel("Number of trips/day")
+# plt.savefig("TFLCycles/images/against_time.png")
 plt.show()
 
 # Maybe better to show change in totals per week year on year
@@ -126,12 +126,13 @@ plt.show()
 # The distribution is different weekday to weekend
 
 # %%
-plt.figure(num=None, figsize=(16, 6), dpi=80, facecolor="w", edgecolor="k")
+plt.figure(num=None, figsize=(8, 6), dpi=80, facecolor="w", edgecolor="k")
 sns.boxplot(x="hour", y="count", hue="is_weekend", data=cycle_data)
 plt.tight_layout()
 plt.xlabel("Hour")
 plt.ylabel("Number of trips/hour")
 plt.title("Weekend has different dist to weekday")
+# plt.savefig("TFLCycles/images/journeys_per_hour_boxplot.png")
 plt.show()
 
 
@@ -143,17 +144,19 @@ sns.boxplot(x="week_day", y="count", data=cycle_day_data)
 plt.tight_layout()
 plt.xlabel("Day of week")
 plt.ylabel("Number of trips/day")
+# plt.savefig("TFLCycles/images/journeys_per_week.png")
 plt.show()
 
 
 # %%
 # Against month
 # Winter months are less popular
-plt.figure(num=None, figsize=(16, 6), dpi=80, facecolor="w", edgecolor="k")
+plt.figure(num=None, figsize=(8, 6), dpi=80, facecolor="w", edgecolor="k")
 sns.boxplot(x="month", y="count", data=cycle_day_data)
 plt.tight_layout()
 plt.xlabel("Month")
 plt.ylabel("Number of trips/day")
+# plt.savefig("TFLCycles/images/journeys_per_month.png")
 plt.show()
 
 # %% [markdown]
@@ -163,7 +166,7 @@ plt.show()
 
 # %%
 # Heat map against month/hour
-plt.figure(num=None, figsize=(16, 6), dpi=80, facecolor="w", edgecolor="k")
+plt.figure(num=None, figsize=(8, 6), dpi=80, facecolor="w", edgecolor="k")
 agr_counts = (
     cycle_data[["month", "hour", "count"]].groupby(by=["month", "hour"], axis=0).mean()
 )
@@ -172,6 +175,9 @@ agr_counts_pivot = agr_counts.reset_index().pivot(
 )
 sns.heatmap(agr_counts_pivot)
 plt.title("Mean journeys per hour")
+plt.xlabel("Hour")
+plt.ylabel("Month")
+# plt.savefig("TFLCycles/images/journeys_per_hour_month.png")
 plt.show()
 
 # Normalise over the day - higher proportion of journeys made later in the evening
@@ -179,9 +185,12 @@ agr_counts_norm = agr_counts.groupby("month").transform(lambda x: (x / x.sum()))
 agr_counts_norm_pivot = agr_counts_norm.reset_index().pivot(
     index="month", columns="hour", values="count"
 )
-plt.figure(num=None, figsize=(16, 6), dpi=80, facecolor="w", edgecolor="k")
+plt.figure(num=None, figsize=(8, 6), dpi=80, facecolor="w", edgecolor="k")
 sns.heatmap(agr_counts_norm_pivot)
 plt.title("% journeys per hour")
+plt.xlabel("Hour")
+plt.ylabel("Month")
+# plt.savefig("TFLCycles/images/journeys_per_hour_month_prop.png")
 plt.show()
 
 # %% [markdown]
@@ -191,7 +200,7 @@ plt.show()
 
 # %%
 # Heat map against day/hour
-plt.figure(num=None, figsize=(16, 6), dpi=80, facecolor="w", edgecolor="k")
+plt.figure(num=None, figsize=(8, 6), dpi=80, facecolor="w", edgecolor="k")
 agr_counts = (
     cycle_data[["week_day", "hour", "count"]]
     .groupby(by=["week_day", "hour"], axis=0)
@@ -202,6 +211,9 @@ agr_counts_pivot = agr_counts.reset_index().pivot(
 )
 sns.heatmap(agr_counts_pivot)
 plt.title("Mean journeys per hour")
+plt.xlabel("Hour")
+plt.ylabel("Week day")
+# plt.savefig("TFLCycles/images/journeys_per_hour.png")
 plt.show()
 
 # Normalise over the day - higher proportion of journeys made later in the evening
@@ -209,9 +221,12 @@ agr_counts_norm = agr_counts.groupby("week_day").transform(lambda x: (x / x.sum(
 agr_counts_norm_pivot = agr_counts_norm.reset_index().pivot(
     index="week_day", columns="hour", values="count"
 )
-plt.figure(num=None, figsize=(16, 6), dpi=80, facecolor="w", edgecolor="k")
+plt.figure(num=None, figsize=(8, 6), dpi=80, facecolor="w", edgecolor="k")
 sns.heatmap(agr_counts_norm_pivot)
 plt.title("% journeys per hour")
+plt.xlabel("Hour")
+plt.ylabel("Week day")
+# plt.savefig("TFLCycles/images/journeys_per_hour_prop.png")
 plt.show()
 
 # %% [markdown]
@@ -297,6 +312,8 @@ def modefcn(x):
         return x[0]
     else:
         return x
+
+
 cycle_day_data["weather_code"] = cycle_day_data["weather_code"].apply(modefcn)
 
 # %%
@@ -346,9 +363,7 @@ plt.show()
 # %% Humidity
 # Strong negative correlation, likely confounds the seasonal trend, lower humidity with higher temperatures
 plt.figure(num=None, figsize=(8, 6), dpi=80, facecolor="w", edgecolor="k")
-sns.scatterplot(
-    x="hum", y="count", hue="is_weekend", data=cycle_day_data, alpha=0.5
-)
+sns.scatterplot(x="hum", y="count", hue="is_weekend", data=cycle_day_data, alpha=0.5)
 plt.tight_layout()
 plt.ylabel("Number of trips/day")
 plt.show()
@@ -364,10 +379,28 @@ plt.show()
 # Against weather type
 # No one cycles in snow...
 # Fewer cycles in the rain
+
+cycle_day_data["weather_code_label"] = cycle_day_data["weather_code"].replace(
+    {
+        1: "Clear",
+        2: "Scattered clouds",
+        3: "Broken clouds",
+        4: "Cloudy",
+        7: "Rain",
+        26: "Snowfall",
+    }
+)
+
 plt.figure(num=None, figsize=(8, 6), dpi=80, facecolor="w", edgecolor="k")
-sns.boxplot(x="weather_code", y="count", data=cycle_day_data)
+sns.boxplot(
+    x="weather_code_label",
+    y="count",
+    data=cycle_day_data,
+    order=["Clear", "Scattered clouds", "Broken clouds", "Cloudy", "Rain", "Snowfall"],
+)
 plt.tight_layout()
 plt.ylabel("Number of trips")
+plt.savefig("TFLCycles/images/weather_codes.png")
 plt.show()
 
 
@@ -385,13 +418,21 @@ print(
 """
 )
 
+# %%
+sns.pairplot(cycle_day_data[["count", "temp_feels", "wind_speed", "hum"]])
+# plt.savefig('TFLCycles/images/pairplot.png')
+plt.show()
 
 # %%
 # Regress on count data to find coefficient for weather conditions to get effect size, need to account for seasonality first
 import statsmodels.api as sm
 from patsy import dmatrices
 
-y, X = dmatrices('count ~ temp_feels + wind_speed + hum + is_weekend', data=cycle_day_data, return_type='dataframe')
+y, X = dmatrices(
+    "count ~ temp_feels + wind_speed + hum + is_weekend",
+    data=cycle_day_data,
+    return_type="dataframe",
+)
 
 model = sm.OLS(y, X)
 results = model.fit()
@@ -400,6 +441,7 @@ print(results.summary())
 # %%
 # Seasonal trends
 cycle_day_data.head()
+# Adding cosine over the year
 
 # %%
 # g = sns.FacetGrid(cycle_data, row="weather_code", col="is_weekend", margin_titles=True)
