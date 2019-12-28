@@ -16,7 +16,7 @@ Weekends have fewer journeys per day
 Journeys by hour peak during morning and evening rush hour. They have a different distribution on weekends.  
 ![](images/journeys_per_hour_boxplot.png)
 
-Splitting by hour/day of the week. Shows Friday evening has fewer journeys and Thursday/Friday evening peak is more widely distributed
+Splitting by hour/day of the week. Shows Friday evening has fewer journeys and Thursday/Friday evening peak is more widely distributed  
 ![](images/journeys_per_hour_week.png) ![](images/journeys_per_hour_week_prop.png)
 
 ### Monthly data
