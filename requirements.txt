@@ -2,6 +2,7 @@
 numpy
 pandas
 # tensorflow
+statsmodels
 
 # Plotting
 matplotlib
