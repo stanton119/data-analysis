@@ -340,12 +340,25 @@ sns.scatterplot(
     x="temp_feels", y="count", hue="is_weekend", data=cycle_day_data, alpha=0.5
 )
 plt.tight_layout()
-plt.ylabel("Number of trips/hour")
+plt.ylabel("Number of trips/day")
 plt.show()
 
-# cycle_day_data['temp_feels']
-# cycle_day_data['count']
+# %% Humidity
+# Strong negative correlation, likely confounds the seasonal trend, lower humidity with higher temperatures
+plt.figure(num=None, figsize=(8, 6), dpi=80, facecolor="w", edgecolor="k")
+sns.scatterplot(
+    x="hum", y="count", hue="is_weekend", data=cycle_day_data, alpha=0.5
+)
+plt.tight_layout()
+plt.ylabel("Number of trips/day")
+plt.show()
 
+plt.figure(num=None, figsize=(8, 6), dpi=80, facecolor="w", edgecolor="k")
+sns.scatterplot(
+    x="temp_feels", y="hum", hue="is_weekend", data=cycle_day_data, alpha=0.5
+)
+plt.tight_layout()
+plt.show()
 
 # %%
 # Against weather type
@@ -376,6 +389,17 @@ print(
 # %%
 # Regress on count data to find coefficient for weather conditions to get effect size, need to account for seasonality first
 import statsmodels.api as sm
+from patsy import dmatrices
+
+y, X = dmatrices('count ~ temp_feels + wind_speed + hum + is_weekend', data=cycle_day_data, return_type='dataframe')
+
+model = sm.OLS(y, X)
+results = model.fit()
+print(results.summary())
+
+# %%
+# Seasonal trends
+cycle_day_data.head()
 
 # %%
 # g = sns.FacetGrid(cycle_data, row="weather_code", col="is_weekend", margin_titles=True)
