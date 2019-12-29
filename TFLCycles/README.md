@@ -1,7 +1,7 @@
 # TFL Cycle Analysis
 
 ## Todo
-* Regression analysis
+* Add new features to regression model
 
 ## Dataset
 The dataset counts the number of journeys made per hour in each day of 2015-2017.  
