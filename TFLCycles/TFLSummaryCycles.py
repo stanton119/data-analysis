@@ -1,5 +1,5 @@
 # %% [markdown]
-# # Transport for London Cycle Data
+# # Transport for London Cycle Data Exploration
 #
 
 # %%
@@ -104,22 +104,31 @@ plt.show()
 
 # %%
 # Journeys increasing with time?
-plt.figure(num=None, figsize=(8, 6), dpi=80, facecolor="w", edgecolor="k")
-plt.scatter(cycle_day_data["datetime"], cycle_day_data["count"], alpha=0.2)
+fig = plt.figure(num=None, figsize=(8, 6), dpi=80, facecolor="w", edgecolor="k")
+ax = fig.subplots()
+# ax.scatter(cycle_day_data["datetime"], cycle_day_data["count"], alpha=0.2)
+ax.scatter("datetime", "count", data=cycle_day_data, alpha=0.2)
 plt.xlabel("Date")
 plt.ylabel("Number of trips/day")
+
+# format the ticks
+import matplotlib.dates as mdates
+ax.xaxis.set_major_locator(mdates.YearLocator())
+ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y"))
+ax.xaxis.set_minor_locator(mdates.MonthLocator())
+
+# round to nearest years
+# datemin = np.datetime64(cycle_day_data["datetime"].min(), "Y")
+# datemax = np.datetime64(cycle_day_data["datetime"].max()) # + np.timedelta64(1, "Y")
+# ax.set_xlim(datemin, datemax)
+
+ax.grid(True)
+fig.autofmt_xdate()
 # plt.savefig("TFLCycles/images/against_time.png")
 plt.show()
 
 # Maybe better to show change in totals per week year on year
 
-# Journeys increasing with time?
-# plt.figure(num=None, figsize=(16, 6), dpi=80, facecolor='w', edgecolor='k')
-# plt.scatter(cycle_data['timestamp_obj'], cycle_data['count'], alpha=0.2)
-# plt.tight_layout()
-# plt.xlabel('Date')
-# plt.ylabel('Number of trips/hour')
-# plt.show()
 
 # %% [markdown]
 # # Journeys by hour
@@ -128,7 +137,7 @@ plt.show()
 # %%
 plt.figure(num=None, figsize=(8, 6), dpi=80, facecolor="w", edgecolor="k")
 sns.boxplot(x="hour", y="count", hue="is_weekend", data=cycle_data)
-plt.tight_layout()
+# plt.tight_layout()
 plt.xlabel("Hour")
 plt.ylabel("Number of trips/hour")
 plt.title("Weekend has different dist to weekday")
@@ -418,37 +427,8 @@ print(
 """
 )
 
-# %%
-sns.pairplot(cycle_day_data[["count", "temp_feels", "wind_speed", "hum"]])
-# plt.savefig('TFLCycles/images/pairplot.png')
-plt.show()
-
-# %%
-# Regress on count data to find coefficient for weather conditions to get effect size, need to account for seasonality first
-import statsmodels.api as sm
-from patsy import dmatrices
-
-y, X = dmatrices(
-    "count ~ temp_feels + wind_speed + hum + is_weekend",
-    data=cycle_day_data,
-    return_type="dataframe",
-)
-
-model = sm.OLS(y, X)
-results = model.fit()
-print(results.summary())
-
-# %%
-# Seasonal trends
-cycle_day_data.head()
-# Adding cosine over the year
-
-# %%
-# g = sns.FacetGrid(cycle_data, row="weather_code", col="is_weekend", margin_titles=True)
-# bins = np.linspace(0, 60, 13)
-# g.map(plt.hist, "cnt", color="steelblue", bins=bins)
+# %% Export CSV
+cycle_day_data.to_csv("TFLCycles/data/london_merged_processed.csv", index=False)
 
 
 # %%
-# g = sns.pairplot(cycle_data)
-
