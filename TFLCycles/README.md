@@ -2,6 +2,8 @@
 
 ## Todo
 * Add new features to regression model
+* Add is_holiday feature
+* Add short term weather trend - in case people cycle based on yesterdays weather and not todays forcast
 
 ## Dataset
 The dataset counts the number of journeys made per hour in each day of 2015-2017.  
