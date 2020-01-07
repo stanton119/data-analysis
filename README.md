@@ -17,7 +17,8 @@ Not finished yet - animations of shots taken by Kobe Bryant over time.
 
 
 ## Installation
-Install Python 3.7.6
+The various analysis was built in Python 3.7.6.
+
 ### Virtual environment setup  
 ```
 python3 -m venv dataAnalysisEnv
