@@ -10,10 +10,14 @@ Repo directory:
 Analysis in to the number of bike trips taken per day in London.  
 
 
+### [NBA Score Trajectories](https://github.com/stanton119/nba-scores)
+[https://github.com/stanton119/nba-scores](https://github.com/stanton119/nba-scores)  
+Flask app to show scores of a basketball match against time.  
+
+
 ### [NBA Shooting Data](NBAShotSelection/)
 [https://github.com/stanton119/data-analysis/tree/master/NBAShotSelection](https://github.com/stanton119/data-analysis/tree/master/NBAShotSelection)  
 Not finished yet - animations of shots taken by Kobe Bryant over time.  
-
 
 
 ## Installation
