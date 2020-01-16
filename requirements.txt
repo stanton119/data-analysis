@@ -6,6 +6,7 @@ statsmodels
 
 # Plotting
 matplotlib
+hvplot
 # holoviews
 bokeh
 seaborn

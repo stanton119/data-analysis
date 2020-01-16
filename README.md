@@ -27,7 +27,7 @@ The various analysis was built in Python 3.7.6.
 ```
 python3 -m venv dataAnalysisEnv
 source dataAnalysisEnv/bin/activate
-pip install --upgrade pip
+python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 

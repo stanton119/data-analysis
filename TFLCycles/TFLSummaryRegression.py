@@ -2,10 +2,10 @@
 # # Transport for London Cycle Data Exploration
 #
 # Seasonality stuff
-https://otexts.com/fpp2/regression-intro.html
-https://stats.stackexchange.com/questions/204670/predict-seasonality-and-trend-combined-better-approach
-https://stats.stackexchange.com/questions/137995/is-there-a-way-to-allow-seasonality-in-regression-coefficients
-https://stats.stackexchange.com/questions/108877/capturing-seasonality-in-multiple-regression-for-daily-data
+# https://otexts.com/fpp2/regression-intro.html
+# https://stats.stackexchange.com/questions/204670/predict-seasonality-and-trend-combined-better-approach
+# https://stats.stackexchange.com/questions/137995/is-there-a-way-to-allow-seasonality-in-regression-coefficients
+# https://stats.stackexchange.com/questions/108877/capturing-seasonality-in-multiple-regression-for-daily-data
 
 # %%
 import os
@@ -17,10 +17,11 @@ import seaborn as sns
 sns.set(style="whitegrid")
 plt.style.use("seaborn-whitegrid")
 
+# %% Fetch data
+dir_path = os.path.dirname(os.path.realpath(__file__))
+os.path.join(dir_path, "data", "london_merged_processed.csv")
 
-# %%
-# Fetch data
-cycle_data = pd.read_csv("TFLCycles/data/london_merged_processed.csv")
+cycle_data = pd.read_csv(os.path.join(dir_path, "data", "london_merged_processed.csv"))
 
 cycle_data.head()
 
@@ -76,6 +77,8 @@ print(results2.summary())
 # %% Check predictions
 y_est1 = results1.predict(X1)
 y_est2 = results2.predict(X2)
+cycle_data["y_est1"] = y_est1
+cycle_data["y_est2"] = y_est2
 
 # %% Check residuals
 idx = range(0, y.shape[0])
@@ -118,12 +121,35 @@ fig.autofmt_xdate()
 # plt.savefig(f"TFLCycles/images/{fig_name}.png")
 plt.show()
 
+# %% replacing plots with interactive versions
+import hvplot.pandas
+
+cycle_data["resid1"] = cycle_data["y_est1"] - cycle_data["count"]
+cycle_data["resid2"] = cycle_data["y_est2"] - cycle_data["count"]
+cycle_data.hvplot(
+    y=["resid1", "resid2"], kind="scatter",
+)
+
+# %% Extreme residuals
+filt_lim = cycle_data["resid2"].abs().nlargest(50).min()
+filt = cycle_data["resid2"].abs() > filt_lim
+
+# Seems some dates in particular are key
+cycle_data.loc[filt][["datetime", "count", "y_est2", "resid2"]].head(n=filt.sum())
+cycle_data.loc[filt][["datetime", "count", "y_est2", "resid2"]].head(n=50)
+print(cycle_data.loc[filt]["datetime"])
+# e.g. Christmas 2016 is really high?
+# Christmas holidays are lower than usual
+
+# New features to try:
+# Is christmas period
+
 # %% Residual histograms
 fig = plt.figure(num=None, figsize=(8, 6), dpi=80, facecolor="w", edgecolor="k")
 ax = fig.subplots()
 
-ax.hist(y_est1.loc[idx] - y["count"].loc[idx], bins=30, alpha = 0.5)
-ax.hist(y_est2.loc[idx] - y["count"].loc[idx], bins=30, alpha = 0.5)
+ax.hist(y_est1.loc[idx] - y["count"].loc[idx], bins=30, alpha=0.5)
+ax.hist(y_est2.loc[idx] - y["count"].loc[idx], bins=30, alpha=0.5)
 plt.ylabel("Model residuals")
 plt.legend(["Model1", "Model2"])
 plt.xlabel("Date")

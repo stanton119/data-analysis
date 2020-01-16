@@ -112,3 +112,4 @@ This suggests different features would be required to improve the predictability
 * Add new features to regression model
 * Add is_holiday feature
 * Add short term weather trend - in case people cycle based on yesterdays weather and not todays forcast
+* Fit the regression model on bootstrap samples to get sampling distribution and covariances for each regression coefficient
