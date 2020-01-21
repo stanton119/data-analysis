@@ -10,6 +10,8 @@ hvplot
 # holoviews
 bokeh
 seaborn
+selenium
+phantomjs-binary
 
 
 # requests

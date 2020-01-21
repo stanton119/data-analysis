@@ -30,6 +30,27 @@ sns.pairplot(cycle_data[["count", "temp_feels", "wind_speed", "hum"]])
 # plt.savefig('TFLCycles/images/pairplot.png')
 plt.show()
 
+# %%
+from holoviews.operation import gridmatrix
+import holoviews as hv
+from holoviews import opts
+
+hv.extension("bokeh")
+df = cycle_data[["count", "temp_feels", "wind_speed", "hum"]]
+
+density_grid = gridmatrix(
+    hv.Dataset(df), diagonal_type=hv.Distribution, chart_type=hv.Points
+)
+density_grid
+# density_grid.opts(
+#     opts.Scatter(
+#         tools=["box_select", "lasso_select", "hover"],
+#         border=0,
+#         padding=0.1,
+#         show_grid=True,
+#     )
+# )
+
 # %% Extra features
 cycle_data["is_raining"] = cycle_data["weather_code_label"] == "Rain"
 
@@ -156,12 +177,50 @@ plt.xlabel("Date")
 # plt.savefig("TFLCycles/images/resid_hist.png")
 plt.show()
 
+# %% Bootstrap fitting to check confidence intervals
+y, X2 = dmatrices(
+    "count ~ temp_feels + wind_speed + hum + is_weekend + is_raining + seasonal",
+    data=cycle_data,
+    return_type="dataframe",
+)
+
+n_bs = 1000
+bs_len = y.shape[0]
+
+model_coefs = []
+for i in range(0, n_bs):
+    y_temp = y.sample(n=bs_len, replace=True)
+    X2_temp = X2.loc[y_temp.index]
+
+    model2 = sm.OLS(y_temp, X2_temp)
+    results2 = model2.fit()
+    model_coefs.append(results2.params)
+
+model_coefs = pd.DataFrame(model_coefs)
+
+# estimate confidence range from bootstrap coefficients
+print(model_coefs.quantile(q=[0.025, 0.975]))
+print(model_coefs.mean())
+
+# %% How do bootstrap coefficient converge with number of samples taken?
+temp_hist = model_coefs["temp_feels"].hvplot(kind="hist")
+temp_hist.opts(xlabel="temp_feels coefficient")
+
+
+hv.save(temp_hist, "TFLCycles/images/temp_feels_hist.png")
+
 # %%
+import os
 
-# g = sns.FacetGrid(cycle_data, row="weather_code", col="is_weekend", margin_titles=True)
-# bins = np.linspace(0, 60, 13)
-# g.map(plt.hist, "cnt", color="steelblue", bins=bins)
+os.environ
+os.environ["BOKEH_PHANTOMJS_PATH"] = "/Users/Rich/Developer/Data Science/VariousDataAnalysis/dataAnalysisEnv/lib/python3.7/site-packages/phantomjs_bin/bin/macosx"
+        
 
+# %%
+print(results2.summary())
+
+type(X2)
+X2.shape
 
 # %%
 # g = sns.pairplot(cycle_data)

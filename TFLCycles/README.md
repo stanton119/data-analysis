@@ -108,6 +108,9 @@ Against time there isnt a clear seasonality in residuals
 ![](images/resid.png)  
 This suggests different features would be required to improve the predictability further
 
+### Bootstrap coefficient fitting
+We can draw bootstrapped samples of our data set to get a handle on the distribution
+
 ## Todo
 * Add new features to regression model
 * Add is_holiday feature
