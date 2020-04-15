@@ -1,6 +1,7 @@
 dataAnalysisEnv/
 .vscode
 */data/*.csv
+*/data/*.pq
 
 
 
