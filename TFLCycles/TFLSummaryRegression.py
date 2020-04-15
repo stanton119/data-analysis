@@ -25,6 +25,8 @@ cycle_data = pd.read_csv(os.path.join(dir_path, "data", "london_merged_processed
 
 cycle_data.head()
 
+
+
 # %% Correlation plots
 sns.pairplot(cycle_data[["count", "temp_feels", "wind_speed", "hum"]])
 # plt.savefig('TFLCycles/images/pairplot.png')
@@ -54,6 +56,13 @@ density_grid
 # %% Extra features
 cycle_data["is_raining"] = cycle_data["weather_code_label"] == "Rain"
 
+
+# %% Divide data using index
+from sklearn.model_selection import train_test_split
+
+idx_train, idx_test = train_test_split(cycle_data.index)
+
+
 # %% Initial regression model
 # Regress on count data to find coefficient for weather conditions to get effect size, need to account for seasonality first
 import statsmodels.api as sm
@@ -66,6 +75,20 @@ y, X1 = dmatrices(
 )
 
 model = sm.OLS(y, X1)
+results1 = model.fit()
+print(results1.summary())
+
+
+# %% Make data numerical
+cycle_data['is_weekend'].astype(np.float)
+data = cycle_data.astype({"age": np.float64, "fare": np.float64})
+
+model = sm.OLS(
+    cycle_data.loc[idx_train, "count"],
+    cycle_data.loc[
+        idx_train, ["temp_feels", "wind_speed", "hum", "is_weekend", "is_raining"]
+    ],
+)
 results1 = model.fit()
 print(results1.summary())
 
@@ -213,8 +236,10 @@ hv.save(temp_hist, "TFLCycles/images/temp_feels_hist.png")
 import os
 
 os.environ
-os.environ["BOKEH_PHANTOMJS_PATH"] = "/Users/Rich/Developer/Data Science/VariousDataAnalysis/dataAnalysisEnv/lib/python3.7/site-packages/phantomjs_bin/bin/macosx"
-        
+os.environ[
+    "BOKEH_PHANTOMJS_PATH"
+] = "/Users/Rich/Developer/Data Science/VariousDataAnalysis/dataAnalysisEnv/lib/python3.7/site-packages/phantomjs_bin/bin/macosx"
+
 
 # %%
 print(results2.summary())
@@ -224,4 +249,3 @@ X2.shape
 
 # %%
 # g = sns.pairplot(cycle_data)
-

@@ -3,12 +3,16 @@ numpy
 pandas
 # tensorflow
 statsmodels
+scikit-learn
+interpret
+pyarrow
+fbprophet
 
 # Plotting
-matplotlib
 hvplot
 # holoviews
 bokeh
+matplotlib
 seaborn
 selenium
 phantomjs-binary
@@ -21,5 +25,7 @@ phantomjs-binary
 # Debugging
 jupyter
 pylint
+flake8
 rope
 black
+tabulate
