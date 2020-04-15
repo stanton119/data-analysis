@@ -1,7 +1,43 @@
-# TFL Cycle Analysis
+# Transport for London Cycle Data Exploration
 
 ## Dataset
+The data was provided from TFL and was retrieved from Kaggle: https://www.kaggle.com/hmavrodiev/london-bike-sharing-dataset
 The dataset counts the number of journeys made per hour in each day of 2015-2017.  
+There are 17414 rows.
+
+Data preview:
+
+|    | timestamp           |   cnt |   t1 |   t2 |   hum |   wind_speed |   weather_code |   is_holiday |   is_weekend |   season |
+|---:|:--------------------|------:|-----:|-----:|------:|-------------:|---------------:|-------------:|-------------:|---------:|
+|  0 | 2015-01-04 00:00:00 |   182 |  3   |  2   |  93   |          6   |              3 |            0 |            1 |        3 |
+|  1 | 2015-01-04 01:00:00 |   138 |  3   |  2.5 |  93   |          5   |              1 |            0 |            1 |        3 |
+|  2 | 2015-01-04 02:00:00 |   134 |  2.5 |  2.5 |  96.5 |          0   |              1 |            0 |            1 |        3 |
+|  3 | 2015-01-04 03:00:00 |    72 |  2   |  2   | 100   |          0   |              1 |            0 |            1 |        3 |
+|  4 | 2015-01-04 04:00:00 |    47 |  2   |  0   |  93   |          6.5 |              1 |            0 |            1 |        3 |
+
+## Column descriptions
+
+"weather_code" category description:
+1 = Clear ; mostly clear but have some values with haze/fog/patches of fog/ fog in vicinity
+2 = scattered clouds / few clouds
+3 = Broken clouds
+4 = Cloudy
+7 = Rain/ light Rain shower/ Light rain
+10 = rain with thunderstorm
+26 = snowfall
+94 = Freezing Fog
+Temperature/humdity/wind speed affects counts?
+
+## Data cleaning
+
+Full script in `data_proc.py`
+
+```python
+
+
+```
+
+
 ## Findings
 Seasonal trends in number of journeys per day  
 ![](images/against_time.png)
@@ -116,3 +152,5 @@ We can draw bootstrapped samples of our data set to get a handle on the distribu
 * Add is_holiday feature
 * Add short term weather trend - in case people cycle based on yesterdays weather and not todays forcast
 * Fit the regression model on bootstrap samples to get sampling distribution and covariances for each regression coefficient
+* XBM model
+  * Ignore month/year as feature, but can use hour/day
