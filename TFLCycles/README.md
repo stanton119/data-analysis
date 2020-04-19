@@ -2,13 +2,15 @@
 
 
 Data exploration:  
-``data_exploration.py``
+* [Markdown - ``data_exploration.md``](data_exploration.md)
+* [source - ``data_exploration.py``](data_exploration.py)
+
 
 Regression analysis:  
-``pending``
+* ``pending``
 
 Utility functions:  
-``data_proc.py``
+* [source - ``data_proc.py``](data_proc.py)
 
 
 
@@ -21,3 +23,5 @@ Utility functions:
 * Fit the regression model on bootstrap samples to get sampling distribution and covariances for each regression coefficient
 * XBM model
   * Ignore month/year as feature, but can use hour/day
+* Fourier analyis to reproduce the prophet results
+* Holoview interactive plots
