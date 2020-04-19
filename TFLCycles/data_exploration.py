@@ -2,7 +2,8 @@
 # # Transport for London Cycle Data Exploration
 #
 # ## Dataset
-# The data was provided from TFL and was retrieved from Kaggle: https://www.kaggle.com/hmavrodiev/london-bike-sharing-dataset
+# The data was provided from TFL and was retrieved from Kaggle:  
+# https://www.kaggle.com/hmavrodiev/london-bike-sharing-dataset  
 # The dataset counts the number of journeys made per hour in each day of 2015-2017.
 # There are 17414 rows.
 
