@@ -23,7 +23,8 @@
 
 ## Findings
 <!-- ![](images/against_time.png) -->
-
+Average age of 54
+68% are male
 
 ## Model building
 Classification problem
