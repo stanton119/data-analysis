@@ -98,3 +98,4 @@ results.params.flatten()
 print(results.summary())
 
 # %% Bayesian network
+# Reference: http://pyro.ai/examples/bayesian_regression.html
