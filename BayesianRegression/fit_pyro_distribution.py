@@ -6,8 +6,22 @@
 #
 # Mirrors: http://pyro.ai/examples/intro_part_ii.html
 
-# %% Generate observed data
+# %%
 import numpy as np
+
+import torch
+import torch.optim as optim
+import pyro
+import pyro.infer
+import pyro.optim
+import pyro.distributions as dist
+
+from scipy.stats import norm
+import matplotlib.pyplot as plt
+
+plt.style.use("seaborn-whitegrid")
+
+# %% Generate observed data
 
 n = 1000
 x = np.random.randn(n, 1)
@@ -51,12 +65,6 @@ print(np.std(x))
 # We iterate over the data 100 times, at which point the weights have converged.
 
 # %%
-import torch
-import torch.optim as optim
-import pyro
-import pyro.infer
-import pyro.optim
-import pyro.distributions as dist
 
 
 # %% Create model
@@ -67,25 +75,27 @@ import pyro.distributions as dist
 # Initially we set the standard deviations to a fix constant
 
 mu_prior = [0.0, 10.0]  # Gaussian - mu, std
-std_prior = [1.0, 10.0]  # Gamma
+std_prior = [1.0, 0.1]  # Gamma - a, b
+params_prior = mu_prior + std_prior
 
 
-def data_model(guess):
-
-    mu_dist = pyro.sample("mu_dist", dist.Normal(guess[0], guess[1]))
-    return pyro.sample("data_dist", dist.Normal(mu_dist, std_prior[0]))
+def data_model(params):
+    mu_dist = pyro.sample("mu_dist", dist.Normal(params[0], params[1]))
+    std_dist = pyro.sample("std_dist", dist.Gamma(np.abs(params[2]), np.abs(params[3])))
+    return pyro.sample("data_dist", dist.Normal(mu_dist, std_dist))
 
 
 # This step forces the samples of the above model to output $x$
-conditioned_data_model = pyro.condition(data_model, data={"data_dist": x[0][0]})
-conditioned_data_model = pyro.condition(data_model, data={"data_dist": torch.tensor(x.flatten())})
+conditioned_data_model = pyro.condition(
+    data_model, data={"data_dist": torch.tensor(x.flatten())}
+)
 
 # This is the same as setting the obs value of the data_dist object:
 # data_dist = pyro.sample(
 #     "data_dist", pyro.distributions.Normal(mu_dist, std_prior[0]), obs=x
 # )
 
-conditioned_data_model(mu_prior)
+conditioned_data_model(params_prior)
 
 
 # %% Infering latent distributions
@@ -98,59 +108,137 @@ conditioned_data_model(mu_prior)
 # We specify a family of guides and chose the best one for the posterior fit.
 
 
-def parametrized_guide(guess):
-    a = pyro.param("a", torch.tensor(guess[0]))
-    b = pyro.param("b", torch.tensor(guess[1]))
-    return pyro.sample("mu_dist", dist.Normal(a, torch.abs(b)))  # to force a positive std
+def parametrized_guide(params):
+    mu_mu = pyro.param("mu_mu", torch.tensor(params[0]))
+    mu_std = pyro.param("mu_std", torch.tensor(params[1]))
+    std_a = pyro.param("std_a", torch.tensor(params[2]))
+    std_b = pyro.param("std_b", torch.tensor(params[3]))
+    if 0:
+        return pyro.sample(
+            "mu_dist", dist.Normal(mu_mu, torch.abs(mu_std))
+        )  # to force a positive std
+    else:
+        mu_dist = pyro.sample("mu_dist", dist.Normal(mu_mu, torch.abs(mu_std)))
+        std_dist = pyro.sample(
+            "std_dist", dist.Gamma(torch.abs(std_a), torch.abs(std_b))
+        )
+        return pyro.sample("data_dist", dist.Normal(mu_dist, torch.abs(std_dist)))
 
 
-parametrized_guide(mu_prior)
+parametrized_guide(params_prior)
 
 # %%
-mu_init = 0.0
-mu_init = mu_prior
-
 pyro.clear_param_store()
 svi = pyro.infer.SVI(
     model=conditioned_data_model,
     guide=parametrized_guide,
-    optim=pyro.optim.SGD({"lr": 0.00001, "momentum": 0.1}),
+    optim=pyro.optim.SGD({"lr": 0.0001, "momentum": 0.5}),
     loss=pyro.infer.Trace_ELBO(),
 )
 
 # %%
-losses, a, b = [], [], []
+# Iterate over all the data
+losses, mu_mu, mu_std, std_a, std_b = [], [], [], [], []
 num_steps = 2500
 for t in range(num_steps):
-    losses.append(svi.step(mu_init))
-    a.append(pyro.param("a").item())
-    b.append(pyro.param("b").item())
+    losses.append(svi.step(params_prior))
+    mu_mu.append(pyro.param("mu_mu").item())
+    mu_std.append(pyro.param("mu_std").item())
+    std_a.append(pyro.param("std_a").item())
+    std_b.append(pyro.param("std_b").item())
 
 # %%
-import matplotlib.pyplot as plt
 
 plt.plot(losses)
 plt.title("ELBO")
 plt.xlabel("step")
 plt.ylabel("loss")
-print("a = ", pyro.param("a").item())
-print("b = ", pyro.param("b").item())
+print("mu_mu = ", pyro.param("mu_mu").item())
+print("mu_std = ", pyro.param("mu_std").item())
+print("std_a = ", pyro.param("std_a").item())
+print("std_b = ", pyro.param("std_b").item())
+
+
+# %% Parameters against iteration
+plt.subplot(2, 2, 1)
+plt.plot(mu_mu)
+plt.ylabel("mu_mu")
+
+plt.subplot(2, 2, 2)
+plt.ylabel("mu_std")
+plt.plot(mu_std)
+
+plt.subplot(2, 2, 3)
+plt.ylabel("std_a")
+plt.plot(std_a)
+
+plt.subplot(2, 2, 4)
+plt.ylabel("std_b")
+plt.plot(std_b)
+
 
 
 # %%
-plt.subplot(1, 2, 1)
-plt.plot(a)
-plt.ylabel("a")
-plt.grid()
+# Plot mean distributions
+# Very confident in the tuned mu distribution
+mu_prior_dist = norm(loc=mu_prior[0], scale=mu_prior[1])
+x_range = np.linspace(mu_prior_dist.ppf(0.01), mu_prior_dist.ppf(0.99), num=100)
+y_values = mu_prior_dist.pdf(x_range)
+plt.plot(x_range, y_values, label='prior')
 
-plt.subplot(1, 2, 2)
-plt.ylabel("b")
-plt.plot(b)
-plt.grid()
-plt.tight_layout()
+mu_post_dist = norm(loc=pyro.param("mu_mu").item(), scale=pyro.param("mu_std").item())
+x_range = np.linspace(mu_post_dist.ppf(0.01), mu_post_dist.ppf(0.99), num=100)
+y_values = mu_post_dist.pdf(x_range)
+plt.plot(x_range, y_values, label='posterior')
+
+plt.xlabel('x')
+plt.ylabel('prob(x)')
+plt.title('Mean PDF')
+plt.legend()
+
+# %%
+# Plot std distributions
+# Converges on 4
+x_range = np.linspace(0, 10, num=100)
+
+std_prior = [1, 0.1]
+
+std_prior_dist = dist.Gamma(std_prior[0], std_prior[1])
+y_values = torch.exp(std_prior_dist.log_prob(x_range))
+plt.plot(x_range, y_values, label='prior')
+
+std_post_dist = dist.Gamma(pyro.param("std_a").item(), pyro.param("std_b").item())
+y_values = torch.exp(std_post_dist.log_prob(x_range))
+plt.plot(x_range, y_values, label='posterior')
+
+plt.title('Standard Deviation PDF')
+plt.legend()
 
 
 # %%
 # Plot estimated distribution over original data
+
+
+plt.hist(x, density=True)
+
+
+prior_mu = mu_prior[0]
+prior_std = (std_prior[0]-1)/std_prior[1]    # distribution mode
+prior_std = (std_prior[0])/std_prior[1]      # distribution mean
+prior_dist = norm(loc=prior_mu, scale=prior_std)
+x_range = np.linspace(prior_dist.ppf(0.01), prior_dist.ppf(0.99), num=100)
+y_values = prior_dist.pdf(x_range)
+plt.plot(x_range, y_values, label='prior')
+
+post_mu = pyro.param("mu_mu").item()
+post_std = (pyro.param("std_a").item()-1)/pyro.param("std_b").item()    # distribution mode
+post_std = (pyro.param("std_a").item())/pyro.param("std_b").item()      # distribution mean
+post_dist = norm(loc=post_mu, scale=post_std)
+x_range = np.linspace(post_dist.ppf(0.01), post_dist.ppf(0.99), num=100)
+y_values = post_dist.pdf(x_range)
+plt.plot(x_range, y_values, label='post')
+
+plt.legend()
+plt.title('Data')
 
 # %% Train with mini batch gradient descent
