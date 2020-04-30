@@ -5,7 +5,7 @@
 # We want to estimate a distribution that best fits the data using variational inference with Pyro.
 #
 # References:
-#   * http://pyro.ai/examples/intro_part_ii.html
+#   * [https://pyro.ai/examples/intro_part_ii.html](https://pyro.ai/examples/intro_part_ii.html)
 #
 # Import the required libraries:
 # %%
@@ -21,7 +21,7 @@ from scipy.stats import norm
 import matplotlib.pyplot as plt
 
 plt.style.use("seaborn-whitegrid")
-
+np.random.seed(0)
 # %% [markdown]
 # ## Generate observed data
 # We use `numpy` to generate random data from a Gaussian distribution with a known mean and standard deviation.
@@ -35,13 +35,11 @@ x = x * std + mu
 print(f"Shape: {x.shape}")
 print(f"Mean: {np.mean(x)}")
 print(f"Standard deviation: {np.std(x)}")
-
-
 # %% [markdown]
 # ```
 # Shape: (1000, 1)
-# Mean: 1.987280841100236
-# Standard deviation: 3.9196571939982863
+# Mean: 1.8189731700392184
+# Standard deviation: 3.9481326346761034
 # ```
 
 # %% [markdown]
@@ -64,9 +62,9 @@ print(f"Standard deviation: {np.std(x)}")
 
 
 # References:
-# * https://www.youtube.com/watch?v=3KGZDC3-_iY
-# * http://pyro.ai/examples/bayesian_regression.html
-# * https://en.wikipedia.org/wiki/Variational_Bayesian_methods
+# * [https://www.youtube.com/watch?v=3KGZDC3-_iY](https://www.youtube.com/watch?v=3KGZDC3-_iY)
+# * [http://pyro.ai/examples/bayesian_regression.html](http://pyro.ai/examples/bayesian_regression.html)
+# * [https://en.wikipedia.org/wiki/Variational_Bayesian_methods](https://en.wikipedia.org/wiki/Variational_Bayesian_methods)
 
 # %% [markdown]
 # ## Pyro approach
@@ -84,12 +82,15 @@ print(f"Standard deviation: {np.std(x)}")
 # The mean is taken from another Gaussian distribution. The standard deviation comes from a Gamma distribution.
 #
 # This is represented as:
+# 
 # $$x\sim\mathcal{N}\left(\mu,\sigma^{2}\right)$$
+# 
 # $$\mu\sim\mathcal{N}\left(\mu_{\mu},\mu_{\sigma^{2}}\right)$$
+# 
 # $$\sigma\sim\mathrm{Gamma}\left(\alpha,\beta\right)$$
 #
 
-# The parameters for these two distributions ($\mu_{\mu},\mu_{\sigma}, \alpha,\beta$) are the function inputs:
+# The parameters for these two distributions ($$\mu_{\mu},\mu_{\sigma}, \alpha,\beta$$) are the function inputs:
 # ```
 #     params: [mu_prior + std_prior]
 #         mu_prior - Gaussian - mu, std
@@ -110,8 +111,6 @@ def data_model(params):
 conditioned_data_model = pyro.condition(
     data_model, data={"data_dist": torch.tensor(x.flatten())}
 )
-
-
 # %% [markdown]
 # ### Guide function
 # The guide function represents the family of distribution we want to consider as our posterior distribution, therefore it should be an approximation of the model posterior distribution. In this case we assume a Guassian distribution as the approximating class for the posterior distribution. This is an ideal case as we know the original data came from a Gaussian, in practice this would be based on domain knowledge.
@@ -125,9 +124,9 @@ conditioned_data_model = pyro.condition(
 # The function params are in the same form as the above data generating model.
 # The `pyro.param` statements recall the named parameters from the pyro param store. If no parameter exists with that name it will use the `param[.]` value passed to it, this happens on the first call only.
 
-# We use the constraint property to ensure the distribution parameters are correctly $>0$.
+# We use the constraint property to ensure the distribution parameters are correctly $$>0$$.
 #
-# We use the `torch.abs` calls to ensure the distribution parameters are correctly $>0$.
+# We use the `torch.abs` calls to ensure the distribution parameters are correctly $$>0$$.
 #
 # We make both `mu_dist` and `std_dist` as separate objects in order to optimise the mean and standard deviation of our data separately.
 
@@ -147,8 +146,6 @@ def parametrised_guide(params):
     mu_dist = pyro.sample("mu_dist", dist.Normal(mu_mu, mu_std))
     std_dist = pyro.sample("std_dist", dist.Gamma(std_a, std_b))
     return pyro.sample("data_dist", dist.Normal(mu_dist, std_dist))
-
-
 # %% [markdown]
 # ### Setup variational inference descent
 # This is setup via the object `pyro.infer.SVI()` using the functions we generated above.
@@ -164,7 +161,6 @@ svi = pyro.infer.SVI(
     optim=pyro.optim.SGD({"lr": 0.00001, "momentum": 0.8}),
     loss=pyro.infer.Trace_ELBO(),
 )
-
 # %% [markdown]
 # ### Prior initialisation
 # We choose uninformed priors for the mean (Gaussian) and standard deviation (Gamma) prior distributions.
@@ -183,7 +179,6 @@ params_prior = mu_prior + std_prior
 # Iterate over all the data
 losses, mu_mu, mu_std, std_a, std_b = [], [], [], [], []
 pyro.clear_param_store()
-
 # %%
 num_steps = 5000
 for t in range(num_steps):
@@ -192,27 +187,26 @@ for t in range(num_steps):
     mu_std.append(pyro.param("mu_std").item())
     std_a.append(pyro.param("std_a").item())
     std_b.append(pyro.param("std_b").item())
-
-
 # %% [markdown]
 # ### Results
 # The loss function has reduced with time:
 
 # %%
 # Convergence of the loss function
+plt.figure(num=None, figsize=(10, 6), dpi=80)
 plt.plot(losses)
 plt.title("ELBO")
 plt.xlabel("Iteration")
 plt.ylabel("loss")
 plt.savefig("images/elbo.png")
 plt.show()
-
 # %% [markdown]
 # ![](images/elbo.png)
 #
 # We can also see how the distribution parameters have converged:
 
 # %% Parameters against iteration
+plt.figure(num=None, figsize=(10, 6), dpi=80)
 plt.subplot(2, 2, 1)
 plt.plot(mu_mu)
 plt.ylabel("mu_mu")
@@ -230,17 +224,18 @@ plt.ylabel("std_b")
 plt.plot(std_b)
 plt.savefig("images/params.png")
 plt.show()
-
 # %% [markdown]
 # ![](images/params.png)
 #
-# The parameters for the mean distribution have converged well. The parameters of the standard deviation distribution have behaved differently.
+# The parameters for the mean distribution have converged well.
+# The parameters of the standard deviation distribution have behaved differently.
 #
 # First, we can show the PDF of the mean distribution comparing the prior and posteriors:
 
 
 # %%
 # Plot mean distributions
+plt.figure(num=None, figsize=(10, 6), dpi=80)
 mu_prior_dist = norm(loc=mu_prior[0], scale=mu_prior[1])
 x_range = np.linspace(mu_prior_dist.ppf(0.01), mu_prior_dist.ppf(0.99), num=100)
 y_values = mu_prior_dist.pdf(x_range)
@@ -257,7 +252,6 @@ plt.title("Mean PDF")
 plt.legend()
 plt.savefig("images/mean_dist.png")
 plt.show()
-
 # %% [markdown]
 # ![](images/mean_dist.png)
 #
@@ -269,6 +263,7 @@ plt.show()
 # Similarly we look at the distribution of the standard deviation.
 # %%
 # Plot std distributions
+plt.figure(num=None, figsize=(10, 6), dpi=80)
 x_range = np.linspace(0, 10, num=100)
 
 std_prior_dist = dist.Gamma(std_prior[0], std_prior[1])
@@ -283,15 +278,15 @@ plt.title("Standard Deviation PDF")
 plt.legend()
 plt.savefig("images/std_dist.png")
 plt.show()
-
 # %% [markdown]
 # ![](images/std_dist.png)
 #
-# The prior is similarly mostly flat. The posterior has a peak around 3.8 which is close to the true value of 4, or the sample standard deviation of 3.9.
+# The prior is similarly mostly flat. The posterior has a peak around 4.0 which is a match to the true value of 4 and the sample standard deviation of 3.9.
 #
 # To look into the non-converging parameters let's look at distribution at different points in its training:
 
 # %% Previous std dists.
+plt.figure(num=None, figsize=(10, 6), dpi=80)
 x_range = np.linspace(0, 10, num=100)
 
 for idx in [500, 1000, 2000, 3000, 4000, 4999]:
@@ -303,15 +298,20 @@ plt.title("Standard Deviation PDF")
 plt.legend()
 plt.savefig("images/std_dist_idx.png")
 plt.show()
-
 # %% [markdown]
 # ![](images/std_dist_idx.png)
 #
-# The distribution is converging towards the correct value from about 1000 iterations. The parameters kept changing in the same direction. As the distributions are converging this suggests that the two parameters $\alpha, \beta$ are some what correlated, allowing both to change to improve our loss function. This can cause the optimisation to struggle or take longer. I will not pursue this much further though, as the distribution has converged well.
+# The distribution is converging towards the correct value from about 500 iterations.
+# The parameters kept changing in the same direction.
+# As the distributions are converging this suggests that the two parameters
+# $$\alpha, \beta$$ are some what correlated, allowing both to change to improve our loss function.
+# This can cause the optimisation to struggle or take longer.
+# I will not pursue this much further though, as the distribution has converged well.
 #
 # The data distribution can be plotted over the original data to see a goodness of fit:
 
 # %% Plot estimated distribution over original data
+plt.figure(num=None, figsize=(10, 6), dpi=80)
 plt.hist(x, density=True)
 
 # plot prior
@@ -337,11 +337,10 @@ plt.show()
 
 print(post_mu)
 print(post_std)
-
 # %% [markdown]
 # ![](images/data_dist.png)
 #
 # The posterior (green line) fits the data histogram well as we would expect.
 
-# The values of the posterior distribution (1.98, 3.79) are similar to those from the sample estimates (1.99, 3.92).
+# The values of the posterior distribution (1.82, 4.01) are similar to those from the sample estimates (1.82, 3.95).
 # However in the posterior case we have our confidence around those values rather than just point estimates.
