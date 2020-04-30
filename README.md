@@ -19,6 +19,11 @@ Flask app to show scores of a basketball match against time.
 [https://github.com/stanton119/data-analysis/tree/master/NBAShotSelection](https://github.com/stanton119/data-analysis/tree/master/NBAShotSelection)  
 Not finished yet - animations of shots taken by Kobe Bryant over time.  
 
+### [Fitting Distribution With Pyro](FitDistWithPyro/)
+<!-- Skills: bayesian analysis -->
+[https://github.com/stanton119/data-analysis/blob/master/FitDistWithPyro/fit_pyro_distribution.ipynb](https://github.com/stanton119/data-analysis/blob/master/FitDistWithPyro/fit_pyro_distribution.ipynb)  
+Simple example fitting a Gaussian distribution to data using Pyro.
+
 
 ## Installation
 The various analysis was built in Python 3.7.6.
