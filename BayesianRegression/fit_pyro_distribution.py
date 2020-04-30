@@ -1,7 +1,7 @@
 # %% [markdown]
 # # Fitting a Distribution with Pyro
 #
-# Generate random data from a gaussian with some mean and standard deviation.
+# In this simple example we will fit a Gaussian distribution to random data from a gaussian with some known mean and standard deviation.
 # We want to estimate a distribution that best fits the data using variational inference with Pyro.
 #
 # References:
