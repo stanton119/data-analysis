@@ -1,11 +1,12 @@
 # %% [markdown]
-# # Fitting a Distribution with Pyro
+# # Fitting a Beta Distribution with Pyro
 #
-# In this simple example we will fit a Gaussian distribution to random data from a gaussian with some known mean and standard deviation.
-# We want to estimate a distribution that best fits the data using variational inference with Pyro.
-#
+# Here we assume we are flipping a slightly biased coin.
+# We think the probability of a heads is close to 0.5, but we are not sure.
+# We want to fit a beta distribution to the random observed data.
+# 
 # References:
-#   * [https://pyro.ai/examples/intro_part_ii.html](https://pyro.ai/examples/intro_part_ii.html)
+#   * [http://pyro.ai/examples/svi_part_i.html](http://pyro.ai/examples/svi_part_i.html)
 #
 # Import the required libraries:
 # %% Fit beta posterior
@@ -30,51 +31,43 @@ true_dist = dist.Bernoulli(0.4)
 n = 100
 data = true_dist.sample(sample_shape=(n, 1))
 # %% [markdown]
-# ## Generate observed data
-# We use the distribution module of pytorch to generate random data from Bernoulli trials with a known probability of success $$P(p)=0.4$$.
+# ## Prior distribution
+# We propose the probability of a heads comes from a beta distribution.
+# We assume that the probability is close to 0.5 but with some error.
+# This is characterised in the prior distribution as follows:
 # %%
-# Prior distribution
 prior = dist.Beta(10, 10)
 
+plt.figure(num=None, figsize=(10, 6), dpi=80)
+x_range = np.linspace(0, 1, num=100)
+
+y_values = torch.exp(prior.log_prob(torch.tensor(x_range)))
+plt.plot(x_range, y_values, label="prior")
+
+plt.title("PDF")
+plt.legend()
+plt.savefig("images/beta_prior_pdf.png")
+plt.show()
+# %% [markdown]
+# ![](images/beta_prior_pdf.png)
+#
+# ## Analytical Posterior
+# Using the random data we have generated, we can calculate the posterior distribution.
+# In the case of a beta distribution - the posterior has an analytical solution,
+# based on conjugacy:
 # %%
 # Analytical posterior
 posterior = dist.Beta(
     prior.concentration1 + data.sum(),
     prior.concentration0 + len(data) - data.sum(),
 )
-
-
-
+# %% [markdown]
+# ## Variational inference
+# We can solve the same problem with variational inference using `pyro`.
+# We setup the model to sample from a Bernoulli trial,
+# where the probability of a heads comes from a beta distribution.
+# The model is conditioned to give the generated data when it is sampled from.
 # %%
-if 0:
-    posterior = prior
-    idx = 0
-    block_idx = np.arange(len(data)).reshape(10, -1)
-
-# %%
-if 0:
-    # Step one at a time
-    # print(data[:idx])
-    data_temp = data[block_idx[idx]]
-    posterior = dist.Beta(
-        posterior.concentration1 + data_temp.sum(),
-        posterior.concentration0 + len(data_temp) - data_temp.sum(),
-    )
-    idx += 1
-
-    plt.figure(num=None, figsize=(10, 6), dpi=80)
-    x_range = np.linspace(0, 1, num=100)
-    y_values = torch.exp(posterior.log_prob(torch.tensor(x_range)))
-    plt.plot(x_range, y_values, label="posterior")
-    y_values = torch.exp(prior.log_prob(torch.tensor(x_range)))
-    plt.plot(x_range, y_values, label="prior")
-    plt.title("PDF")
-    plt.legend()
-    # plt.savefig("images/std_dist.png")
-    plt.show()
-
-# %%
-# Variational inference
 def data_model(params):
     # returns a Bernoulli trial outcome
     beta = pyro.sample("beta_dist", dist.Beta(params[0], params[1]))
@@ -82,8 +75,10 @@ def data_model(params):
 
 
 conditioned_data_model = pyro.condition(data_model, data={"data_dist": data})
-
-
+# %% [markdown]
+# The guide function creates a pyro beta distribution object given a set of parameters,
+# which we will track.
+# %%
 def guide(params):
     # returns the Bernoulli probablility
     alpha = pyro.param(
@@ -93,8 +88,10 @@ def guide(params):
         "beta", torch.tensor(params[1]), constraint=constraints.positive
     )
     return pyro.sample("beta_dist", dist.Beta(alpha, beta))
-
-
+# %% [markdown]
+# We iterate over the above functions, starting from our prior distribution.
+# Each step we converge towards an ideal posterior form of the guide.
+# %%
 svi = pyro.infer.SVI(
     model=conditioned_data_model,
     guide=guide,
@@ -104,7 +101,7 @@ svi = pyro.infer.SVI(
 
 params_prior = [prior.concentration1, prior.concentration0]
 
-# Iterate over all the data
+# Iterate over all the data and store results
 losses, alpha, beta = [], [], []
 pyro.clear_param_store()
 
@@ -115,15 +112,23 @@ for t in range(num_steps):
     beta.append(pyro.param("beta").item())
 
 posterior_vi = dist.Beta(alpha[-1], beta[-1])
-
+# %% [markdown]
+# We plot the trajectories of the parameters to show they have converged sufficiently:
 # %%
-# plt.plot(alpha)
-# plt.plot(beta)
-# plt.plot(losses)
-
-
+plt.figure(num=None, figsize=(10, 6), dpi=80)
+plt.plot(alpha, label='alpha')
+plt.plot(beta, label='beta')
+plt.title("Parameter trajectories")
+plt.xlabel("Iteration")
+plt.legend()
+plt.savefig("images/beta_trajectories.png")
+plt.show()
+# %% [markdown]
+# ![](images/beta_trajectories.png)
+#
+# ## Comparing distributions
+# We can compare the variational inference distribution to the analytical posterior.
 # %%
-# Plot results
 plt.figure(num=None, figsize=(10, 6), dpi=80)
 x_range = np.linspace(0, 1, num=100)
 
@@ -140,3 +145,7 @@ plt.title("PDF")
 plt.legend()
 plt.savefig("images/beta_pdfs.png")
 plt.show()
+# %% [markdown]
+# ![](images/beta_pdfs.png)
+# 
+# The estimated posterior from variational inference is very similar to the analytical posterior.
