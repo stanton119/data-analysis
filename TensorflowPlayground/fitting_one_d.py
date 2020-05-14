@@ -37,8 +37,11 @@ plt.show()
 
 # Taylor series model? Need polynomials of x
 
-# Sigmoid activation allows for much smoother fits
-# Relu is like miniture step funcitons
+# Sigmoid activation allows for much smoother fits - dont use
+# Tanh nearly always better than sigmoid (0 mean?)
+# Relu is like miniture step funcitons - most common activation
+#   Higher gradients than tanh means generally can converge faster
+# LeakyRelu might be slightly better in practice, but is not commonly used
 
 mode = 3
 if mode == 0:
@@ -49,7 +52,7 @@ if mode == 1:
     model = tf.keras.Sequential(
         [
             tf.keras.layers.Dense(
-                10, input_shape=(1,), activation=tf.keras.activations.relu
+                10, input_shape=(1,), activation=tf.keras.activations.relu,
             ),
             tf.keras.layers.Dense(1),
         ]
@@ -67,9 +70,14 @@ if mode == 3:
     model = tf.keras.Sequential(
         [
             tf.keras.layers.Dense(
-                10, input_shape=(1,), activation=tf.keras.activations.tanh
+                units=4,
+                input_shape=(1,),
+                activation=tf.keras.activations.tanh,
+                kernel_regularizer=tf.keras.regularizers.l1(l=0.1),
             ),
-            tf.keras.layers.Dense(1),
+            tf.keras.layers.Dense(
+                units=1, kernel_regularizer=tf.keras.regularizers.l1(l=0.1)
+            ),
         ]
     )
 
@@ -85,6 +93,11 @@ model.weights
 # each node output has a bias
 
 plot_results(x, y, y_est, history.history["loss"])
+
+
+plt.plot(model.weights[0].numpy().squeeze())
+plt.plot(model.weights[2].numpy())
+plt.show
 
 # %% Plot results
 def plot_results(x, y, y_est, loss):
@@ -102,65 +115,3 @@ def plot_results(x, y, y_est, loss):
     plt.ylabel("loss")
     plt.show()
 
-
-
-
-
-
-# %% Solving with pytorch
-# No need to normalise features here
-import torch
-
-# Implement with pytorch autograd
-X_t = torch.from_numpy(X)
-y_t = torch.from_numpy(y)
-w_t = torch.randn(m + 1, 1, dtype=torch.float64, requires_grad=True)
-
-learning_rate = 1e-5
-for t in range(500):
-    # Forward pass
-    y_pred = X_t.mm(w_t)
-
-    # Compute and print loss
-    loss = (y_pred - y_t).pow(2).sum()
-    print(t, loss.item())
-
-    loss.backward()
-
-    # You can also use torch.optim.SGD to achieve this.
-    with torch.no_grad():
-        w_t -= learning_rate * w_t.grad
-
-        # Manually zero the gradients after updating weights
-        w_t.grad.zero_()
-
-# %% Using SGD optimiser
-import torch
-import torch.optim as optim
-
-X_t = torch.from_numpy(X)
-y_t = torch.from_numpy(y)
-
-w_t = torch.randn(m + 1, 1, dtype=torch.float64, requires_grad=True)
-optimizer = optim.SGD([w_t], lr=learning_rate, momentum=0.9)
-optimizer.zero_grad()
-for t in range(500):
-    # Forward pass
-    y_pred = X_t.mm(w_t)
-
-    # Compute and print loss
-    loss = (y_pred - y_t).pow(2).sum()
-    print(t, loss.item())
-
-    loss.backward()
-    optimizer.step()
-    optimizer.zero_grad()
-
-# %% Results weights are equivalent to statsmodels
-w
-w_t.flatten()
-results.params.flatten()
-print(results.summary())
-
-# %% Bayesian network
-# Reference: http://pyro.ai/examples/bayesian_regression.html
