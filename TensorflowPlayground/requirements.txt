@@ -1,0 +1,29 @@
+# Computation
+numpy
+pandas
+tensorflow
+torch
+statsmodels
+scikit-learn
+pyarrow
+
+# Plotting
+# hvplot
+# holoviews
+# bokeh
+# matplotlib
+# seaborn
+# selenium
+# phantomjs-binary
+
+
+# requests
+# Flask
+# dash
+
+# Debugging
+jupyter
+flake8
+rope
+black
+tabulate
