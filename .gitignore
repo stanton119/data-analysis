@@ -2,6 +2,7 @@ dataAnalysisEnv/
 .vscode
 */data/*.csv
 */data/*.pq
+*/TensorflowPlayground/data/*
 
 
 
