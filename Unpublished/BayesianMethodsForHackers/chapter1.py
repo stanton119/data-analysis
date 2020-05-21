@@ -15,6 +15,10 @@ tfb = tfp.bijectors
 
 
 # %%
+# Coin flip example
+# Use bernoulli samples
+# Build beta distributions from conjugate priors
+
 # Build Graph
 rv_coin_flip_prior = tfp.distributions.Bernoulli(probs=0.5, dtype=tf.int32)
 

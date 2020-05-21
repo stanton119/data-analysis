@@ -1,0 +1,9 @@
+# Computation
+numpy
+torch
+pyro-ppl
+tensorflow
+tensorflow-probability
+
+# Plotting
+matplotlib
