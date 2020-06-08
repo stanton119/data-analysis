@@ -2,8 +2,9 @@ dataAnalysisEnv/
 .vscode
 */data/*.csv
 */data/*.pq
+*/HeartDisease/data/*
 */TensorflowPlayground/data/*
-
+*/ParquetDatasets/data/*
 
 
 #### standard stuff ####
