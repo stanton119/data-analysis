@@ -26,6 +26,11 @@ Simple example fitting a Gaussian distribution to data using Pyro.
 [https://github.com/stanton119/data-analysis/blob/master/FitDistWithPyro/fit_beta_distribution.ipynb](https://github.com/stanton119/data-analysis/blob/master/FitDistWithPyro/fit_beta_distribution.ipynb)  
 Simple example fitting a beta distribution to data using Pyro.
 
+### [Parquet Datasets](ParquetDatasets/)
+<!-- Skills: bayesian analysis -->
+[https://github.com/stanton119/data-analysis/blob/master/ParquetDatasets/parquet_datasets.ipynb](https://github.com/stanton119/data-analysis/blob/master/ParquetDatasets/parquet_datasets.ipynb)  
+Exporting dataframes to partitioned parquet files.
+
 
 ## Installation
 The various analysis was built in Python 3.7.6.
