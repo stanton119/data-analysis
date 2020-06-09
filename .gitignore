@@ -4,7 +4,7 @@ dataAnalysisEnv/
 */data/*.pq
 */HeartDisease/data/*
 */TensorflowPlayground/data/*
-*/ParquetDatasets/data/*
+ParquetDatasets/data/*
 
 
 #### standard stuff ####
