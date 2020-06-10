@@ -140,18 +140,7 @@ data.head()
 
 
 
-
-```python
 Next we do some data preparation. We create a model to predict apparent temperature using most of the remaining columns:
-```
-
-
-      File "<ipython-input-2-1322366e0fb9>", line 1
-        Next we do some data preparation. We create a model to predict apparent temperature using most of the remaining columns:
-              ^
-    SyntaxError: invalid syntax
-
-
 
 
 ```python
@@ -275,18 +264,7 @@ X.head()
 
 
 
-
-```python
 We reduce the training data size just to enlarge the coefficient distributino for the purpose of this article.
-```
-
-
-      File "<ipython-input-4-b942974bbdb7>", line 1
-        We reduce the training data size just to enlarge the coefficient distributino for the purpose of this article.
-                ^
-    SyntaxError: invalid syntax
-
-
 
 
 ```python
@@ -323,38 +301,40 @@ w_sm_std = np.sqrt(np.diag(results.normalized_cov_params))
     ====================================================================================
     Dep. Variable:     Apparent Temperature (C)   R-squared:                       0.990
     Model:                                  OLS   Adj. R-squared:                  0.990
-    Method:                       Least Squares   F-statistic:                 1.205e+05
-    Date:                      Wed, 10 Jun 2020   Prob (F-statistic):               0.00
-    Time:                              22:20:39   Log-Likelihood:                -14338.
-    No. Observations:                      9645   AIC:                         2.869e+04
-    Df Residuals:                          9636   BIC:                         2.876e+04
+    Method:                       Least Squares   F-statistic:                 1.175e+05
+    Date:                      Thu, 11 Jun 2020   Prob (F-statistic):               0.00
+    Time:                              00:00:29   Log-Likelihood:                -14401.
+    No. Observations:                      9645   AIC:                         2.882e+04
+    Df Residuals:                          9636   BIC:                         2.888e+04
     Df Model:                                 8                                         
     Covariance Type:                  nonrobust                                         
     ==========================================================================================
                                  coef    std err          t      P>|t|      [0.025      0.975]
     ------------------------------------------------------------------------------------------
-    Temperature (C)            1.1186      0.002    614.519      0.000       1.115       1.122
-    Humidity                   0.9404      0.079     11.918      0.000       0.786       1.095
-    Wind Speed (km/h)         -0.0977      0.002    -58.535      0.000      -0.101      -0.094
-    Wind Bearing (degrees)     0.0005      0.000      5.087      0.000       0.000       0.001
-    Visibility (km)           -0.0022      0.003     -0.767      0.443      -0.008       0.003
-    Loud Cover              -1.82e-15   7.05e-16     -2.582      0.010    -3.2e-15   -4.39e-16
-    Pressure (millibars)   -1.562e-05      0.000     -0.156      0.876      -0.000       0.000
-    rain                      -0.2459      0.157     -1.565      0.118      -0.554       0.062
-    snow                      -0.6728      0.161     -4.176      0.000      -0.989      -0.357
-    Constant                  -1.9097      0.205     -9.313      0.000      -2.312      -1.508
+    Temperature (C)            1.1138      0.002    607.061      0.000       1.110       1.117
+    Humidity                   0.9269      0.078     11.828      0.000       0.773       1.081
+    Wind Speed (km/h)         -0.0919      0.002    -54.661      0.000      -0.095      -0.089
+    Wind Bearing (degrees)     0.0006      0.000      5.584      0.000       0.000       0.001
+    Visibility (km)           -0.0082      0.003     -2.805      0.005      -0.014      -0.002
+    Loud Cover              2.722e-15   1.54e-15      1.764      0.078   -3.03e-16    5.75e-15
+    Pressure (millibars)       0.0002   9.24e-05      2.550      0.011    5.45e-05       0.000
+    rain                      -0.3603      0.186     -1.942      0.052      -0.724       0.003
+    snow                      -0.8371      0.189     -4.432      0.000      -1.207      -0.467
+    Constant                  -1.9649      0.224     -8.783      0.000      -2.403      -1.526
     ==============================================================================
-    Omnibus:                      364.035   Durbin-Watson:                   1.989
-    Prob(Omnibus):                  0.000   Jarque-Bera (JB):              420.944
-    Skew:                           0.457   Prob(JB):                     3.92e-92
-    Kurtosis:                       3.459   Cond. No.                     1.25e+21
+    Omnibus:                      240.963   Durbin-Watson:                   1.987
+    Prob(Omnibus):                  0.000   Jarque-Bera (JB):              262.505
+    Skew:                           0.378   Prob(JB):                     9.95e-58
+    Kurtosis:                       3.287   Cond. No.                     3.57e+20
     ==============================================================================
     
     Warnings:
     [1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
-    [2] The smallest eigenvalue is 6.48e-33. This might indicate that there are
+    [2] The smallest eigenvalue is 7.96e-32. This might indicate that there are
     strong multicollinearity problems or that the design matrix is singular.
 
+
+The above model coefficients suggest that the apparent temperature is mostly made up of the actual temperature. Humidity has a positive relationship and wind a negative relationship.
 
 ## Bootstrapping approach
 
@@ -452,73 +432,73 @@ coefficients
   <tbody>
     <tr>
       <th>Temperature (C)</th>
-      <td>1.118589e+00</td>
-      <td>1.118580e+00</td>
-      <td>1.700413e-03</td>
-      <td>1.918270e-03</td>
+      <td>1.113766e+00</td>
+      <td>1.113721e+00</td>
+      <td>1.702782e-03</td>
+      <td>1.919617e-03</td>
     </tr>
     <tr>
       <th>Humidity</th>
-      <td>9.404174e-01</td>
-      <td>9.374752e-01</td>
-      <td>7.371212e-02</td>
-      <td>8.121185e-02</td>
+      <td>9.269036e-01</td>
+      <td>9.255212e-01</td>
+      <td>7.272990e-02</td>
+      <td>8.587625e-02</td>
     </tr>
     <tr>
       <th>Wind Speed (km/h)</th>
-      <td>-9.772546e-02</td>
-      <td>-9.756238e-02</td>
-      <td>1.559602e-03</td>
-      <td>2.277420e-03</td>
+      <td>-9.193476e-02</td>
+      <td>-9.207228e-02</td>
+      <td>1.560984e-03</td>
+      <td>2.599598e-03</td>
     </tr>
     <tr>
       <th>Wind Bearing (degrees)</th>
-      <td>5.227512e-04</td>
-      <td>5.224819e-04</td>
-      <td>9.600159e-05</td>
-      <td>1.036319e-04</td>
+      <td>5.787597e-04</td>
+      <td>5.797346e-04</td>
+      <td>9.620203e-05</td>
+      <td>1.074969e-04</td>
     </tr>
     <tr>
       <th>Visibility (km)</th>
-      <td>-2.226943e-03</td>
-      <td>-2.166858e-03</td>
-      <td>2.713369e-03</td>
-      <td>2.816974e-03</td>
+      <td>-8.162228e-03</td>
+      <td>-8.096304e-03</td>
+      <td>2.701086e-03</td>
+      <td>2.871113e-03</td>
     </tr>
     <tr>
       <th>Loud Cover</th>
-      <td>-1.820483e-15</td>
-      <td>-9.554928e-18</td>
-      <td>6.585891e-16</td>
-      <td>3.224672e-15</td>
+      <td>2.722203e-15</td>
+      <td>2.385971e-17</td>
+      <td>1.432384e-15</td>
+      <td>2.841603e-15</td>
     </tr>
     <tr>
       <th>Pressure (millibars)</th>
-      <td>-1.561900e-05</td>
-      <td>-2.094953e-05</td>
-      <td>9.367786e-05</td>
-      <td>1.286535e-04</td>
+      <td>2.355312e-04</td>
+      <td>2.313375e-04</td>
+      <td>8.573335e-05</td>
+      <td>9.545615e-05</td>
     </tr>
     <tr>
       <th>rain</th>
-      <td>-2.459421e-01</td>
-      <td>-2.519883e-01</td>
-      <td>1.467656e-01</td>
-      <td>1.412583e-01</td>
+      <td>-3.603448e-01</td>
+      <td>-3.645398e-01</td>
+      <td>1.721736e-01</td>
+      <td>1.573641e-01</td>
     </tr>
     <tr>
       <th>snow</th>
-      <td>-6.727716e-01</td>
-      <td>-6.808712e-01</td>
-      <td>1.504787e-01</td>
-      <td>1.498227e-01</td>
+      <td>-8.370791e-01</td>
+      <td>-8.412777e-01</td>
+      <td>1.753044e-01</td>
+      <td>1.671947e-01</td>
     </tr>
     <tr>
       <th>Constant</th>
-      <td>-1.909663e+00</td>
-      <td>-1.898210e+00</td>
-      <td>1.915549e-01</td>
-      <td>2.122555e-01</td>
+      <td>-1.964852e+00</td>
+      <td>-1.954745e+00</td>
+      <td>2.076308e-01</td>
+      <td>2.028931e-01</td>
     </tr>
   </tbody>
 </table>
