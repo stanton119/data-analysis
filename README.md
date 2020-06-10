@@ -27,9 +27,12 @@ Simple example fitting a Gaussian distribution to data using Pyro.
 Simple example fitting a beta distribution to data using Pyro.
 
 ### [Parquet Datasets](ParquetDatasets/)
-<!-- Skills: bayesian analysis -->
 [https://github.com/stanton119/data-analysis/blob/master/ParquetDatasets/parquet_datasets.ipynb](https://github.com/stanton119/data-analysis/blob/master/ParquetDatasets/parquet_datasets.ipynb)  
 Exporting dataframes to partitioned parquet files.
+
+### [Bootstrapped Regession Coefficients](BootstrappedRegessionCoefficients/)
+[https://github.com/stanton119/data-analysis/blob/master/BootstrappedRegessionCoefficients/bootstrap_regression.ipynb](https://github.com/stanton119/data-analysis/blob/master/BootstrappedRegessionCoefficients/bootstrap_regression.ipynb)  
+Confirming theoretical regression coefficient distributions with bootstrapped samples.
 
 
 ## Installation
