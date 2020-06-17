@@ -34,6 +34,10 @@ Exporting dataframes to partitioned parquet files.
 [https://github.com/stanton119/data-analysis/blob/master/BootstrappedRegessionCoefficients/bootstrap_regression.ipynb](https://github.com/stanton119/data-analysis/blob/master/BootstrappedRegessionCoefficients/bootstrap_regression.ipynb)  
 Confirming theoretical regression coefficient distributions with bootstrapped samples.
 
+### [Fashion MNIST CNN](FashionCNN/)
+[https://github.com/stanton119/data-analysis/blob/master/FashionCNN/fashion_vae.ipynb](https://github.com/stanton119/data-analysis/blob/master/FashionCNN/fashion_vae.ipynb)  
+Convolution neural network for predicting the Fashion MNIST dataset.
+
 
 ## Installation
 The various analysis was built in Python 3.7.6.
