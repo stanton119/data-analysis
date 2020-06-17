@@ -3,6 +3,7 @@ dataAnalysisEnv/
 */data/*.csv
 */data/*.pq
 */HeartDisease/data/*
+FashionCNN/data/*
 */TensorflowPlayground/data/*
 ParquetDatasets/data/*
 

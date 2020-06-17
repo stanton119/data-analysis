@@ -1,7 +1,7 @@
 # Computation
 numpy
 pandas
-# tensorflow
+tensorflow
 statsmodels
 scikit-learn
 interpret
