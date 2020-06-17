@@ -1,0 +1,9 @@
+# Computation
+numpy
+pandas
+tensorflow
+tensorflow-dataset
+scikit-learn
+
+# Plotting
+matplotlib
