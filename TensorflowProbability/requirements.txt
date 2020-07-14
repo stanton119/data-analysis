@@ -1,0 +1,10 @@
+# Computation
+numpy
+pandas
+tensorflow
+tensorflow-probability
+statsmodels
+scikit-learn
+
+# Plotting
+matplotlib
