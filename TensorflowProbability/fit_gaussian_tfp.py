@@ -1,6 +1,6 @@
 # %% [markdown]
 # # Fitting a normal distribution with tensorflow probability
-
+# Here we look at fitting a normal distribution to some data using Tensorflow Probability.
 # %%
 import numpy as np
 import pandas as pd
