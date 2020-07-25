@@ -6,6 +6,7 @@ dataAnalysisEnv/
 FashionCNN/data/*
 */TensorflowPlayground/data/*
 ParquetDatasets/data/*
+EnergyCapacity/data/*
 
 
 #### standard stuff ####

@@ -457,10 +457,3 @@ results.transpose()
   </tbody>
 </table>
 </div>
-
-
-
-
-```python
-
-```
