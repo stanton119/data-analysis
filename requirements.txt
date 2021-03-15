@@ -2,6 +2,8 @@
 numpy
 pandas
 tensorflow
+tensorflow-probability
+tensorflow_datasets
 statsmodels
 scikit-learn
 interpret
@@ -21,6 +23,7 @@ phantomjs-binary
 # requests
 # Flask
 # dash
+beautifulsoup4
 
 # Debugging
 jupyter

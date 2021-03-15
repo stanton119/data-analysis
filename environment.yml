@@ -1,0 +1,22 @@
+name: data_analysis_env
+channels:
+  - anaconda
+  - conda-forge
+dependencies:
+  - python
+  - pip
+  
+  # Computation
+  - numpy
+  - pandas
+
+  # Plotting
+  - matplotlib
+
+  # Debugging
+  - jupyter
+  - pylint
+  - rope
+  - black
+
+  # - pip:

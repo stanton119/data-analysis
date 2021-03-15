@@ -3,46 +3,53 @@
 Repo directory:  
 * Projects are split by folders
 
+## Applied datasets
+* [TFL Cycle Analysis](https://github.com/stanton119/data-analysis/tree/master/TFLCycles)
+  * Analysis in to the number of bike trips taken per day in London.
+* [NBA Score Trajectories](https://github.com/stanton119/nba-scores)
+  * Flask app to show scores of a basketball match against time.
+* [Installed energy capacity](https://github.com/stanton119/data-analysis/blob/master/EnergyCapacity/installed_energy_capacity.ipynb)
+    * Analysis into European installed energy capacity
+* [NBA Shooting Data](https://github.com/stanton119/data-analysis/tree/master/NBAShotSelection)
+    * Not finished yet - animations of shots taken by Kobe Bryant over time.  
 
-### [TFL Cycle Analysis](TFLCycles/)
-<!-- Skills: data visualisation, regression -->
-[https://github.com/stanton119/data-analysis/tree/master/TFLCycles](https://github.com/stanton119/data-analysis/tree/master/TFLCycles)  
-Analysis in to the number of bike trips taken per day in London.  
-
-
-### [NBA Score Trajectories](https://github.com/stanton119/nba-scores)
-[https://github.com/stanton119/nba-scores](https://github.com/stanton119/nba-scores)  
-Flask app to show scores of a basketball match against time.  
-
-
-### [NBA Shooting Data](NBAShotSelection/)
-[https://github.com/stanton119/data-analysis/tree/master/NBAShotSelection](https://github.com/stanton119/data-analysis/tree/master/NBAShotSelection)  
-Not finished yet - animations of shots taken by Kobe Bryant over time.  
-
+## Model frameworks
 ### [Fitting Distributions With Pyro](FitDistWithPyro/)
 <!-- Skills: bayesian analysis -->
-[https://github.com/stanton119/data-analysis/blob/master/FitDistWithPyro/fit_pyro_distribution.ipynb](https://github.com/stanton119/data-analysis/blob/master/FitDistWithPyro/fit_pyro_distribution.ipynb)  
-Simple example fitting a Gaussian distribution to data using Pyro.  
-[https://github.com/stanton119/data-analysis/blob/master/FitDistWithPyro/fit_beta_distribution.ipynb](https://github.com/stanton119/data-analysis/blob/master/FitDistWithPyro/fit_beta_distribution.ipynb)  
-Simple example fitting a beta distribution to data using Pyro.
+* [FitDistWithPyro/fit_pyro_distribution.ipynb](https://github.com/stanton119/data-analysis/blob/master/FitDistWithPyro/fit_pyro_distribution.ipynb)
+  * Simple example fitting a Gaussian distribution to data using Pyro.
+* [FitDistWithPyro/fit_beta_distribution.ipynb](https://github.com/stanton119/data-analysis/blob/master/FitDistWithPyro/fit_beta_distribution.ipynb)
+  * Simple example fitting a beta distribution to data using Pyro.
 
-### [Parquet Datasets](ParquetDatasets/)
-[https://github.com/stanton119/data-analysis/blob/master/ParquetDatasets/parquet_datasets.ipynb](https://github.com/stanton119/data-analysis/blob/master/ParquetDatasets/parquet_datasets.ipynb)  
-Exporting dataframes to partitioned parquet files.
+### [Tensorflow Probability](TensorflowProbability/)
+* [TensorflowProbability/nonlinear_regression.ipynb](https://github.com/stanton119/data-analysis/blob/master/TensorflowProbability/nonlinear_regression.ipynb)
+    * Linear regression to non linear probabilistic neural network.
+* [TensorflowProbability/fit_gaussian_tfp.ipynb](https://github.com/stanton119/data-analysis/blob/master/TensorflowProbability/fit_gaussian_tfp.ipynb)
+  * Fitting a normal distribution with tensorflow probability.
 
-### [Bootstrapped Regession Coefficients](BootstrappedRegessionCoefficients/)
-[https://github.com/stanton119/data-analysis/blob/master/BootstrappedRegessionCoefficients/bootstrap_regression.ipynb](https://github.com/stanton119/data-analysis/blob/master/BootstrappedRegessionCoefficients/bootstrap_regression.ipynb)  
-Confirming theoretical regression coefficient distributions with bootstrapped samples.
+### [Tensorflow](TensorflowStuff/)
+* [TensorflowStuff/overfitting_nn.ipynb](https://github.com/stanton119/data-analysis/blob/master/TensorflowStuff/overfitting_nn.ipynb)
+    * Do Neural Networks overfit?
 
-### [Fashion MNIST CNN](FashionCNN/)
-[https://github.com/stanton119/data-analysis/blob/master/FashionCNN/fashion_vae.ipynb](https://github.com/stanton119/data-analysis/blob/master/FashionCNN/fashion_vae.ipynb)  
-Convolution neural network for predicting the Fashion MNIST dataset.
+## Techniques
+* [ParquetDatasets/parquet_datasets.ipynb](https://github.com/stanton119/data-analysis/blob/master/ParquetDatasets/parquet_datasets.ipynb)
+    * Exporting dataframes to partitioned parquet files.
+
+* [BootstrappedRegessionCoefficients/bootstrap_regression.ipynb](https://github.com/stanton119/data-analysis/blob/master/BootstrappedRegessionCoefficients/bootstrap_regression.ipynb)
+  * Confirming theoretical regression coefficient distributions with bootstrapped samples.
+
+* [FashionCNN/fashion_vae.ipynb](https://github.com/stanton119/data-analysis/blob/master/FashionCNN/fashion_vae.ipynb)
+  * Convolution neural network for predicting the Fashion MNIST dataset.
+* [FashionCNN/fashion_batch_norm.ipynb](https://github.com/stanton119/data-analysis/blob/master/FashionCNN/fashion_batch_norm.ipynb)
+  * Batch normalisation layer applied to the above CNN model
 
 
 ## Installation
-The various analysis was built in Python 3.7.6.
+The various analysis was built in Python 3.
 
-### Virtual environment setup  
+### Virtual environment setup
+Some projects have their own requirements/environment. The general setup is installed by:
+
 ```
 python3 -m venv dataAnalysisEnv
 source dataAnalysisEnv/bin/activate
@@ -55,3 +62,11 @@ Custom library installed as a dev library for continued development
 
 ### VSCode
 Use the `settings.json` file in the repo
+
+## Future aims
+* Time series forecasting
+* Pytorch
+* Causal inference
+* Data validations - great expectations
+* NLP
+* Computer vision
