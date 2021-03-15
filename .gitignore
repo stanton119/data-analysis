@@ -1,5 +1,7 @@
+.vscode/*
+!.vscode/settings.json
+
 dataAnalysisEnv/
-.vscode
 */data/*.csv
 */data/*.pq
 */HeartDisease/data/*
@@ -7,7 +9,8 @@ FashionCNN/data/*
 */TensorflowPlayground/data/*
 ParquetDatasets/data/*
 EnergyCapacity/data/*
-
+Unpublished/auto_ml/auto_ml/*
+Unpublished/auto_ml/structured_data_classifier/*
 
 #### standard stuff ####
 # Created by https://www.gitignore.io/api/macos,python,jupyternotebook
