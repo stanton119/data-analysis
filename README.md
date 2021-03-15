@@ -9,9 +9,9 @@ Repo directory:
 * [NBA Score Trajectories](https://github.com/stanton119/nba-scores)
   * Flask app to show scores of a basketball match against time.
 * [Installed energy capacity](https://github.com/stanton119/data-analysis/blob/master/EnergyCapacity/installed_energy_capacity.ipynb)
-    * Analysis into European installed energy capacity
+  * Analysis into European installed energy capacity
 * [NBA Shooting Data](https://github.com/stanton119/data-analysis/tree/master/NBAShotSelection)
-    * Not finished yet - animations of shots taken by Kobe Bryant over time.  
+  * Not finished yet - animations of shots taken by Kobe Bryant over time.  
 
 ## Model frameworks
 ### [Fitting Distributions With Pyro](FitDistWithPyro/)
@@ -23,25 +23,25 @@ Repo directory:
 
 ### [Tensorflow Probability](TensorflowProbability/)
 * [TensorflowProbability/nonlinear_regression.ipynb](https://github.com/stanton119/data-analysis/blob/master/TensorflowProbability/nonlinear_regression.ipynb)
-    * Linear regression to non linear probabilistic neural network.
+  * Linear regression to non linear probabilistic neural network.
 * [TensorflowProbability/fit_gaussian_tfp.ipynb](https://github.com/stanton119/data-analysis/blob/master/TensorflowProbability/fit_gaussian_tfp.ipynb)
   * Fitting a normal distribution with tensorflow probability.
 
 ### [Tensorflow](TensorflowStuff/)
 * [TensorflowStuff/overfitting_nn.ipynb](https://github.com/stanton119/data-analysis/blob/master/TensorflowStuff/overfitting_nn.ipynb)
-    * Do Neural Networks overfit?
-
-## Techniques
-* [ParquetDatasets/parquet_datasets.ipynb](https://github.com/stanton119/data-analysis/blob/master/ParquetDatasets/parquet_datasets.ipynb)
-    * Exporting dataframes to partitioned parquet files.
-
-* [BootstrappedRegessionCoefficients/bootstrap_regression.ipynb](https://github.com/stanton119/data-analysis/blob/master/BootstrappedRegessionCoefficients/bootstrap_regression.ipynb)
-  * Confirming theoretical regression coefficient distributions with bootstrapped samples.
-
+  * Do Neural Networks overfit?
 * [FashionCNN/fashion_vae.ipynb](https://github.com/stanton119/data-analysis/blob/master/FashionCNN/fashion_vae.ipynb)
   * Convolution neural network for predicting the Fashion MNIST dataset.
 * [FashionCNN/fashion_batch_norm.ipynb](https://github.com/stanton119/data-analysis/blob/master/FashionCNN/fashion_batch_norm.ipynb)
   * Batch normalisation layer applied to the above CNN model
+
+## Techniques
+* [ParquetDatasets/parquet_datasets.ipynb](https://github.com/stanton119/data-analysis/blob/master/ParquetDatasets/parquet_datasets.ipynb)
+  * Exporting dataframes to partitioned parquet files.
+
+* [BootstrappedRegessionCoefficients/bootstrap_regression.ipynb](https://github.com/stanton119/data-analysis/blob/master/BootstrappedRegessionCoefficients/bootstrap_regression.ipynb)
+  * Confirming theoretical regression coefficient distributions with bootstrapped samples.
+
 
 
 ## Installation
