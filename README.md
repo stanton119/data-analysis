@@ -70,3 +70,9 @@ Use the `settings.json` file in the repo
 * Data validations - great expectations
 * NLP
 * Computer vision
+* Gaussian processes
+* Bayesian regression
+* Tensorflow/pytorch - 1D functions
+* FashionMNIST VAE
+* Switch away from Matplotlib
+* PySpark
