@@ -1,12 +1,12 @@
- # Time series forecasting - Neural prophet
- Neural prophet is a time series forecasting library very similar to the Facebook prophet.
- Neural prophet runs using `pytorch`, rather than `fbprophet` and it's use of `pystan`.
- It has some potential advantages by using stochastic gradient descent.
+# Time series forecasting - Neural prophet
+Neural prophet is a time series forecasting library very similar to the Facebook prophet.
+Neural prophet runs using `pytorch`, rather than `fbprophet` and it's use of `pystan`.
+It has some potential advantages by using stochastic gradient descent.
 
- Here we see how fast it is to fit and predict models with the two time series.
- Then we compare the model performances.
+Here we see how fast it is to fit and predict models with the two time series.
+Then we compare the model performances.
 
- To start, import some relevant libraries:
+To start, import some relevant libraries:
 
 
 ```python
@@ -34,10 +34,10 @@ import data
     ERROR:fbprophet.plot:Importing plotly failed. Interactive plots will not work.
 
 
- The data used for this experiment is weather data - daily temperatures over a few years with no other covariates.
- We format the data appropriately for the Facebook Prophet API,
- with a datetime column `ds` and an output column `y`.
- We split the data into the usual train and test sets.
+The data used for this experiment is weather data - daily temperatures over a few years with no other covariates.
+We format the data appropriately for the Facebook Prophet API,
+with a datetime column `ds` and an output column `y`.
+We split the data into the usual train and test sets.
 
 
 ```python
@@ -144,9 +144,9 @@ df_train.head(10)
     
 
 
- ## How fast is `neuralprophet`?
- We train a default `fbprophet` model 10 times and measure the computation time for each.
- For each model we predict the test set and time that too.
+## How fast is `neuralprophet`?
+We train a default `fbprophet` model 10 times and measure the computation time for each.
+For each model we predict the test set and time that too.
 
 
 ```python
@@ -167,11 +167,11 @@ for ii in range(trials):
     predict_time.append(process_time() - t1)
 ```
 
- We do the same for `neuralprophet`.
- The API is essentially the same as `prophet` so it's easy to switch in.
- We set the number of changepoints to the same as the `fbprophet` default of 25.
- The time spent training is dependent on the number of epochs we train for.
- The default number is a function of the data length, but can be manually overridden.
+We do the same for `neuralprophet`.
+The API is essentially the same as `prophet` so it's easy to switch in.
+We set the number of changepoints to the same as the `fbprophet` default of 25.
+The time spent training is dependent on the number of epochs we train for.
+The default number is a function of the data length, but can be manually overridden.
 
 
 ```python
@@ -208,8 +208,8 @@ for ii in range(trials):
      90%|█████████ | 90/100 [00:00<00:00, 517.98it/s]
 
 
- ### Plotting results
- Neural prophet is a fair bit slower to train, but significantly faster for predicting.
+### Plotting results
+Neural prophet is a fair bit slower to train, but significantly faster for predicting.
 
 
 ```python
@@ -241,9 +241,9 @@ fig.show()
     
 
 
- ## Model results
- The resulting predictions and model components are similar between the two models.
- The underlying models are not identical, as such I don't expect identical predictions.
+## Model results
+The resulting predictions and model components are similar between the two models.
+The underlying models are not identical, as such I don't expect identical predictions.
 
 
 ```python
@@ -291,11 +291,11 @@ plt.show()
 
     
 ![svg](neural_prophet_speed_test_files/neural_prophet_speed_test_12_0.svg)
-    
+  
 
 
- Both models decompose to give seasonal components. They are similar between the two.
- Note the weekly seasonality scale is small - we wouldn't expect temperature to have a weekly seasonality at all.
+Both models decompose to give seasonal components. They are similar between the two.
+Note the weekly seasonality scale is small - we wouldn't expect temperature to have a weekly seasonality at all.
 
 
 ```python
