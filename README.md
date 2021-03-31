@@ -14,7 +14,7 @@ Repo directory:
   * Not finished yet - animations of shots taken by Kobe Bryant over time.  
 
 ## Model frameworks
-### [Fitting Distributions With Pyro](FitDistWithPyro/)
+### [Pyro](FitDistWithPyro/)
 <!-- Skills: bayesian analysis -->
 * [FitDistWithPyro/fit_pyro_distribution.ipynb](https://github.com/stanton119/data-analysis/blob/master/FitDistWithPyro/fit_pyro_distribution.ipynb)
   * Simple example fitting a Gaussian distribution to data using Pyro.
@@ -34,6 +34,9 @@ Repo directory:
   * Convolution neural network for predicting the Fashion MNIST dataset.
 * [FashionCNN/fashion_batch_norm.ipynb](https://github.com/stanton119/data-analysis/blob/master/FashionCNN/fashion_batch_norm.ipynb)
   * Batch normalisation layer applied to the above CNN model
+
+### Others
+* [TimeSeries/neural_prophet/neural_prophet_speed_test.md](https://github.com/stanton119/data-analysis/blob/master/TimeSeries/neural_prophet/neural_prophet_speed_test.md)
 
 ## Techniques
 * [ParquetDatasets/parquet_datasets.ipynb](https://github.com/stanton119/data-analysis/blob/master/ParquetDatasets/parquet_datasets.ipynb)
