@@ -35,7 +35,7 @@ Repo directory:
 * [FashionCNN/fashion_batch_norm.ipynb](https://github.com/stanton119/data-analysis/blob/master/FashionCNN/fashion_batch_norm.ipynb)
   * Batch normalisation layer applied to the above CNN model
 
-### Others
+### Others
 * [TimeSeries/neural_prophet/neural_prophet_speed_test.md](https://github.com/stanton119/data-analysis/blob/master/TimeSeries/neural_prophet/neural_prophet_speed_test.md)
 
 ## Techniques
