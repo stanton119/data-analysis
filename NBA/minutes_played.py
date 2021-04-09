@@ -1,25 +1,24 @@
-# %%
-"""
-Given list of players
-Get statistics
-Clean
-Plot together
-"""
+# %% [markdown]
+# # How durable is LeBron James?
+#
+# Is this post we look at season data to compare the playing time of LeBron to other players.
+#
+# Data comes from [basket-reference.com](https://www.basketball-reference.com)
 
+# %% [markdown]
+# ## Data preparation
+# We collect the data using `pandas.read_html` before transforming and cleaning.
+# 
+# First import some stuff:
 # %%
-# Data preparation
-# %%
-
 import pandas as pd
 import numpy as np
-from matplotlib import pyplot as plt
 import hvplot.pandas
 import holoviews as hv
 
 hv.extension("bokeh")
 
 players_dfs = {}
-
 # %%
 players = {
     "jamesle01": "James",
@@ -41,7 +40,7 @@ players = {
     "antetgi01": "Antetokounmpo",
     "anthoca01": "Anthony",
     "embiijo01": "Embiid",
-    "willizi01": "Williamson"
+    "willizi01": "Williamson",
 }
 
 for player in players:
@@ -64,74 +63,73 @@ for player in players:
     # keep first duplicate for changing team
     df = df.loc[~df["Age"].duplicated()]
 
-    # reindex Age
+    # reindex Age to fill gaps
     age_range = np.arange(df["Age"].min(), df["Age"].max() + 1)
     df = df.set_index("Age").reindex(age_range).reset_index()
     df["Season"] = df["Season"].interpolate()
     df = df.mask(df.isna(), 0)
 
+    # seasonNo as number of seasons played
     df["SeasonNo"] = df["Age"] - df["Age"].min() + 1
     df["Player"] = players[player]
     players_dfs[player] = df[["Season", "G", "MP", "Age", "SeasonNo", "Player"]]
 
 df_players = pd.concat(players_dfs, axis=0)
 
-# %%
 # Pivot table aligned to career start
 plot_col = "MP"
 df_season_no_plot = df_players[["SeasonNo", "Player", plot_col]].pivot(
     index="Player", columns="SeasonNo", values=plot_col
 )
-
+# %% [markdown]
+# We now have a dataframe of players and the number of minutes played in each season since they started in the NBA:
 # %%
-# Analysis
-
-# %%
-# Compared to other all time greats players Lebron is right up there in terms of minutes played.
+df_season_no_plot.head().iloc[:,:5]
+# %% [markdown]
+# # Analysis
+# Let's compare against other all time greats. LeBron is right up there in terms of minutes played.
 # It's only within the last 1/2 seasons that his minutes drop compared to Jabar and Malone.
 # Interesting Jordan is an exception due to his two retirement periods.
-
+# %%
 df_season_no_plot.loc[
     ["James", "Bryant", "Jordan", "Jabar", "Malone"], :
 ].cumsum(axis=1).transpose().hvplot(grid=True, ylabel="Minutes played")
-
+# %% [markdown]
+# Comparing against superstars form the last couple decades it is apparent how LeBron has managed to avoid any significant injuries affecting his game time.
 # %%
-# Comparing against superstars form the last couple decades it shows Lebron has managed to avoid any significant injuries affecting his game time.
 df_season_no_plot.loc[
     ["James", "Paul", "Howard", "Anthony", "Westbrook", "Rose"], :
 ].cumsum(axis=1).transpose().hvplot(grid=True, ylabel="Minutes played")
-
-# %%
-# Comparing against newer/upcoming superstars:
-# For the same number of seasons Kawhi Leondard has played about 50% of the mintues of Lebron James, due to resting during the regular season and injury issues.
-# Likewise, Durrant has played about 20% less minutes than Lebron.
-# Durrant is the closest to keeping up with Lebron, everyone else is playing less...
+# %% [markdown]
+# Comparing against newer/upcoming superstars:  
+# For the same number of seasons Kawhi Leondard has played about 50% of the mintues of LeBron James, due to resting during the regular season and injury issues.
+# Likewise, Durrant has played about 20% less minutes than LeBron.
+# Durrant is the closest to keeping up with LeBron, everyone else is playing less...
 # Maybe that means they will keep playing longer?
 # I doubt it, mostly this seems down to injury troubles, rather than resting.
-# This suggests that no-one in recent years has really been able to stay as healthy as efficient as Lebron James.
-
+# This suggests that no-one in recent years has really been able to stay as healthy as efficient as LeBron James.
+# %%
 df_season_no_plot.loc[
-    ["James", "Durrant", "Curry", "Leonard", "Antetokounmpo","Embiid",'Williamson'], :
+    [
+        "James",
+        "Durrant",
+        "Curry",
+        "Leonard",
+        "Antetokounmpo",
+        "Embiid",
+        "Williamson",
+    ],
+    :,
 ].cumsum(axis=1).transpose().hvplot(grid=True, ylabel="Minutes played")
-
-
-# %% Few more players:
+# %% [markdown]
+# Just for fun here's load of players on one unreadable plot:
+# %%
 df_season_no_plot.cumsum(axis=1).transpose().hvplot(
     grid=True, ylabel="Minutes played"
 )
-
-# %%
-# Others
-# %% Based on age, not season number
-plot_col = "MP"
-df_age_plot = df_players[["Age", "Player", plot_col]].pivot(
-    index="Player", columns="Age", values=plot_col
-)
-df_age_plot.cumsum(axis=1).transpose().hvplot(
-    grid=True, ylabel="Minutes played"
-)
-
-
+# %% [markdown]
+# Or as a heat map.
+# We can see players like Vince Carter having a very long career but his minutes slowing down towards the later half.
+# It's evident that some modern days superstars are not playing any seasons at max capacity, for example Leonard and Emiid.
 # %%
 df_season_no_plot.hvplot.heatmap(x="columns", y="index", rot=70, cmap="plasma")
-df_age_plot.hvplot.heatmap(x="columns", y="index", rot=70, cmap="plasma")
