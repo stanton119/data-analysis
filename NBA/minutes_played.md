@@ -1,13 +1,13 @@
-# How durable is LeBron James?
+ # How durable is LeBron James?
 
-Is this post we look at season data to compare the playing time of LeBron to other players.
+ Is this post we look at season data to compare the playing time of LeBron to other players.
 
-Data comes from [basketball-reference.com](https://www.basketball-reference.com)
+ Data comes from [basketball-reference.com](https://www.basketball-reference.com)
 
-## Data preparation
-We collect the data using `pandas.read_html` before transforming and cleaning.
+ ## Data preparation
+ We collect the data using `pandas.read_html` before transforming and cleaning.
 
-First import some stuff:
+ First import some stuff:
 
 
 ```python
@@ -107,7 +107,7 @@ df_season_no_plot = df_players[["SeasonNo", "Player", plot_col]].pivot(
     Williamson fetching...
 
 
-We now have a dataframe of players and the number of minutes played in each season since they started in the NBA:
+ We now have a dataframe of players and the number of minutes played in each season since they started in the NBA:
 
 
 ```python
@@ -197,32 +197,26 @@ df_season_no_plot.head().iloc[:, :5]
 
 
 
-# Analysis
-Let's compare against other all time greats. LeBron is right up there in terms of minutes played.
-It's only within the last 1/2 seasons that his minutes drop compared to Jabar and Malone.
-Interesting Jordan is an exception due to his two retirement periods.
+ # Analysis
+ Let's compare against other all time greats. LeBron is right up there in terms of minutes played.
+ It's only within the last 1/2 seasons that his minutes drop compared to Jabar and Malone.
+ Interesting Jordan is an exception due to his two retirement periods.
 
 
 ```python
 df_season_no_plot.loc[["James", "Bryant", "Jordan", "Jabar"], :].cumsum(
     axis=1
 ).transpose().plot(grid=True, ylabel="Minutes played", figsize=(10, 6))
+plt.show()
 ```
 
 
-
-
-    <AxesSubplot:xlabel='SeasonNo', ylabel='Minutes played'>
-
-
-
-
     
-![svg](minutes_played_files/minutes_played_7_1.svg)
+![svg](minutes_played_files/minutes_played_7_0.svg)
     
 
 
-Comparing against superstars form the last couple decades it is apparent how LeBron has managed to avoid any significant injuries affecting his game time.
+ Comparing against superstars form the last couple decades it is apparent how LeBron has managed to avoid any significant injuries affecting his game time.
 
 
 ```python
@@ -231,28 +225,22 @@ df_season_no_plot.loc[
 ].cumsum(axis=1).transpose().plot(
     grid=True, ylabel="Minutes played", figsize=(10, 6)
 )
+plt.show()
 ```
 
 
-
-
-    <AxesSubplot:xlabel='SeasonNo', ylabel='Minutes played'>
-
-
-
-
     
-![svg](minutes_played_files/minutes_played_9_1.svg)
+![svg](minutes_played_files/minutes_played_9_0.svg)
     
 
 
-Comparing against newer/upcoming superstars:
-For the same number of seasons Kawhi Leondard has played about 50% of the mintues of LeBron James, due to resting during the regular season and injury issues.
-Likewise, Durrant has played about 20% less minutes than LeBron.
-Durrant is the closest to keeping up with LeBron, everyone else is playing less...
-Maybe that means they will keep playing longer?
-I doubt it, mostly this seems down to injury troubles, rather than resting.
-This suggests that no-one in recent years has really been able to stay as healthy as efficient as LeBron James.
+ Comparing against newer/upcoming superstars:
+ For the same number of seasons Kawhi Leondard has played about 50% of the mintues of LeBron James, due to resting during the regular season and injury issues.
+ Likewise, Durrant has played about 20% less minutes than LeBron.
+ Durrant is the closest to keeping up with LeBron, everyone else is playing less...
+ Maybe that means they will keep playing longer?
+ I doubt it, mostly this seems down to injury troubles, rather than resting.
+ This suggests that no-one in recent years has really been able to stay as healthy as efficient as LeBron James.
 
 
 ```python
@@ -270,46 +258,34 @@ df_season_no_plot.loc[
 ].cumsum(axis=1).transpose().plot(
     grid=True, ylabel="Minutes played", figsize=(10, 6)
 )
+plt.show()
 ```
 
 
-
-
-    <AxesSubplot:xlabel='SeasonNo', ylabel='Minutes played'>
-
-
-
-
     
-![svg](minutes_played_files/minutes_played_11_1.svg)
+![svg](minutes_played_files/minutes_played_11_0.svg)
     
 
 
-Just for fun here's load of players on one unreadable plot:
+ Just for fun here's load of players on one unreadable plot:
 
 
 ```python
 df_season_no_plot.cumsum(axis=1).transpose().plot(
     grid=True, ylabel="Minutes played", figsize=(10, 6)
 )
+plt.show()
 ```
 
 
-
-
-    <AxesSubplot:xlabel='SeasonNo', ylabel='Minutes played'>
-
-
-
-
     
-![svg](minutes_played_files/minutes_played_13_1.svg)
+![svg](minutes_played_files/minutes_played_13_0.svg)
     
 
 
-Or as a heat map.
-We can see players like Vince Carter having a very long career but his minutes slowing down towards the later half.
-It's evident that some modern days superstars are not playing any seasons at max capacity, for example Leonard and Emiid.
+ Or as a heat map.
+ We can see players like Vince Carter having a very long career but his minutes slowing down towards the later half.
+ It's evident that some modern days superstars are not playing any seasons at max capacity, for example Leonard and Emiid.
 
 
 ```python
