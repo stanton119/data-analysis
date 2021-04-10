@@ -93,6 +93,7 @@ df_season_no_plot.head().iloc[:, :5]
 df_season_no_plot.loc[["James", "Bryant", "Jordan", "Jabar"], :].cumsum(
     axis=1
 ).transpose().plot(grid=True, ylabel="Minutes played", figsize=(10, 6))
+plt.show()
 # %% [markdown]
 # Comparing against superstars form the last couple decades it is apparent how LeBron has managed to avoid any significant injuries affecting his game time.
 # %%
@@ -101,6 +102,7 @@ df_season_no_plot.loc[
 ].cumsum(axis=1).transpose().plot(
     grid=True, ylabel="Minutes played", figsize=(10, 6)
 )
+plt.show()
 # %% [markdown]
 # Comparing against newer/upcoming superstars:
 # For the same number of seasons Kawhi Leondard has played about 50% of the mintues of LeBron James, due to resting during the regular season and injury issues.
@@ -124,12 +126,14 @@ df_season_no_plot.loc[
 ].cumsum(axis=1).transpose().plot(
     grid=True, ylabel="Minutes played", figsize=(10, 6)
 )
+plt.show()
 # %% [markdown]
 # Just for fun here's load of players on one unreadable plot:
 # %%
 df_season_no_plot.cumsum(axis=1).transpose().plot(
     grid=True, ylabel="Minutes played", figsize=(10, 6)
 )
+plt.show()
 # %% [markdown]
 # Or as a heat map.
 # We can see players like Vince Carter having a very long career but his minutes slowing down towards the later half.
