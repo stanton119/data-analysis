@@ -3,20 +3,19 @@
 #
 # Is this post we look at season data to compare the playing time of LeBron to other players.
 #
-# Data comes from [basket-reference.com](https://www.basketball-reference.com)
+# Data comes from [basketball-reference.com](https://www.basketball-reference.com)
 
 # %% [markdown]
 # ## Data preparation
 # We collect the data using `pandas.read_html` before transforming and cleaning.
-# 
+#
 # First import some stuff:
 # %%
 import pandas as pd
 import numpy as np
-import hvplot.pandas
-import holoviews as hv
-
-hv.extension("bokeh")
+from matplotlib import pyplot as plt
+import seaborn as sns
+sns.set_theme()
 
 players_dfs = {}
 # %%
@@ -84,24 +83,26 @@ df_season_no_plot = df_players[["SeasonNo", "Player", plot_col]].pivot(
 # %% [markdown]
 # We now have a dataframe of players and the number of minutes played in each season since they started in the NBA:
 # %%
-df_season_no_plot.head().iloc[:,:5]
+df_season_no_plot.head().iloc[:, :5]
 # %% [markdown]
 # # Analysis
 # Let's compare against other all time greats. LeBron is right up there in terms of minutes played.
 # It's only within the last 1/2 seasons that his minutes drop compared to Jabar and Malone.
 # Interesting Jordan is an exception due to his two retirement periods.
 # %%
-df_season_no_plot.loc[
-    ["James", "Bryant", "Jordan", "Jabar", "Malone"], :
-].cumsum(axis=1).transpose().hvplot(grid=True, ylabel="Minutes played")
+df_season_no_plot.loc[["James", "Bryant", "Jordan", "Jabar"], :].cumsum(
+    axis=1
+).transpose().plot(grid=True, ylabel="Minutes played", figsize=(10, 6))
 # %% [markdown]
 # Comparing against superstars form the last couple decades it is apparent how LeBron has managed to avoid any significant injuries affecting his game time.
 # %%
 df_season_no_plot.loc[
     ["James", "Paul", "Howard", "Anthony", "Westbrook", "Rose"], :
-].cumsum(axis=1).transpose().hvplot(grid=True, ylabel="Minutes played")
+].cumsum(axis=1).transpose().plot(
+    grid=True, ylabel="Minutes played", figsize=(10, 6)
+)
 # %% [markdown]
-# Comparing against newer/upcoming superstars:  
+# Comparing against newer/upcoming superstars:
 # For the same number of seasons Kawhi Leondard has played about 50% of the mintues of LeBron James, due to resting during the regular season and injury issues.
 # Likewise, Durrant has played about 20% less minutes than LeBron.
 # Durrant is the closest to keeping up with LeBron, everyone else is playing less...
@@ -120,16 +121,21 @@ df_season_no_plot.loc[
         "Williamson",
     ],
     :,
-].cumsum(axis=1).transpose().hvplot(grid=True, ylabel="Minutes played")
+].cumsum(axis=1).transpose().plot(
+    grid=True, ylabel="Minutes played", figsize=(10, 6)
+)
 # %% [markdown]
 # Just for fun here's load of players on one unreadable plot:
 # %%
-df_season_no_plot.cumsum(axis=1).transpose().hvplot(
-    grid=True, ylabel="Minutes played"
+df_season_no_plot.cumsum(axis=1).transpose().plot(
+    grid=True, ylabel="Minutes played", figsize=(10, 6)
 )
 # %% [markdown]
 # Or as a heat map.
 # We can see players like Vince Carter having a very long career but his minutes slowing down towards the later half.
 # It's evident that some modern days superstars are not playing any seasons at max capacity, for example Leonard and Emiid.
 # %%
-df_season_no_plot.hvplot.heatmap(x="columns", y="index", rot=70, cmap="plasma")
+fig, ax = plt.subplots(figsize=(12, 6))
+ax = sns.heatmap(df_season_no_plot, cmap="plasma", ax=ax)
+ax.set_title("Minutes Played")
+plt.show()
