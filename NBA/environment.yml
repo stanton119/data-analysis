@@ -15,6 +15,7 @@ dependencies:
   # Plotting
   - matplotlib
   - hvplot
+  - seaborn
 
   # Debugging
   - jupyter
