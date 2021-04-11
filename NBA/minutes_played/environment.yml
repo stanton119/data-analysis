@@ -1,0 +1,24 @@
+name: nba_env
+channels:
+  - conda-forge
+dependencies:
+  - python
+  - pip
+  
+  # Computation
+  - numpy
+  - pandas
+  - bs4
+  - html5lib
+
+
+  # Plotting
+  - matplotlib
+  - hvplot
+  - seaborn
+
+  # Debugging
+  - jupyter
+  - pylint
+  - rope
+  - black
