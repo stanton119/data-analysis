@@ -10,8 +10,10 @@ Repo directory:
   * Flask app to show scores of a basketball match against time.
 * [Installed energy capacity](https://github.com/stanton119/data-analysis/blob/master/EnergyCapacity/installed_energy_capacity.ipynb)
   * Analysis into European installed energy capacity
+* [NBA LeBron Minutes](https://github.com/stanton119/data-analysis/tree/master/NBA/minutes_played/minutes_played.md)
+  * Analysis into LeBron James playing minutes
 * [NBA Shooting Data](https://github.com/stanton119/data-analysis/tree/master/NBAShotSelection)
-  * Not finished yet - animations of shots taken by Kobe Bryant over time.  
+  * Not finished yet - animations of shots taken by Kobe Bryant over time.
 
 ## Model frameworks
 ### [Pyro](FitDistWithPyro/)
@@ -79,3 +81,10 @@ Use the `settings.json` file in the repo
 * FashionMNIST VAE
 * Switch away from Matplotlib
 * PySpark
+* Project work
+  * Optimal car charging schedule
+  * NBA player VAE - how are players related
+
+## Questions
+* Do VAEs work well with (linearly) correlated features
+  * Can they form orthogonal features?
