@@ -12,12 +12,15 @@ Repo directory:
   * Analysis into European installed energy capacity
 * [NBA LeBron Minutes](https://github.com/stanton119/data-analysis/tree/master/NBA/minutes_played/minutes_played.md)
   * Analysis into LeBron James playing minutes
-* [NBA Shooting Data](https://github.com/stanton119/data-analysis/tree/master/NBAShotSelection)
+* [NBA Shooting Data](https://github.com/stanton119/data-analysis/tree/master/NBA/NBAShotSelection)
   * Not finished yet - animations of shots taken by Kobe Bryant over time.
 
 ## Model frameworks
+### [Pytorch](PyTorchStuff/)
+* [PyTorchStuff/nonlinear_regression/nonlinear_regression.md](https://github.com/stanton119/data-analysis/blob/master/PyTorchStuff/nonlinear_regression/nonlinear_regression.md)
+  * Linear regression to non linear probabilistic neural network.
+
 ### [Pyro](FitDistWithPyro/)
-<!-- Skills: bayesian analysis -->
 * [FitDistWithPyro/fit_pyro_distribution.ipynb](https://github.com/stanton119/data-analysis/blob/master/FitDistWithPyro/fit_pyro_distribution.ipynb)
   * Simple example fitting a Gaussian distribution to data using Pyro.
 * [FitDistWithPyro/fit_beta_distribution.ipynb](https://github.com/stanton119/data-analysis/blob/master/FitDistWithPyro/fit_beta_distribution.ipynb)
