@@ -1,6 +1,6 @@
 # PyTorch: Linear regression to non linear probabilistic neural network
 This post follows a similar one I did a while back for Tensorflow Probability.
-I will go various models from linear regression through to a non-linear probabilistic neural network.
+I will go through various models from linear regression through to a non-linear probabilistic neural network.
 
 This is particularly useful in case where the model noise changes with one of the model variables or is non-linear,
 such as in those with heteroskedasticity.
