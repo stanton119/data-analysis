@@ -1,0 +1,22 @@
+name: pytorch_env
+channels:
+  - conda-forge
+dependencies:
+  - python
+  - pip
+  
+  # Computation
+  - numpy
+  - pandas
+  - pytorch
+  - pytorch-lightning
+
+  # Plotting
+  - matplotlib
+  - seaborn
+
+  # Debugging
+  - jupyter
+  - pylint
+  - rope
+  - black
