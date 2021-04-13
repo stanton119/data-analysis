@@ -19,6 +19,8 @@ Repo directory:
 ### [Pytorch](PyTorchStuff/)
 * [PyTorchStuff/nonlinear_regression/nonlinear_regression.md](https://github.com/stanton119/data-analysis/blob/master/PyTorchStuff/nonlinear_regression/nonlinear_regression.md)
   * Linear regression to non linear probabilistic neural network.
+* [PyTorchStuff/pytorch_lightning/pytorch_lightning_regression.md](https://github.com/stanton119/data-analysis/blob/master/PyTorchStuff/pytorch_lightning/pytorch_lightning_regression.md)
+  * Trying out `PyTorch Lightning`
 
 ### [Pyro](FitDistWithPyro/)
 * [FitDistWithPyro/fit_pyro_distribution.ipynb](https://github.com/stanton119/data-analysis/blob/master/FitDistWithPyro/fit_pyro_distribution.ipynb)
