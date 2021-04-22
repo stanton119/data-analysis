@@ -44,6 +44,7 @@ Repo directory:
 
 ### Others
 * [TimeSeries/neural_prophet/neural_prophet_speed_test.md](https://github.com/stanton119/data-analysis/blob/master/TimeSeries/neural_prophet/neural_prophet_speed_test.md)
+* [TimeSeries/neural_prophet/arima.md](https://github.com/stanton119/data-analysis/blob/master/TimeSeries/neural_prophet/arima.md)
 
 ## Techniques
 * [ParquetDatasets/parquet_datasets.ipynb](https://github.com/stanton119/data-analysis/blob/master/ParquetDatasets/parquet_datasets.ipynb)
@@ -78,6 +79,7 @@ Use the `settings.json` file in the repo
 * Pytorch
 * Causal inference
 * Data validations - great expectations
+* PySpark
 * NLP
 * Computer vision
 * Gaussian processes
@@ -85,7 +87,6 @@ Use the `settings.json` file in the repo
 * Tensorflow/pytorch - 1D functions
 * FashionMNIST VAE
 * Switch away from Matplotlib
-* PySpark
 * Project work
   * Optimal car charging schedule
   * NBA player VAE - how are players related
