@@ -112,7 +112,7 @@ ax[1].legend()
 ax[1].set_xlabel("Trial")
 ax[1].set_ylim(0)
 ax[1].set_title("Predicting time")
-fig.show()
+plt.show()
 # %% [markdown]
 # ## Model results
 # The resulting predictions and model components are similar between the two models.
