@@ -51,6 +51,7 @@ df_train.head(10)
 # Now let's fit two sets of models. The first is an ARIMA model from `statsmodels` the second is an approximate AR model using `NeuralProphet`.
 # Each iteration we increase the number of lags used in the model, and we time how long each takes to fit.
 # The neural prophet model has the various seasonalities and change point parts disabled so it closer to a raw AR model.
+# We also need to change the loss function to standard MSE.
 # %% Time execution
 fit_time_ar = []
 fit_time_np = []
@@ -73,6 +74,8 @@ for lag in lag_range:
         daily_seasonality=False,
         weekly_seasonality=False,
         yearly_seasonality=False,
+        loss_func='MSE',
+        normalize='off'
     )
     mae_np.append(model_nprophet_ar.fit(df_train, freq="D"))
     fit_time_np.append(process_time() - t1)
@@ -89,44 +92,9 @@ ax.set_xlabel('AR lag')
 ax.set_ylabel('Fitting time (s)')
 plt.show()
 # %% [markdown]
-# As such we can fit models with significantly longer lags.
-# This may not be necessary most of the time, but if we wanted to, we could do it!
-# %% Long lags...
-lag = 300
-t1 = process_time()
-logging.getLogger("nprophet").setLevel(logging.INFO)
-model_nprophet_ar = NeuralProphet(
-    growth="off",
-    n_changepoints=0,
-    n_forecasts=1,
-    n_lags=lag,
-    daily_seasonality=False,
-    weekly_seasonality=False,
-    yearly_seasonality=False,
-    epochs = 100
-)
-loss_epoch = model_nprophet_ar.fit(df_train, freq="D")
-print("\n")
-print("\n")
-print(f"Time taken: {process_time() - t1} s")
-# %% [markdown]
-# Neuralprophet is based on an underlying pytorch model and trains using gradient descent.
-# The fitting time is related to the number of epochs. This is chosen automatically in the package.
-# The learning rate is by default chosen with pytorch lightning's learning rate finder.
-# The automatic learning rate can be a bit noisy and stop training early.
-# As such it may be necessary to plot the loss against epoch.
-# As a single example, the auto epoch number would be 27 in the following graph, where we train for 100.
-# %%
-fig, ax = plt.subplots(figsize=(10,6))
-ax.plot(loss_epoch['SmoothL1Loss'])
-ax.set_xlabel('Epoch')
-ax.set_ylabel('Loss')
-plt.show()
-# %% [markdown]
-# Even though, we can train for much more epochs and still successfully train a very long AR model.
-# %% [markdown]
 # ## Prediction results
-# The models will not be identical. We can train a smaller AR model and inspect it's coefficients:
+# To ensure these results are meaningful we need to check the models they are fitting are comparible.
+# Let's train a smaller neural prophet so we can check for similarity with an actual AR model.
 # %% lag 5 model
 lag = 5
 model_arima = statsmodels.tsa.arima.model.ARIMA(endog=df_train.set_index('ds'), order=(lag,0,0), freq='1D').fit()
@@ -140,17 +108,23 @@ model_nprophet_ar = NeuralProphet(
     daily_seasonality=False,
     weekly_seasonality=False,
     yearly_seasonality=False,
-    epochs = 100
+    epochs = 100,
+    loss_func='MSE',
+    normalize='off'
 )
 model_nprophet_ar.fit(df_train, freq="D")
 # %% model params
 fig, ax = plt.subplots(figsize=(10,6), ncols=2)
-ax[0].plot(model_arima.params.iloc[1:-1].to_numpy(), label='ARIMA')
-ax[1].plot(np.flip(model_nprophet_ar.model.ar_weights.detach().numpy()).flatten(), label='np')
+ax[0].plot(model_arima.params.iloc[1:-1].to_numpy())
+ax[0].set_title('ARIMA')
+ax[0].set_xlabel('AR Lag')
+ax[0].set_ylabel('Coefficient')
+ax[1].plot(np.flip(model_nprophet_ar.model.ar_weights.detach().numpy()).flatten())
+ax[1].set_title('np')
+ax[1].set_xlabel('AR Lag')
 plt.show()
 # %% [markdown]
-# Their coefficients differ slightly.
-# This in turn causes their predictions to be slightly different:
+# Their coefficients are nearly identical. As such predictions from each model are nearly the same:
 # %% Show final predictions
 pred_arima = model_arima.predict(start=df_train['ds'].iloc[-1], end=df_train['ds'].iloc[-1] + pd.Timedelta('100D'))
 
@@ -167,11 +141,131 @@ pred_nprophet = pred_nprophet.iloc[-101:].reset_index(drop=True)
 
 fig, ax = plt.subplots(figsize=(10, 6))
 pred_arima.plot(ax=ax, label='ARIMA')
-pred_nprophet.set_index('ds').plot(ax=ax, label='np')
-df_train.set_index('ds').iloc[-200:].plot(ax=ax)
+pred_nprophet.set_index('ds')['y'].plot(ax=ax, label='np')
+df_train.set_index('ds')['y'].iloc[-200:].plot(ax=ax, label='actual')
+ax.set_ylabel("Temp (°C)")
+fig.legend()
+plt.show()
+# %% [markdown]
+# ## Long lags
+# Due to the significantly faster fitting time we can train models with significantly longer lags.
+# This may not be necessary most of the time, but if we wanted to, we could do it!
+# For example in the following we train an AR model with 500 lags.
+# %% Long lags...
+lag = 500
+t1 = process_time()
+model_nprophet_ar = NeuralProphet(
+    growth="off",
+    n_changepoints=0,
+    n_forecasts=1,
+    n_lags=lag,
+    daily_seasonality=False,
+    weekly_seasonality=False,
+    yearly_seasonality=False,
+    epochs = 100,
+    loss_func='MSE',
+    normalize='off'
+)
+loss_epoch = model_nprophet_ar.fit(df_train, freq="D")
+print("\n")
+print("\n")
+print(f"Time taken: {process_time() - t1} s")
+# %% [markdown]
+# Neuralprophet is based on an underlying pytorch model and trains using gradient descent.
+# The fitting time is related to the number of epochs. This is chosen automatically in the package.
+# The learning rate is by default chosen with pytorch lightning's learning rate finder.
+# The automatic learning rate can be a bit noisy and stop training early.
+# As such it may be necessary to plot the loss against epoch.
+# As a single example, the auto epoch number would be 27 in the following graph, where we train for 100.
+# %%
+fig, ax = plt.subplots(figsize=(10,6))
+ax.plot(loss_epoch['MSELoss'])
+ax.set_xlabel('Epoch')
+ax.set_ylabel('Loss')
+plt.show()
+# %% [markdown]
+# Even though, we can train for much more epochs and still successfully train a very long AR model.
+# 
+# ## Seasonality via AR models?
+# With a very long AR model we could potentially capture seasonalities which would be impossible before.
+# On this daily weather data we have a yearly seasonality, we can't capture that with a normal AR model.
+# However by using neuralprophet we actually can...
+# %%
+pred_arima = model_arima.predict(start=df_train['ds'].iloc[-1], end=df_train['ds'].iloc[-1] + pd.Timedelta('200D'))
+
+pred_nprophet = df_train.copy()
+for idx in range(200):
+    future_nprophet = model_nprophet_ar.make_future_dataframe(
+        df=pred_nprophet,
+    )
+    temp = model_nprophet_ar.predict(future_nprophet)
+    temp['y'] = temp[['y','yhat1']].fillna(0).sum(axis=1)
+    temp = temp[['ds','y']]
+    pred_nprophet = pred_nprophet.append(temp.iloc[-1])
+pred_nprophet = pred_nprophet.iloc[-201:].reset_index(drop=True)
+
+fig, ax = plt.subplots(figsize=(10, 6))
+pred_arima.plot(ax=ax, label='ARIMA')
+pred_nprophet.set_index('ds')['y'].plot(ax=ax, label='np')
+df_train.set_index('ds')['y'].iloc[-1500:].plot(ax=ax, label='actual')
+ax.set_ylabel("Temp (°C)")
+fig.legend()
+plt.show()
+# %% [markdown]
+# The prediction shows we are able to capture some of the yearly seasonality!
+# The prediction is quite noisy. The pytorch based approach also allows us to build in regularisation into the AR coefficients.
+# This should reduce the models ability to model the noise and as such hopefully produce more smooth predictions.
+# This in turn means we don't have to worry as much about getting the correct AR lag count when specifying the model
+# Here we set the `ar_sparsity` to a *very* low value, which pushes most of the AR coefficients close to 0.
+# %% Sparsity...
+model_nprophet_ar_sparse = NeuralProphet(
+    growth="off",
+    n_changepoints=0,
+    n_forecasts=1,
+    n_lags=lag,
+    daily_seasonality=False,
+    weekly_seasonality=False,
+    yearly_seasonality=False,
+    epochs = 100,
+    loss_func='MSE',
+    normalize='off',
+    ar_sparsity=0.0001  # *** #
+)
+model_nprophet_ar_sparse.fit(df_train, freq="D")
+# %% [markdown]
+# Comparing the coefficients shows the sparse model is more conservative.
+# %%
+fig, ax = plt.subplots(figsize=(10,6), ncols=2)
+ax[0].plot(np.flip(model_nprophet_ar.model.ar_weights.detach().numpy()).flatten(), label='np')
+ax[1].plot(np.flip(model_nprophet_ar_sparse.model.ar_weights.detach().numpy()).flatten(), label='np')
+plt.show()
+# %%
+pred_nprophet_sparse = df_train.copy()
+for idx in range(200):
+    future_nprophet = model_nprophet_ar_sparse.make_future_dataframe(
+        df=pred_nprophet_sparse,
+    )
+    temp = model_nprophet_ar_sparse.predict(future_nprophet)
+    temp['y'] = temp[['y','yhat1']].fillna(0).sum(axis=1)
+    temp = temp[['ds','y']]
+    pred_nprophet_sparse = pred_nprophet_sparse.append(temp.iloc[-1])
+pred_nprophet_sparse = pred_nprophet_sparse.iloc[-201:].reset_index(drop=True)
+
+fig, ax = plt.subplots(figsize=(10, 6))
+pred_nprophet.set_index('ds')['y'].plot(ax=ax, label='np')
+pred_nprophet_sparse.set_index('ds')['y'].plot(ax=ax, label='np_sparse')
+df_train.set_index('ds')['y'].iloc[-1500:].plot(ax=ax, label='actual')
+ax.set_ylabel("Temp (°C)")
+fig.legend()
+plt.show()
 # %% [markdown]
 
 
+
+fig, ax = plt.subplots(figsize=(10, 6))
+pred_arima.plot(ax=ax, label='ARIMA')
+pred_nprophet.set_index('ds').plot(ax=ax, label='np')
+df_train.set_index('ds').iloc[-1500:].plot(ax=ax)
 
 
 
