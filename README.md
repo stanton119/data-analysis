@@ -44,7 +44,9 @@ Repo directory:
 
 ### Others
 * [TimeSeries/neural_prophet/neural_prophet_speed_test.md](https://github.com/stanton119/data-analysis/blob/master/TimeSeries/neural_prophet/neural_prophet_speed_test.md)
+  * Speed of fitting and predict of `neuralprophet` vs `fbprophet`
 * [TimeSeries/neural_prophet/arima.md](https://github.com/stanton119/data-analysis/blob/master/TimeSeries/neural_prophet/arima.md)
+  * Can we fit long AR models with `neuralprophet`
 
 ## Techniques
 * [ParquetDatasets/parquet_datasets.ipynb](https://github.com/stanton119/data-analysis/blob/master/ParquetDatasets/parquet_datasets.ipynb)
@@ -80,6 +82,8 @@ Use the `settings.json` file in the repo
 * Causal inference
 * Data validations - great expectations
 * PySpark
+* Kedro
+* Multiprocessing
 * NLP
 * Computer vision
 * Gaussian processes
@@ -90,7 +94,3 @@ Use the `settings.json` file in the repo
 * Project work
   * Optimal car charging schedule
   * NBA player VAE - how are players related
-
-## Questions
-* Do VAEs work well with (linearly) correlated features
-  * Can they form orthogonal features?
