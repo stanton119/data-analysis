@@ -32,7 +32,7 @@ from typing import Dict
 from kedro.pipeline import Pipeline
 
 from nba_analysis.pipelines import data_processing as dp
-from nba_analysis.pipelines import data_science as ds
+from nba_analysis.pipelines import shooting_per as sp
 
 
 def register_pipelines() -> Dict[str, Pipeline]:
@@ -42,10 +42,10 @@ def register_pipelines() -> Dict[str, Pipeline]:
         A mapping from a pipeline name to a ``Pipeline`` object.
     """
     data_processing_pipeline = dp.create_pipeline()
-    shooting_per_pipeline = ds.create_shooting_per_pipeline()
+    shooting_per_pipeline = sp.create_shooting_per_pipeline()
 
     return {
         "__default__": data_processing_pipeline + shooting_per_pipeline,
         "dp": data_processing_pipeline,
-        "shooting_per": shooting_per_pipeline,
+        "sp": shooting_per_pipeline,
     }
