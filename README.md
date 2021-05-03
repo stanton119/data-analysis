@@ -12,6 +12,8 @@ Repo directory:
   * Analysis into European installed energy capacity
 * [NBA LeBron Minutes](https://github.com/stanton119/data-analysis/tree/master/NBA/minutes_played/minutes_played.md)
   * Analysis into LeBron James playing minutes
+* [NBA Shooting % Kedro project](https://github.com/stanton119/data-analysis/tree/master/NBA/nba-analysis)
+  * Kedro data pipelines to plot player scoring probability distributions
 * [NBA Shooting Data](https://github.com/stanton119/data-analysis/tree/master/NBA/NBAShotSelection)
   * Not finished yet - animations of shots taken by Kobe Bryant over time.
 
@@ -82,6 +84,7 @@ Use the `settings.json` file in the repo
 * Causal inference
 * Data validations - great expectations
 * PySpark
+  * Dask/Koalas
 * Kedro
 * Multiprocessing
 * NLP
@@ -94,3 +97,5 @@ Use the `settings.json` file in the repo
 * Project work
   * Optimal car charging schedule
   * NBA player VAE - how are players related
+  * Walmart demand forecasting
+    * Pyspark, kedro

@@ -1,0 +1,7 @@
+{
+    // "python.pythonPath": ".../envs/data_analysis_env/bin/python",
+    "python.linting.pylintEnabled": false,
+    "python.linting.flake8Enabled": true,
+    "python.linting.enabled": true,
+    "autoDocstring.docstringFormat": "google",
+}
