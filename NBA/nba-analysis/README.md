@@ -3,6 +3,11 @@
 ## Overview
 This is a project for NBA analysis built using the [Kedro](https://kedro.readthedocs.io) package.
 
+Pipeline overview:
+
+![png](kedro-pipeline.png)
+
+
 ## `dp`
 This is a data processing pipeline to extract data from basketball reference.
 
@@ -26,6 +31,11 @@ Steps involved:
     * This prior is taken from the `parameters.yml`
 * Take a random subset of players and plot into a single figure
     * The number of players to plot is from `parameters.yml`
+
+Typical results:
+
+![jpeg](shooting_per.jpeg)
+
 
 Todo:
 
