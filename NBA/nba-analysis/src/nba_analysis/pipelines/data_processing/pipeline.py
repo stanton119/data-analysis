@@ -42,14 +42,13 @@ def create_pipeline(**kwargs):
         )
         for season in season_range
     ]
+
     return Pipeline(
         [
             *download_nodes,
             node(
                 func=nodes.process_season_data,
-                inputs=[
-                    f"season_data_{season}" for season in season_range
-                ],
+                inputs=[f"season_data_{season}" for season in season_range],
                 outputs="season_data",
                 name="process_season_data_node",
             ),

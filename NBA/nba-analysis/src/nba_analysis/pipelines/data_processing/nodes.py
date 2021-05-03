@@ -34,22 +34,6 @@ def download_season_data(season: int = 2020) -> pd.DataFrame:
         url_type="season_summary_per_game", season=season
     )
 
-def download_season_data_2020(season: int = 2020) -> pd.DataFrame:
-    return basketball_reference.get_remote_data(
-        url_type="season_summary_per_game", season=season
-    )
-
-def download_season_data_2019(season: int = 2019) -> pd.DataFrame:
-    return basketball_reference.get_remote_data(
-        url_type="season_summary_per_game", season=season
-    )
-
-
-def download_season_data_2018(season: int = 2018) -> pd.DataFrame:
-    return basketball_reference.get_remote_data(
-        url_type="season_summary_per_game", season=season
-    )
-
 
 def process_season_data(*args) -> pd.DataFrame:
     return pd.concat(
