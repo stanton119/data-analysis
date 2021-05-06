@@ -30,12 +30,18 @@ from . import basketball_reference
 
 
 def download_season_data(season: int = 2020) -> pd.DataFrame:
+    """
+    Download data from basketball_reference for a given season
+    """
     return basketball_reference.get_remote_data(
         url_type="season_summary_per_game", season=season
     )
 
 
 def process_season_data(*args) -> pd.DataFrame:
+    """
+    Takes multiple season data frames, cleans each and combines into single dataframe.
+    """
     return pd.concat(
         map(
             lambda df: basketball_reference.process_df_season_summary(

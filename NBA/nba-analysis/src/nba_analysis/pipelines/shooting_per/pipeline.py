@@ -35,7 +35,7 @@ def create_shooting_per_pipeline(**kwargs):
         [
             node(
                 func=shooting_per_model,
-                inputs=["season_data", "params:prior_beta"],
+                inputs=["cleaned_season_data", "params:prior_beta"],
                 outputs="shooting_dist",
                 name="shooting_per_model_node",
             ),

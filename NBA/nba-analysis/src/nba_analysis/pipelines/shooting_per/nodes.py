@@ -30,6 +30,7 @@ from typing import Dict, Tuple, List
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
+from scipy.stats import beta
 
 plt.style.use("seaborn-whitegrid")
 
@@ -44,8 +45,6 @@ class BetaBinomial:
         self.beta = self.beta + trials - successes
 
     def pdf(self) -> Tuple[np.array, np.array]:
-        from scipy.stats import beta
-
         x = np.linspace(0.0, 1.0, 100)
         z = beta.pdf(x, a=self.alpha, b=self.beta)
 
