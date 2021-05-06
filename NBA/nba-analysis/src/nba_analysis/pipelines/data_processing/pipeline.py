@@ -49,7 +49,7 @@ def create_pipeline(**kwargs):
             node(
                 func=nodes.process_season_data,
                 inputs=[f"season_data_{season}" for season in season_range],
-                outputs="season_data",
+                outputs="cleaned_season_data",
                 name="process_season_data_node",
             ),
         ]
