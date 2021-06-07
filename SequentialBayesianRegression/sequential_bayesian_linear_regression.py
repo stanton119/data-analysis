@@ -1,9 +1,10 @@
 # %% [markdown]
 # # Bayesian Linear Regression
-# Reformulating linear regression to give epistemic uncertainty.
-# This also allows us to sequentially train a model as new data is streamed in.
-# This reduces the need for stationarity in our data, a sequential model can do some
-# form of tracking if the coefficients need to change with time.
+# In this post I talk about reformulating linear regression in a Bayesian framework.
+# This gives us the notion of epistemic uncertainty which allows us to generate probabilistic model predictions.
+# I formulate a model class which can perform linear regression via Bayes rule updates.
+# We show the results are the same as from the `statsmodels` library.
+# I will also show some of the benefits of the sequential bayesian approach.
 # %%
 import pandas as pd
 import numpy as np
@@ -275,3 +276,7 @@ ax.fill_between(
 )
 # %% [markdown]
 # ### Adaptive learning
+# By updating sequential with data as it appears we can learn from data that may not be stationary.
+# A sequential model can do some form of tracking if the coefficients need to change with time.
+# 
+# More on this to come...
