@@ -12,7 +12,7 @@ Repo directory:
   * Analysis into European installed energy capacity
 * [NBA LeBron Minutes](https://github.com/stanton119/data-analysis/tree/master/NBA/minutes_played/minutes_played.md)
   * Analysis into LeBron James playing minutes
-* [NBA Shooting % Kedro project](https://github.com/stanton119/data-analysis/tree/master/NBA/nba-analysis)
+* [NBA Shooting - Kedro project](https://github.com/stanton119/data-analysis/tree/master/NBA/nba-analysis)
   * Kedro data pipelines to plot player scoring probability distributions
 * [NBA Shooting Data](https://github.com/stanton119/data-analysis/tree/master/NBA/NBAShotSelection)
   * Not finished yet - animations of shots taken by Kobe Bryant over time.
@@ -56,6 +56,8 @@ Repo directory:
 
 * [BootstrappedRegessionCoefficients/bootstrap_regression.ipynb](https://github.com/stanton119/data-analysis/blob/master/BootstrappedRegessionCoefficients/bootstrap_regression.ipynb)
   * Confirming theoretical regression coefficient distributions with bootstrapped samples.
+* [SequentialBayesianRegression/sequential_bayesian_linear_regression.md](https://github.com/stanton119/data-analysis/blob/master/SequentialBayesianRegression/sequential_bayesian_linear_regression.md)
+  * Sequential Bayesian linear regression model
 
 
 
@@ -85,15 +87,22 @@ Use the `settings.json` file in the repo
 * Data validations - great expectations
 * PySpark
   * Dask/Koalas
+  * Activation functions
 * Kedro
 * Multiprocessing
+* Docker
 * NLP
 * Computer vision
 * Gaussian processes
 * Bayesian regression
 * Tensorflow/pytorch - 1D functions
 * FashionMNIST VAE
+* Embeddings
 * Switch away from Matplotlib
+* Quantile regression in pytorch
+  * Lasso regression
+  * Dropout better than regularisation?
+  * Compare linear regression MC dropout to theoretical results
 * Project work
   * Optimal car charging schedule
   * NBA player VAE - how are players related
