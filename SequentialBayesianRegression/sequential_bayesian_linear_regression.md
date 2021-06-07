@@ -1,9 +1,9 @@
- # Bayesian Linear Regression
- In this post I talk about reformulating linear regression in a Bayesian framework.
- This gives us the notion of epistemic uncertainty which allows us to generate probabilistic model predictions.
- I formulate a model class which can perform linear regression via Bayes rule updates.
- We show the results are the same as from the `statsmodels` library.
- I will also show some of the benefits of the sequential bayesian approach.
+# Bayesian Linear Regression
+In this post I talk about reformulating linear regression in a Bayesian framework.
+This gives us the notion of epistemic uncertainty which allows us to generate probabilistic model predictions.
+I formulate a model class which can perform linear regression via Bayes rule updates.
+We show the results are the same as from the `statsmodels` library.
+I will also show some of the benefits of the sequential bayesian approach.
 
 
 ```python
@@ -17,8 +17,8 @@ import matplotlib.pyplot as plt
 plt.style.use("seaborn-whitegrid")
 ```
 
- ## Generate some dummy data
- We generate some ideal data for a linear regression model so that we know the true coefficients for this example.
+## Generate some dummy data
+We generate some ideal data for a linear regression model so that we know the true coefficients for this example.
 
 
 ```python
@@ -43,9 +43,9 @@ print("True coefficients:\n", w)
      [-0.88431078]]
 
 
- ## Fit a linear regression with `statsmodels`
- The implementation of linear regression in `statsmodels` returns the standard error
- of the fitted coefficients.
+## Fit a linear regression with `statsmodels`
+The implementation of linear regression in `statsmodels` returns the standard error
+of the fitted coefficients.
 
 
 ```python
@@ -85,8 +85,8 @@ w_sm_std = np.sqrt(np.diag(results.normalized_cov_params))
     [1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
 
 
- If we received extra data we would have no choice but to retrain the model from scratch.
- In the following we train the model with an increasing fraction of the data and time each instance.
+If we received extra data we would have no choice but to retrain the model from scratch.
+In the following we train the model with an increasing fraction of the data and time each instance.
 
 
 ```python
@@ -107,7 +107,7 @@ params_mu = pd.DataFrame(params_mu, index=idx)
 params_std = pd.DataFrame(params_std, index=idx, columns=params_mu.columns)
 ```
 
- As expected, we can see that training the model with increasing lengths of data causes an increasing in fitting time.
+As expected, we can see that training the model with increasing lengths of data causes an increasing in fitting time.
 
 
 ```python
@@ -123,9 +123,9 @@ plt.show()
 ![svg](sequential_bayesian_linear_regression_files/sequential_bayesian_linear_regression_9_0.svg)
 
 
- We can also show that with increasing data our estimates of the coefficients become more confident
- as the standard error shrinks.
- This is a measure of our epistemic (model) uncertainty.
+We can also show that with increasing data our estimates of the coefficients become more confident
+as the standard error shrinks.
+This is a measure of our epistemic (model) uncertainty.
 
 
 ```python
@@ -142,21 +142,21 @@ plt.show()
 ![svg](sequential_bayesian_linear_regression_files/sequential_bayesian_linear_regression_11_0.svg)
 
 
- ## Sequential bayesian regression
- Another way of approaching this problem is with sequential Bayesian regression.
- This method follows Bayes theorem, where we have a prior distribution or estimates of our regression coefficients.
- We then update those prior distribution with data we observe to get a posterior distribution.
- We can then consider those posterior distributions as our new prior distributions and repeat the process.
+## Sequential bayesian regression
+Another way of approaching this problem is with sequential Bayesian regression.
+This method follows Bayes theorem, where we have a prior distribution or estimates of our regression coefficients.
+We then update those prior distribution with data we observe to get a posterior distribution.
+We can then consider those posterior distributions as our new prior distributions and repeat the process.
 
- Linear regression produces a multivariate normal distribution over the resulting coefficient estimates.
- The conjugate prior to this is also a multivariate normal distribution prior.
- As such we can formulate an analytical expression for the Bayes rule posterior update.
+Linear regression produces a multivariate normal distribution over the resulting coefficient estimates.
+The conjugate prior to this is also a multivariate normal distribution prior.
+As such we can formulate an analytical expression for the Bayes rule posterior update.
 
- The update rules I used were taken from:
- [https://cedar.buffalo.edu/~srihari/CSE574/Chap3/3.4-BayesianRegression.pdf](https://cedar.buffalo.edu/~srihari/CSE574/Chap3/3.4-BayesianRegression.pdf)
+The update rules I used were taken from:
+[https://cedar.buffalo.edu/~srihari/CSE574/Chap3/3.4-BayesianRegression.pdf](https://cedar.buffalo.edu/~srihari/CSE574/Chap3/3.4-BayesianRegression.pdf)
 
- ### Model definition
- We can build this as a class withi a similar API to sklearn models:
+### Model definition
+We can build this as a class withi a similar API to sklearn models:
 
 
 ```python
@@ -211,8 +211,8 @@ class BayesLinearRegressor:
 
 ```
 
- We can train the model as follows.
- We use `numpy` testing to confirm the coefficient we get are equal to those of `statsmodels`.
+We can train the model as follows.
+We use `numpy` testing to confirm the coefficient we get are equal to those of `statsmodels`.
 
 
 ```python
@@ -230,9 +230,9 @@ np.testing.assert_array_almost_equal(
     Deprecated in NumPy 1.20; for more details and guidance: https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
 
 
- ### Sequential training
- We can now train the model with chunks of data.
- We will time the models fitting and track the coefficients with extra data.
+### Sequential training
+We can now train the model with chunks of data.
+We will time the models fitting and track the coefficients with extra data.
 
 
 ```python
@@ -268,8 +268,8 @@ params_std_seq = pd.DataFrame(
     Deprecated in NumPy 1.20; for more details and guidance: https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations
 
 
- The time taken to train with each chunk is approximately the same.
- As such, we can fit an initial model and continue to update it as an alternative to fitting a single large model.
+The time taken to train with each chunk is approximately the same.
+As such, we can fit an initial model and continue to update it as an alternative to fitting a single large model.
 
 
 ```python
@@ -287,8 +287,8 @@ plt.show()
 ![svg](sequential_bayesian_linear_regression_files/sequential_bayesian_linear_regression_19_0.svg)
 
 
- The model coefficients behave as before.
- E.g. we can similarly show that the standard deviation of the coefficients reduces with data length.
+The model coefficients behave as before.
+E.g. we can similarly show that the standard deviation of the coefficients reduces with data length.
 
 
 ```python
@@ -305,12 +305,12 @@ plt.show()
 ![svg](sequential_bayesian_linear_regression_files/sequential_bayesian_linear_regression_21_0.svg)
 
 
- ### Posteriors vs Priors
- One of the benefits of using bayesian linear regression is the ability to apply prior distributions
- on the model coefficients.
- To demonstrate this we use a prior with a much smaller variance, as such it is no longer uninformed.
- We fit the model and plot the pdf of the prior and posterior.
- The posteriors evidently converge to the true coefficients and have a tight distribution.
+### Posteriors vs Priors
+One of the benefits of using bayesian linear regression is the ability to apply prior distributions
+on the model coefficients.
+To demonstrate this we use a prior with a much smaller variance, as such it is no longer uninformed.
+We fit the model and plot the pdf of the prior and posterior.
+The posteriors evidently converge to the true coefficients and have a tight distribution.
 
 
 ```python
@@ -352,13 +352,13 @@ for idx in range(m + 1):
 ![svg](sequential_bayesian_linear_regression_files/sequential_bayesian_linear_regression_23_1.svg)
 
 
- ### Prediction uncertainty
- The distribution of our coefficients gives us a distribution for our model predictions as well.
+### Prediction uncertainty
+The distribution of our coefficients gives us a distribution for our model predictions as well.
 
- The predict method of the `BayesLinearRegressor` class returns a standard deviation for each point.
- We can then plot a few of those points with this confidence shaded.
- This only represent epistemic uncertainty - i.e. uncertainty from our model coefficients,
- not uncertainty from the data generating process.
+The predict method of the `BayesLinearRegressor` class returns a standard deviation for each point.
+We can then plot a few of those points with this confidence shaded.
+This only represent epistemic uncertainty - i.e. uncertainty from our model coefficients,
+not uncertainty from the data generating process.
 
 
 ```python
@@ -394,8 +394,8 @@ ax.fill_between(
 ![svg](sequential_bayesian_linear_regression_files/sequential_bayesian_linear_regression_25_2.svg)
 
 
- ### Adaptive learning
- By updating sequential with data as it appears we can learn from data that may not be stationary.
- A sequential model can do some form of tracking if the coefficients need to change with time.
+### Adaptive learning
+By updating sequential with data as it appears we can learn from data that may not be stationary.
+A sequential model can do some form of tracking if the coefficients need to change with time.
 
- More on this to come...
+More on this to come...
