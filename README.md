@@ -54,12 +54,13 @@ Repo directory:
 * [ParquetDatasets/parquet_datasets.ipynb](https://github.com/stanton119/data-analysis/blob/master/ParquetDatasets/parquet_datasets.ipynb)
   * Exporting dataframes to partitioned parquet files.
 
+### Bayesian Regression
 * [BootstrappedRegessionCoefficients/bootstrap_regression.ipynb](https://github.com/stanton119/data-analysis/blob/master/BootstrappedRegessionCoefficients/bootstrap_regression.ipynb)
   * Confirming theoretical regression coefficient distributions with bootstrapped samples.
 * [SequentialBayesianRegression/sequential_bayesian_linear_regression.md](https://github.com/stanton119/data-analysis/blob/master/SequentialBayesianRegression/sequential_bayesian_linear_regression.md)
   * Sequential Bayesian linear regression model
-
-
+* [SequentialBayesianRegression/adaptive_coefficients.md](https://github.com/stanton119/data-analysis/blob/master/SequentialBayesianRegression/adaptive_coefficients.md)
+  * Bayesian regression adapting to non-stationary data
 
 ## Installation
 The various analysis was built in Python 3.
@@ -80,7 +81,7 @@ Custom library installed as a dev library for continued development
 ### VSCode
 Use the `settings.json` file in the repo
 
-## Future aims
+## Future areas
 * Time series forecasting
 * Pytorch
 * Causal inference
@@ -93,6 +94,7 @@ Use the `settings.json` file in the repo
 * Docker
 * NLP
 * Computer vision
+  * Media pipe
 * Gaussian processes
 * Bayesian regression
 * Tensorflow/pytorch - 1D functions
