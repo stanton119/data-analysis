@@ -23,6 +23,8 @@ Repo directory:
   * Linear regression to non linear probabilistic neural network.
 * [PyTorchStuff/pytorch_lightning/pytorch_lightning_regression.md](https://github.com/stanton119/data-analysis/blob/master/PyTorchStuff/pytorch_lightning/pytorch_lightning_regression.md)
   * Trying out `PyTorch Lightning`
+* [PyTorchStuff/elastic_net/elastic_linear.md](https://github.com/stanton119/data-analysis/blob/master/PyTorchStuff/elastic_net/elastic_linear.md)
+  * Implementing an elastic net model in PyTorch
 
 ### [Pyro](FitDistWithPyro/)
 * [FitDistWithPyro/fit_pyro_distribution.ipynb](https://github.com/stanton119/data-analysis/blob/master/FitDistWithPyro/fit_pyro_distribution.ipynb)

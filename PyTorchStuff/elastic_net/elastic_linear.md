@@ -42,8 +42,6 @@ fig.legend()
 fig.show()
 ```
 
-    <ipython-input-2-2030eccf1f76>:21: UserWarning: Matplotlib is currently using module://ipykernel.pylab.backend_inline, which is a non-GUI backend, so cannot show the figure.
-      fig.show()
 
 
 
@@ -175,8 +173,6 @@ plot_convergence(model.train_log)
     Epoch 13:   0%|          | 0/1 [00:00<?, ?it/s, loss=6.02, v_num=53]/Users/Rich/Developer/miniconda3/envs/pytorch_env/lib/python3.9/site-packages/pytorch_lightning/utilities/distributed.py:68: UserWarning: The dataloader, train dataloader, does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` (try 8 which is the number of cpus on this machine) in the `DataLoader` init to improve performance.
       warnings.warn(*args, **kwargs)
     Epoch 99: 100%|██████████| 1/1 [00:00<00:00, 86.80it/s, loss=2.32, v_num=53] 
-    <ipython-input-4-9a3959161fba>:48: UserWarning: Matplotlib is currently using module://ipykernel.pylab.backend_inline, which is a non-GUI backend, so cannot show the figure.
-      fig.show()
 
 
 
@@ -213,8 +209,6 @@ fig.legend()
 fig.show()
 ```
 
-    <ipython-input-7-1a7960f2f30d>:7: UserWarning: Matplotlib is currently using module://ipykernel.pylab.backend_inline, which is a non-GUI backend, so cannot show the figure.
-      fig.show()
 
 
 
@@ -263,8 +257,6 @@ plot_convergence(model.train_log)
     Epoch 7:   0%|          | 0/1 [00:00<?, ?it/s, loss=7.41, v_num=54]         /Users/Rich/Developer/miniconda3/envs/pytorch_env/lib/python3.9/site-packages/pytorch_lightning/utilities/distributed.py:68: UserWarning: The dataloader, train dataloader, does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` (try 8 which is the number of cpus on this machine) in the `DataLoader` init to improve performance.
       warnings.warn(*args, **kwargs)
     Epoch 99: 100%|██████████| 1/1 [00:00<00:00, 51.62it/s, loss=2.88, v_num=54]
-    <ipython-input-4-9a3959161fba>:48: UserWarning: Matplotlib is currently using module://ipykernel.pylab.backend_inline, which is a non-GUI backend, so cannot show the figure.
-      fig.show()
 
 
 
@@ -305,8 +297,6 @@ fig.legend()
 fig.show()
 ```
 
-    <ipython-input-10-07c5066c875c>:7: UserWarning: Matplotlib is currently using module://ipykernel.pylab.backend_inline, which is a non-GUI backend, so cannot show the figure.
-      fig.show()
 
 
 
@@ -355,8 +345,6 @@ plot_convergence(model.train_log)
     Epoch 9:   0%|          | 0/1 [00:00<?, ?it/s, loss=7.57, v_num=55]         /Users/Rich/Developer/miniconda3/envs/pytorch_env/lib/python3.9/site-packages/pytorch_lightning/utilities/distributed.py:68: UserWarning: The dataloader, train dataloader, does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` (try 8 which is the number of cpus on this machine) in the `DataLoader` init to improve performance.
       warnings.warn(*args, **kwargs)
     Epoch 99: 100%|██████████| 1/1 [00:00<00:00, 68.20it/s, loss=2.94, v_num=55] 
-    <ipython-input-4-9a3959161fba>:48: UserWarning: Matplotlib is currently using module://ipykernel.pylab.backend_inline, which is a non-GUI backend, so cannot show the figure.
-      fig.show()
 
 
 
@@ -396,8 +384,6 @@ fig.legend()
 fig.show()
 ```
 
-    <ipython-input-13-0f08a247de27>:7: UserWarning: Matplotlib is currently using module://ipykernel.pylab.backend_inline, which is a non-GUI backend, so cannot show the figure.
-      fig.show()
 
 
 
@@ -447,8 +433,6 @@ plot_convergence(model.train_log)
     Epoch 11:   0%|          | 0/1 [00:00<?, ?it/s, loss=6.55, v_num=56]/Users/Rich/Developer/miniconda3/envs/pytorch_env/lib/python3.9/site-packages/pytorch_lightning/utilities/distributed.py:68: UserWarning: The dataloader, train dataloader, does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` (try 8 which is the number of cpus on this machine) in the `DataLoader` init to improve performance.
       warnings.warn(*args, **kwargs)
     Epoch 99: 100%|██████████| 1/1 [00:00<00:00, 54.92it/s, loss=3.33, v_num=56] 
-    <ipython-input-4-9a3959161fba>:48: UserWarning: Matplotlib is currently using module://ipykernel.pylab.backend_inline, which is a non-GUI backend, so cannot show the figure.
-      fig.show()
 
 
 
@@ -495,8 +479,6 @@ fig.legend()
 fig.show()
 ```
 
-    <ipython-input-16-fe6d54c07cff>:7: UserWarning: Matplotlib is currently using module://ipykernel.pylab.backend_inline, which is a non-GUI backend, so cannot show the figure.
-      fig.show()
 
 
 
