@@ -1,0 +1,24 @@
+name: tensorflow_prob_env
+channels:
+  - anaconda
+  - conda-forge
+dependencies:
+  - python
+  - pip
+  
+  # Computation
+  - numpy
+  - pandas
+
+  # Plotting
+  - matplotlib
+
+  # Debugging
+  - jupyter
+  - pylint
+  - rope
+  - black
+
+  - pip:
+    - tensorflow
+    - tensorflow-probability

@@ -1,0 +1,28 @@
+name: time_series_env
+channels:
+  - anaconda
+  - conda-forge
+dependencies:
+  - python
+  - pip
+  
+  # Computation
+  - numpy
+  - pandas
+  - tensorflow
+
+  # Plotting
+  - matplotlib
+
+  # Debugging
+  - jupyter
+  - pylint
+  - rope
+  - black
+
+  - pip:
+    - fbprophet
+    - neuralprophet
+    - pytorch-forecasting
+    # - nbeats-keras
+    - gluonts
