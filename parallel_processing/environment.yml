@@ -1,0 +1,22 @@
+name: parallel_env
+channels:
+  - conda-forge
+dependencies:
+  - python
+  - pip
+  
+  # Computation
+  - numpy
+  - pandas
+  - dask
+  - requests
+
+  # Plotting
+  - matplotlib
+
+  # Debugging
+  - jupyter
+  - pylint
+  - black
+
+  # - pip:
