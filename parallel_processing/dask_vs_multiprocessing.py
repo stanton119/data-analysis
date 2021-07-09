@@ -8,6 +8,7 @@ Speed differences?
 import multiprocessing
 import timeit
 from datetime import datetime
+import time
 
 import dask
 import pandas as pd
@@ -22,41 +23,48 @@ def fetch_results(date):
     return r.json()
 
 
+def fetch_results_mock(date):
+    time.sleep(0.2)
+    return date
+
+
 if __name__ == "__main__":
-    date_range = pd.date_range(datetime(2020, 1, 1), periods=20).tolist()
+    fcn = fetch_results
+    fcn = fetch_results_mock
+    params = pd.date_range(datetime(2020, 1, 1), periods=20).tolist()
 
     # for loop
     t1 = timeit.default_timer()
     results_for = list()
-    for date in date_range:
-        results_for.append(fetch_results(date))
+    for param in params:
+        results_for.append(fcn(param))
     t2 = timeit.default_timer()
     t_for = t2 - t1
-    print("For loop: ", t_for)
+    print(f"For loop: {t_for:.1f}")
 
     # map
     t1 = timeit.default_timer()
-    results_map = list(map(fetch_results, date_range))
+    results_map = list(map(fcn, params))
     t2 = timeit.default_timer()
     t_map = t2 - t1
-    print("Map: ", t_map)
+    print(f"Map: {t_map:.1f}")
 
     # multiprocessing
     # Doesnt run in ipython - https://stackoverflow.com/questions/48846085/python-multiprocessing-within-jupyter-notebook
-    mp = multiprocessing.Pool(4)
+    mp = multiprocessing.Pool(8)
     t1 = timeit.default_timer()
-    results_mp = mp.map(fetch_results, date_range)
+    results_mp = mp.map(fcn, params)
     t2 = timeit.default_timer()
     t_mp = t2 - t1
-    print("Multiprocessing: ", t_mp)
+    print(f"Multiprocessing: {t_mp:.1f}")
 
     # dask
     t1 = timeit.default_timer()
-    results_dask = list(map(dask.delayed(fetch_results), date_range))
+    results_dask = list(map(dask.delayed(fcn), params))
     results_dask = dask.compute(results_dask)[0]
     t2 = timeit.default_timer()
     t_dask = t2 - t1
-    print("Dask: ", t_dask)
+    print(f"Dask: {t_dask:.1f}")
 
     # check results
     assert results_for == results_map
