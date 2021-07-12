@@ -2,7 +2,10 @@
 Make http requests in parallel using multiprocessing and dask
 
 Which API is nicer
-Speed differences?
+
+Timing each suggests that dask/multiprocessing, as expected, speed up the requests by running in parallel.
+
+It might be preferrable to run in an asychronos manner instead of parallel processing.
 """
 
 import multiprocessing
