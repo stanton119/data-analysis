@@ -10,7 +10,6 @@ class GameOfLife:
         self.shape = shape
         self.state = np.zeros(self.shape, dtype=int)
         # kernel to sum
-
         self.kernel = np.ones((3, 3), dtype=int)
         self.kernel[1, 1] = 0
 
