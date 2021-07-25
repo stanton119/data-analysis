@@ -21,3 +21,6 @@ dependencies:
   - pylint
   - rope
   - black
+
+  - pip:
+      - lightning-bolts
