@@ -129,5 +129,3 @@ with mp_face_mesh.FaceMesh(
             break
 
 cap.release()
-
-# %%
