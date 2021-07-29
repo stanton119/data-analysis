@@ -51,10 +51,14 @@ Repo directory:
     *   Speed of fitting and predict of `neuralprophet` vs `fbprophet`
 *   [TimeSeries/neural_prophet/arima.md](https://github.com/stanton119/data-analysis/blob/master/TimeSeries/neural_prophet/arima.md)
     *   Can we fit long AR models with `neuralprophet`
+*   [machine_vision/3d_screen/README.md](https://github.com/stanton119/data-analysis/tree/master/machine_vision/3d_screen/README.md)
+    *   Using Google's `mediapipe` to try simulate a 3D screen
 
 ## Techniques
 *   [ParquetDatasets/parquet_datasets.ipynb](https://github.com/stanton119/data-analysis/blob/master/ParquetDatasets/parquet_datasets.ipynb)
     *   Exporting dataframes to partitioned parquet files.
+*   [Dask vs multiprocessing](https://github.com/stanton119/data-analysis/blob/master/parallel_processing/dask_vs_multiprocessing.py)
+    *   Comparing the API fo dask to multiprocessing for general functions
 
 ### Bayesian Regression
 *   [BootstrappedRegessionCoefficients/bootstrap_regression.ipynb](https://github.com/stanton119/data-analysis/blob/master/BootstrappedRegessionCoefficients/bootstrap_regression.ipynb)
@@ -96,13 +100,12 @@ Use the `settings.json` file in the repo
 *   PySpark
     *   Dask/Koalas
     *   Activation functions
-*   Multiprocessing vs dask
-    *   Making http requests in each
 *   Docker
 *   Computer vision
     *   Media pipe
 *   Gaussian processes
 *   Bayesian regression
+*   Recommender systems
 *   Switch away from Matplotlib
 *   Quantile regression in pytorch
     *   Lasso regression
