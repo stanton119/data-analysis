@@ -7,7 +7,7 @@ Steps involved:
 *   Move the front square based on the position of the viewer's face.
 *   Amount it moves depends on the depth between the squares.
 
-![gif](https://github.com/stanton119/data-analysis/raw/3d_screen/machine_vision/3d_screen/demo.gif)
+![gif](https://github.com/stanton119/data-analysis/raw/master/machine_vision/3d_screen/demo.gif)
 
 ## Installation
 Env setup:
