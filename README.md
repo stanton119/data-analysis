@@ -51,7 +51,7 @@ Repo directory:
     *   Speed of fitting and predict of `neuralprophet` vs `fbprophet`
 *   [TimeSeries/neural_prophet/arima.md](https://github.com/stanton119/data-analysis/blob/master/TimeSeries/neural_prophet/arima.md)
     *   Can we fit long AR models with `neuralprophet`
-*   [machine_vision/3d_screen/README.md](https://github.com/stanton119/data-analysis/tree/master/machine_vision/3d_screen/README.md)
+*   [machine_vision/3d_screen/README.md](https://github.com/stanton119/data-analysis/blob/master/machine_vision/3d_screen/README.md)
     *   Using Google's `mediapipe` to try simulate a 3D screen
 
 ## Techniques
