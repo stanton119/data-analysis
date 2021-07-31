@@ -51,8 +51,10 @@ Repo directory:
     *   Speed of fitting and predict of `neuralprophet` vs `fbprophet`
 *   [TimeSeries/neural_prophet/arima.md](https://github.com/stanton119/data-analysis/blob/master/TimeSeries/neural_prophet/arima.md)
     *   Can we fit long AR models with `neuralprophet`
-*   [machine_vision/3d_screen/README.md](https://github.com/stanton119/data-analysis/blob/master/machine_vision/3d_screen/README.md)
+*   [machine_vision/3d_screen](https://github.com/stanton119/data-analysis/tree/master/machine_vision/3d_screen)
     *   Using Google's `mediapipe` to try simulate a 3D screen
+*   [machine_vision/face_distance](https://github.com/stanton119/data-analysis/tree/master/machine_vision/face_distance)
+    *   Measure the distance of a face to the screen from a webcam feed
 
 ## Techniques
 *   [ParquetDatasets/parquet_datasets.ipynb](https://github.com/stanton119/data-analysis/blob/master/ParquetDatasets/parquet_datasets.ipynb)
