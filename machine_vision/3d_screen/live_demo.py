@@ -124,7 +124,7 @@ with mp_face_mesh.FaceMesh(
                     colour=colour,
                 )
 
-        cv2.imshow("MediaPipe FaceMesh", image)
+        cv2.imshow("3D Screen", image)
         if cv2.waitKey(5) & 0xFF == 27:
             break
 
