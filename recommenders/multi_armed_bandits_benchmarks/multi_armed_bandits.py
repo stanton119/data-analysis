@@ -1,7 +1,7 @@
 # %% [markdown]
 # # Exploring multi-armed bandit baseline strategies
 # Our problem:
-# For the next 200 days, we will have 1 hour to play a video games.
+# For the next 100 days, we will have 1 hour to play a video games.
 # We have 20 games, but have no idea which one we will enjoy the most.
 # How do we decide what to play each day?
 # We assume that the enjoyment we get from a single hour is random and comes from a beta distribution.
@@ -51,8 +51,6 @@ class Game:
             fig = None
         ax.plot(x, y)
         return fig
-
-
 # %% [markdown]
 # We can plot the distributions of our random 20 games.
 # There is a lot of overlap and wide distributions.
@@ -76,8 +74,6 @@ def perfect_strategy(games, days):
     # choose best each time
     best_game = np.argmax([game.dist.mean() for game in games])
     return games[best_game].sample(days)
-
-
 # %% [markdown]
 # ## Worst strategy
 # With perfect knowledge of the games, this strategy simply selects every time the game with the lowest expected enjoyment.
@@ -86,8 +82,6 @@ def worst_strategy(games, days):
     # choose best each time
     best_game = np.argmin([game.dist.mean() for game in games])
     return games[best_game].sample(days)
-
-
 # %% [markdown]
 # ## Exploration only
 # We select a random game every time, regardless of what has happened before.
@@ -99,8 +93,6 @@ def exploration_strategy(games, days):
     for idx in rand_choice:
         strat_explore.append(games[idx].sample(1))
     return np.array(strat_explore).flatten()
-
-
 # %% [markdown]
 # ## Epsilon strategy
 # Each day we decide to either explore or to choice the best game we have seen so far.
@@ -132,8 +124,6 @@ def epsilon_strategy(games, days, threshold=0.1):
         previous_samples[choice].append(sample)
     # return enjoyement scores and game choices
     return np.array(strat_epsilon).flatten(), np.array(choices).flatten()
-
-
 # %% [markdown]
 # ## Upper confidence bound strategy
 # On a given day, we have uncertainty on the observed mean reward we get from each game.
@@ -178,8 +168,6 @@ def ucb_strategy(games, days, explore_threshold: float = 2):
         previous_samples[choice].append(sample)
     # return enjoyement scores and game choices
     return np.array(strat_ucb).flatten(), np.array(choices).flatten()
-
-
 # %% [markdown]
 # ## Running each strategy
 # We test each strategy over 100 days.
@@ -214,8 +202,11 @@ df_strat = pd.DataFrame(strategy)
 # plot results
 fig, ax = plt.subplots(figsize=(10, 6))
 df_strat.cumsum().plot(ax=ax)
-
+ax.set_ylabel("Cumulative reward")
+ax.set_xlabel("Days")
+plt.show()
 # %% [markdown]
+## Simulations
 # As we are sampling from each game's distribution, the results will be random.
 # Repeating the experiement will give different results.
 # Indeed, in some cases, we can beat the perfect strategy.
@@ -224,8 +215,6 @@ df_strat.cumsum().plot(ax=ax)
 #
 # As such we repeat the experiment 500 times and record the final reward for each strategy.
 # %%
-# monte carlo simulations
-# distribution of end positions
 import tqdm
 
 simulations = []
@@ -258,7 +247,6 @@ with pd.option_context("display.float_format", "{:0.3f}".format):
         (df_simulations["perfect"].mean() - df_simulations.mean())
         / df_simulations["perfect"].mean()
     )
-
 # %% [markdown]
 # The results show now that the perfect/worst strategies, as expected, set the extreme performance.
 # Exploration only gives us a benchmark of acting at random.
@@ -279,4 +267,4 @@ fig, ax = plt.subplots(figsize=(10, 6))
 sns.kdeplot(data=df_simulations, ax=ax)
 ax.set_title("Simulation PDF")
 ax.set_xlabel("End reward")
-fig
+plt.show()
