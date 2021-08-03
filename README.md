@@ -54,13 +54,15 @@ Repo directory:
 *   [machine_vision/3d_screen](https://github.com/stanton119/data-analysis/tree/master/machine_vision/3d_screen)
     *   Using Google's `mediapipe` to try simulate a 3D screen
 *   [machine_vision/face_distance](https://github.com/stanton119/data-analysis/tree/master/machine_vision/face_distance)
-    *   Measure the distance of a face to the screen from a webcam feed
+    *   Using Google's `mediapipe`, measure the distance of a face to the screen from a webcam feed
 
 ## Techniques
 *   [ParquetDatasets/parquet_datasets.ipynb](https://github.com/stanton119/data-analysis/blob/master/ParquetDatasets/parquet_datasets.ipynb)
     *   Exporting dataframes to partitioned parquet files.
 *   [Dask vs multiprocessing](https://github.com/stanton119/data-analysis/blob/master/parallel_processing/dask_vs_multiprocessing.py)
     *   Comparing the API fo dask to multiprocessing for general functions
+*   [recommenders/multi_armed_bandits_benchmarks](https://github.com/stanton119/data-analysis/blob/master/recommenders/multi_armed_bandits_benchmarks/multi_armed_bandits.md)
+    *   Exploring multi-armed bandit benchmarks
 
 ### Bayesian Regression
 *   [BootstrappedRegessionCoefficients/bootstrap_regression.ipynb](https://github.com/stanton119/data-analysis/blob/master/BootstrappedRegessionCoefficients/bootstrap_regression.ipynb)
