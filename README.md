@@ -93,20 +93,21 @@ Use the `settings.json` file in the repo
 
 ## Future areas
 *   Time series forecasting
+    *   Greykite
+    *   LightGBM
 *   Deep learning
     *   Pytorch
     *   Embeddings
     *   Tensorflow/pytorch - 1D functions
     *   FashionMNIST VAE
-    *   NLP
 *   Causal inference
 *   Data validations - great expectations
-*   PySpark
-    *   Dask/Koalas
-    *   Activation functions
+    *   https://github.com/tamsanh/kedro-great
 *   Docker
 *   Computer vision
-    *   Media pipe
+*   NLP
+    *   Word embeddings plot with hiplot
+        *   Plot with PCA first and compare with hiplot
 *   Gaussian processes
 *   Bayesian regression
 *   Recommender systems
@@ -121,3 +122,7 @@ Use the `settings.json` file in the repo
     *   NBA player VAE - how are players related
     *   Walmart demand forecasting
       *   Pyspark, kedro
+    *   Media pipe - 3d audio
+
+### Datasets
+*   https://archive-beta.ics.uci.edu/ml/datasets#music
