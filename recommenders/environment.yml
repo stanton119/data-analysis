@@ -1,0 +1,23 @@
+name: recommender_env
+channels:
+  - conda-forge
+dependencies:
+  - python
+  - pip
+  
+  # Computation
+  - numpy
+  - pandas
+  - dask
+  - tqdm
+
+  # Plotting
+  - matplotlib
+  - seaborn
+
+  # Debugging
+  - jupyter
+  - pylint
+  - black
+
+  # - pip:
