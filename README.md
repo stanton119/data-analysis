@@ -92,8 +92,17 @@ Custom library installed as a dev library for continued development
 Use the `settings.json` file in the repo
 
 ## Future areas
+### Tools/areas to explore
 *   Time series forecasting
     *   Greykite
+        *   https://arxiv.org/abs/2105.01098
+        *   https://towardsdatascience.com/linkedins-response-to-prophet-silverkite-and-greykite-4fd0131f64cb
+        *   Imputation of missing regressors
+        *   Change points in seasonalities
+        *   Quantiles loss
+        *   Utilities for diagnosing
+        *   faster inference
+        *   Autoregressive
     *   LightGBM
 *   Deep learning
     *   Pytorch
@@ -106,23 +115,40 @@ Use the `settings.json` file in the repo
 *   Docker
 *   Computer vision
 *   NLP
-    *   Word embeddings plot with hiplot
-        *   Plot with PCA first and compare with hiplot
 *   Gaussian processes
 *   Bayesian regression
 *   Recommender systems
+    *   Automatic playlist continuation
 *   Switch away from Matplotlib
 *   Quantile regression in pytorch
     *   Lasso regression
     *   Dropout better than regularisation?
-    *   Compare linear regression MC dropout to theoretical results
 *   GBM/LightGBM
-*   Project work
-    *   Optimal car charging schedule
-    *   NBA player VAE - how are players related
-    *   Walmart demand forecasting
-      *   Pyspark, kedro
-    *   Media pipe - 3d audio
 
 ### Datasets
 *   https://archive-beta.ics.uci.edu/ml/datasets#music
+
+
+### Tasks
+*   Build project template repo
+*   Publish interpret-ml piece
+*   NBA
+    *   Player position classification model
+    *   Bayesian sequential team rating
+    *   Player VAE - how are players related
+        *   College stats to NBA VAE
+*   M5/M4 forecasting
+    *   Walmart demand forecasting
+    *   with LightGBM
+    *   Greykite
+*   PCA via embedding layer
+*   Compare autoencoder on images to PCA compression
+*   NN to predict tempo from song, generate dummy dataset
+*   Word embeddings plot with hiplot
+    *   Plot with PCA first and compare with hiplot
+*   Compare linear regression MC dropout to theoretical results
+*   Optimal car charging schedule
+*   Media pipe - 3d audio
+    *   Face distance javascript web app with react
+*   Covid UK plot against time
+    *   https://www.reddit.com/r/dataisbeautiful/comments/pay78n/oc_active_covid19_cases_per_capita_in_usa_1212020/

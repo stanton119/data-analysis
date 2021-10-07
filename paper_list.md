@@ -97,3 +97,14 @@ https://arxiv.org/abs/1911.12436
 * AR coefficients match classical AR models
 * Coefficients are regularised to introduce sparseness
 * No need for seasonal decomposition models if we can use AR?
+
+### Cecoupling magnitude and phase estimation with deep ResUNet for music source separation
+https://arxiv.org/pdf/2109.05418.pdf
+*   Network designed for source separation
+    *   Generates masks for various instruments etc. which are then applied to the original sound STFT
+    *   Applied to dataset - MUSDB18
+*   novelty:
+    *   Uses complex masks rather than magnitude only based masks to decouple masks into magnitude and phase
+    *   Phase representation improves on previous methods' degradation
+    *   More appropriately weighted masks which do not have to sum to 1
+    *   Deeper network of residual UNet layers

@@ -12,6 +12,7 @@ EnergyCapacity/data/*
 Unpublished/auto_ml/auto_ml/*
 Unpublished/auto_ml/structured_data_classifier/*
 **/lightning_logs/
+PyTorchStuff/autoencoders/data/*
 
 #### standard stuff ####
 # Created by https://www.gitignore.io/api/macos,python,jupyternotebook
