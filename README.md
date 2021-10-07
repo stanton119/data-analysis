@@ -63,6 +63,8 @@ Repo directory:
     *   Comparing the API fo dask to multiprocessing for general functions
 *   [recommenders/multi_armed_bandits_benchmarks](https://github.com/stanton119/data-analysis/blob/master/recommenders/multi_armed_bandits_benchmarks/multi_armed_bandits.md)
     *   Exploring multi-armed bandit benchmarks
+*   [PCA image compression](https://github.com/stanton119/data-analysis/blob/master/PyTorchStuff/autoencoders/pca.md)
+    *   Using PCA to compress MNIST images
 
 ### Bayesian Regression
 *   [BootstrappedRegessionCoefficients/bootstrap_regression.ipynb](https://github.com/stanton119/data-analysis/blob/master/BootstrappedRegessionCoefficients/bootstrap_regression.ipynb)
