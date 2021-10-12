@@ -1,15 +1,4 @@
 # %% [markdown]
-# *   the more parameters the better the MSE for the autoencoder
-# *   doesnt overfit despite more parameters than data
-# *   digit accuracy is much more varied than pca, 1 is very good from the outset
-# *   dont need many latent space dimensions in order to get decent results
-# *   fit small model 10x, find range of MSE on train/test
-# *   number of tunable parameters in dense layer >> cnn?
-# *   building a classifier on the encoded space should be easy
-# *   training speed doesn't seem to change significantly with latent space size
-
-
-# %% [markdown]
 # # Image compression - part 2. - Autoencoders
 # In this post I will be looking at building an autoencoder to compress the MNIST dataset.
 # See part 1. [here](https://github.com/stanton119/data-analysis/blob/master/PyTorchStuff/autoencoders/pca.md).
@@ -29,6 +18,8 @@ import torch
 import torchvision
 import matplotlib.pyplot as plt
 
+plt.style.use("seaborn-whitegrid")
+
 transform = torchvision.transforms.Compose([torchvision.transforms.ToTensor()])
 
 mnist_train_data = torchvision.datasets.MNIST(
@@ -41,6 +32,7 @@ mnist_test_data = torchvision.datasets.MNIST(
 )
 mnist_test = torch.utils.data.DataLoader(mnist_test_data, batch_size=64)
 # %% [markdown]
+# ## Dense Autoencoder
 # Our first autoencoder will be based on dense layers.
 # I may follow up with a comparison to convolution layers which are typically used in image based problems.
 # 
@@ -106,6 +98,7 @@ print(model_dense.summarize())
 # %% [markdown]
 # We will examine this is more detail later.
 # 
+# ## Training
 # We will now create several dense networks with different latent space sizes.
 # We save the networks each time so that we can recall them later for predictions.
 # Plotting the training MSE shows if the model has converged successfully.
@@ -127,6 +120,7 @@ for n_latent in latent_space_dim:
     ax.set_xlabel("Batches")
     ax.set_ylabel("MSE")
 # %% [markdown]
+# ## Results
 # We need to get the MSE of all images so we can see how the latent space affects reconstruction error.
 # For this we reload each network and predict all the training images.
 # %%
@@ -206,7 +200,11 @@ fig.legend()
 # %% [markdown]
 # We can see that the dense autoencoder does do better generally.
 # Particularly so at small latent space sizes.
+# Once the latent space gets much larger PCA becomes comparible.
+# With a latent space of 50, in the autoencoder this is greater than the output
+# size of the preceeding layer, hence we dont expect any improvement here.
 # 
+# ## Test set
 # However as noted prior, there are more parameters than images, so we could easily be overfitting here.
 # To confirm we can check the reconstruction error on the unseen test set.
 # %%
@@ -251,10 +249,10 @@ fig.legend()
 # We obtain very similar results to before.
 # This gives us a good indication we are not overfitting.
 # Therefore the autoencoders should generalise to unseen images fine.
-# %%
-# Compare images to PCA of same latent dimension.
-
-# %% [markdown]
+# For more confidence it would be nice to apply cross validation and get multiple instances of the model and results.
+# I'll skip this for now in the interests of time.
+# 
+# ## Results - images
 # We have an improvement in MSE but it's good to check the actual reconstructed images to confirm with our eyes.
 # 
 # First for PCA - top row are the originals, subsequent rows are increasing latent space size.
@@ -339,3 +337,9 @@ fig.legend()
 # We can see the reconstruction error for an autoencoder with 5 latent variables is comparible
 # to PCA with 10 components.
 # The autoencoder seems to do better reconstructing '1', '6' and '7'.
+# 
+# There are plenty of hyperparameters to tune with the autoencoder.
+# For example all the other layer sizes and number of layers.
+# Indeed we could switch the dense layers out for convolution layers...
+# 
+# Another thought, it should be fairly easy to train a digit classifier on the latent representation of the images.
