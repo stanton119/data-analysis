@@ -65,6 +65,8 @@ Repo directory:
     *   Exploring multi-armed bandit benchmarks
 *   [PCA image compression](https://github.com/stanton119/data-analysis/blob/master/PyTorchStuff/autoencoders/pca.md)
     *   Using PCA to compress MNIST images
+*   [Dense autoencoder image compression](https://github.com/stanton119/data-analysis/blob/master/PyTorchStuff/autoencoders/autoencoder.md)
+    *   Using a dense autoencoder to compress MNIST images
 
 ### Bayesian Regression
 *   [BootstrappedRegessionCoefficients/bootstrap_regression.ipynb](https://github.com/stanton119/data-analysis/blob/master/BootstrappedRegessionCoefficients/bootstrap_regression.ipynb)
@@ -144,7 +146,6 @@ Use the `settings.json` file in the repo
     *   with LightGBM
     *   Greykite
 *   PCA via embedding layer
-*   Compare autoencoder on images to PCA compression
 *   NN to predict tempo from song, generate dummy dataset
 *   Word embeddings plot with hiplot
     *   Plot with PCA first and compare with hiplot
