@@ -41,7 +41,7 @@ Repo directory:
 ### [Tensorflow](TensorflowStuff/)
 *   [TensorflowStuff/overfitting_nn.ipynb](https://github.com/stanton119/data-analysis/blob/master/TensorflowStuff/overfitting_nn.ipynb)
     *   Do Neural Networks overfit?
-*   [FashionCNN/fashion_vae.ipynb](https://github.com/stanton119/data-analysis/blob/master/FashionCNN/fashion_vae.ipynb)
+*   [FashionCNN/fashion_cnn.ipynb](https://github.com/stanton119/data-analysis/blob/master/FashionCNN/fashion_cnn.ipynb)
     *   Convolution neural network for predicting the Fashion MNIST dataset.
 *   [FashionCNN/fashion_batch_norm.ipynb](https://github.com/stanton119/data-analysis/blob/master/FashionCNN/fashion_batch_norm.ipynb)
     *   Batch normalisation layer applied to the above CNN model
