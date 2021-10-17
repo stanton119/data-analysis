@@ -2,7 +2,7 @@
 
 We compare the performance of adding a batch normalisation layer to a convolution neural network (CNN). For this we use the results from a previous post on creating a CNN for fashion MNIST data.
 
-[https://github.com/stanton119/data-analysis/blob/master/FashionCNN/fashion_vae.ipynb]
+[https://github.com/stanton119/data-analysis/blob/master/FashionCNN/fashion_cnn.ipynb]
 
 
 ```python
@@ -17,7 +17,7 @@ tfkl = tf.keras.layers
 
 ## Data prep
 The following code is copied from the previous post here:
-[https://github.com/stanton119/data-analysis/blob/master/FashionCNN/fashion_vae.ipynb]
+[https://github.com/stanton119/data-analysis/blob/master/FashionCNN/fashion_cnn.ipynb]
 
 
 ```python
