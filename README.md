@@ -108,6 +108,8 @@ Use the `settings.json` file in the repo
         *   faster inference
         *   Autoregressive
     *   LightGBM
+    *   Orbit
+        *   https://eng.uber.com/orbit/
 *   Deep learning
     *   Pytorch
     *   Embeddings
@@ -119,10 +121,13 @@ Use the `settings.json` file in the repo
 *   Docker
 *   Computer vision
 *   NLP
+    *   Keyword extraction from reviews etc.
+    *   Sentiment analysis
 *   Gaussian processes
 *   Bayesian regression
 *   Recommender systems
     *   Automatic playlist continuation
+    *   Thompson sampling example
 *   Switch away from Matplotlib
 *   Quantile regression in pytorch
     *   Lasso regression
@@ -131,6 +136,8 @@ Use the `settings.json` file in the repo
 
 ### Datasets
 *   https://archive-beta.ics.uci.edu/ml/datasets#music
+*   https://ritual.uh.edu/mpst-2018/
+    *   NLP
 
 
 ### Tasks
@@ -155,3 +162,12 @@ Use the `settings.json` file in the repo
     *   Face distance javascript web app with react
 *   Covid UK plot against time
     *   https://www.reddit.com/r/dataisbeautiful/comments/pay78n/oc_active_covid19_cases_per_capita_in_usa_1212020/
+*   Autoencoder using transfer learning?
+    *   what do we use for the decoder?
+*   Fit a sinusoid to noisy data
+    *   Fourier
+    *   Gradient descent
+    *   MCMC
+    *   Variational inference
+*   Fitting NNs to common functions (exp etc.), deep vs wide, number of parameters for given error
+*   Fit a NN to seasonal data with fourier series components
