@@ -98,7 +98,7 @@ https://arxiv.org/abs/1911.12436
 * Coefficients are regularised to introduce sparseness
 * No need for seasonal decomposition models if we can use AR?
 
-### Cecoupling magnitude and phase estimation with deep ResUNet for music source separation
+### Decoupling magnitude and phase estimation with deep ResUNet for music source separation
 https://arxiv.org/pdf/2109.05418.pdf
 *   Network designed for source separation
     *   Generates masks for various instruments etc. which are then applied to the original sound STFT
@@ -108,3 +108,13 @@ https://arxiv.org/pdf/2109.05418.pdf
     *   Phase representation improves on previous methods' degradation
     *   More appropriately weighted masks which do not have to sum to 1
     *   Deeper network of residual UNet layers
+
+### A Contextual-Bandit Approach to Personalized News Article Recommendation
+https://arxiv.org/abs/1003.0146
+*   2012
+*   News articles are inpractical for colab filters as items to recommend are frequently changing
+    *   Cold start problem is big
+*   maximises click through rate by select optimal stories to recommend
+*   Uses info on user and article
+*   Suggests how the methods can be tested offline with random data
+*   
