@@ -7,6 +7,7 @@ TLDR:
 *   Concat all sentences to single long list with list of starting offsets
 *   Convert words to tokens
 *   Tokens + offsets -> nn.EmbeddingBag layer
+*   which converts to embeddings per token and then aggregates
 *   Outputs tensor of shape: [No of sentences, embedding size]
 
 Take arbitrary length sequence of words and classify the output.
@@ -45,7 +46,7 @@ Transform those tokens in a compact representations, embeddings.
 Similar to one hot encoding and then applying PCA to reduce the dimensional.
 
 These two lists (concat of sentences, and list of starting offsets) are fed into an nn.EmbeddingBag layer
-which converts the sentence tokens.
+which converts the sentence tokens into embeddings and then aggregates them via mean/sum etc..
 The output of the embedding layer is:
 [No of sentences, embedding size]
 or
