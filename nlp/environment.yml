@@ -1,0 +1,23 @@
+name: pytorch_nlp_env
+channels:
+  - conda-forge
+  - pytorch
+dependencies:
+  - python
+  - pip
+  
+  # Computation
+  - numpy
+  - pandas
+  - pytorch
+  - torchtext
+  - pytorch-lightning
+  - scikit-learn
+
+  # Plotting
+  - matplotlib
+  
+  # Debugging
+  - notebook
+  - pylint
+  - black
