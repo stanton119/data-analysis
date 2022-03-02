@@ -235,7 +235,7 @@ import numpy as np
 trainer = pl.Trainer(
     max_epochs=10,
     callbacks=[
-        pl.callbacks.early_stopping.EarlyStopping(monitor="val_loss", patience=30)
+        pl.callbacks.early_stopping.EarlyStopping(monitor="val_loss", patience=5)
     ],
 )
 trainer.fit(model, train_dataloader, valid_dataloader)
@@ -314,9 +314,64 @@ print("Checking the results of test dataset.")
 evaluate(test_dataloader)
 
 # %%
-# PR curves
+# validating results
+def predict_whole_dataloader(dataloader, prob_output: bool = True):
+    dataloader = torch.utils.data.DataLoader(
+        dataset=dataloader.dataset,
+        batch_size=len(dataloader.dataset),
+        collate_fn=collate_batch,
+    )
+    (text_tokens, labels) = next(iter(dataloader))
 
-train_dataset
+    with torch.no_grad():
+        output = model.forward(text_tokens)
 
-log_probit = model(text_pipeline(text))
-proba = torch.nn.Softmax(dim=1)(log_probit)[0]
+    if cost_fcn == "bin":
+        output = torch.nn.Sigmoid()(output)
+    else:
+        output = torch.nn.Softmax(dim=1)(output)
+
+    if not prob_output:
+        if cost_fcn == "bin":
+            # assume 0.5 prob threshold
+            output = output > 0.5
+        else:
+            output = output.argmax(1)
+
+    return output, labels
+
+
+
+dataloaders = {
+    "train": train_dataloader,
+    "valid": valid_dataloader,
+    "test": test_dataloader,
+}
+# %%
+# PR/ROC curves
+import sklearn.metrics
+import matplotlib.pyplot as plt
+
+plt.style.use("seaborn-whitegrid")
+
+fig, ax = plt.subplots(figsize=(10, 10), nrows=2)
+for name, dataloader in dataloaders.items():
+    proba, labels = predict_whole_dataloader(dataloader)
+    display = sklearn.metrics.PrecisionRecallDisplay.from_predictions(
+        y_true=labels, y_pred=proba, name=name, ax=ax[0]
+    )
+    display = sklearn.metrics.RocCurveDisplay.from_predictions(
+        y_true=labels, y_pred=proba, name=name, ax=ax[1]
+    )
+ax[0].set_title("2-class Precision-Recall curve")
+ax[1].set_title("ROC curve")
+
+# %%
+# confusion matrix
+fig, ax = plt.subplots(figsize=(10, 5*len(dataloaders)), nrows=len(dataloaders))
+for idx, (name, dataloader) in enumerate(dataloaders.items()):
+    output, labels = predict_whole_dataloader(dataloader, prob_output=False)
+
+    cm = sklearn.metrics.confusion_matrix(y_true=labels, y_pred=output)
+    cm_display = sklearn.metrics.ConfusionMatrixDisplay(cm).plot(ax=ax[idx])
+    ax[idx].set_title(name)
