@@ -25,6 +25,8 @@ Repo directory:
     *   Trying out `PyTorch Lightning`
 *   [PyTorchStuff/elastic_net/elastic_linear.md](https://github.com/stanton119/data-analysis/blob/master/PyTorchStuff/elastic_net/elastic_linear.md)
     *   Implementing an elastic net model in PyTorch
+*   [PyTorchStuff/fitting_multimodal_distributions/multimodal_beta.md](https://github.com/stanton119/data-analysis/blob/master/PyTorchStuff/fitting_multimodal_distributions/multimodal_beta.md)
+    *   Fitting a multimodal beta distribution via gradient descent
 
 ### [Pyro](FitDistWithPyro/)
 *   [FitDistWithPyro/fit_pyro_distribution.ipynb](https://github.com/stanton119/data-analysis/blob/master/FitDistWithPyro/fit_pyro_distribution.ipynb)
@@ -169,5 +171,7 @@ Use the `settings.json` file in the repo
     *   Gradient descent
     *   MCMC
     *   Variational inference
+*   Double dip loss trajectories
+    *   
 *   Fitting NNs to common functions (exp etc.), deep vs wide, number of parameters for given error
 *   Fit a NN to seasonal data with fourier series components
