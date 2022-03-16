@@ -148,7 +148,7 @@ plt.show()
     
 
 
-## Fitting the model disrtibution
+## Fitting the model distribution
 To train the model with our random sample data created above, we need to setup a dataloader to pass to the trainer.
 
 
