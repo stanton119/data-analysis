@@ -78,6 +78,10 @@ Repo directory:
 *   [SequentialBayesianRegression/adaptive_coefficients.md](https://github.com/stanton119/data-analysis/blob/master/SequentialBayesianRegression/adaptive_coefficients.md)
     *   Bayesian regression adapting to non-stationary data
 
+### Causal Inference
+*   [CausalInference/causal_regression_coefficient.ipynb](https://github.com/stanton119/data-analysis/blob/master/CausalInference/causal_regression_coefficient.ipynb)
+    *   Exploring the effect of confounding variables on regression coefficients
+
 ## Installation
 The various analysis was built in Python 3.
 
