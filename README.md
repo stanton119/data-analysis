@@ -25,7 +25,7 @@ Repo directory:
     *   Trying out `PyTorch Lightning`
 *   [PyTorchStuff/elastic_net/elastic_linear.md](https://github.com/stanton119/data-analysis/blob/master/PyTorchStuff/elastic_net/elastic_linear.md)
     *   Implementing an elastic net model in PyTorch
-*   [PyTorchStuff/fitting_multimodal_distributions/multimodal_beta.md](https://github.com/stanton119/data-analysis/blob/master/PyTorchStuff/fitting_multimodal_distributions/multimodal_beta.md)
+*   [FittingMultimodalDistributions/multimodal_beta_pytorch/multimodal_beta.md](https://github.com/stanton119/data-analysis/blob/master/FittingMultimodalDistributions/multimodal_beta_pytorch/multimodal_beta.md)
     *   Fitting a multimodal beta distribution via gradient descent
 
 ### [Pyro](FitDistWithPyro/)
@@ -98,6 +98,9 @@ Custom library installed as a dev library for continued development
 Use the `settings.json` file in the repo
 
 ## Future areas
+
+Aim is for future work to be incorporated by working on separate branches and merge to master when finished.
+
 ### Tools/areas to explore
 *   Time series forecasting
     *   Greykite
