@@ -1,0 +1,15 @@
+numpy
+pandas
+tensorflow
+tensorflow-probability
+tensorflow_datasets
+scikit-learn
+
+autokeras
+keras-tuner
+
+matplotlib
+
+jupyter
+pylint
+black

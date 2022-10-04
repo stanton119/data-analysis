@@ -1,0 +1,25 @@
+name: auto_ml_env
+channels:
+  - anaconda
+  - conda-forge
+dependencies:
+  - python=3.7
+  - pip
+  
+  # Computation
+  - numpy
+  - pandas
+  - tensorflow
+  - keras-tuner
+
+  # Plotting
+  - matplotlib
+
+  # Debugging
+  - jupyter
+  - pylint
+  - rope
+  - black
+
+  - pip:
+    - autokeras
