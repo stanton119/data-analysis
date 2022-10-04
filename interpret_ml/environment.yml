@@ -1,0 +1,26 @@
+name: interpret_ml_env
+channels:
+  - anaconda
+  - conda-forge
+dependencies:
+  - python=3.7
+  - pip
+  
+  # Computation
+  - numpy
+  - pandas
+  - scikit-learn
+  - xgboost
+
+  # Plotting
+  - matplotlib
+
+  # Debugging
+  - jupyter
+  - pylint
+  - rope
+  - black
+
+  - pip:
+    - interpret
+    - xgboost
