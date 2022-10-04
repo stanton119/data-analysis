@@ -1,0 +1,21 @@
+name: tensorflow
+channels:
+  - anaconda
+  - conda-forge
+dependencies:
+  - python=3.7
+  - pip
+  
+  # Computation
+  - numpy
+  - pandas
+  - tensorflow
+
+  # Plotting
+  - matplotlib
+
+  # Debugging
+  - jupyter
+  - pylint
+  - rope
+  - black

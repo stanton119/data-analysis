@@ -1,0 +1,28 @@
+name: heart_disease_env
+channels:
+  - anaconda
+  - conda-forge
+dependencies:
+  - python
+  - pip
+  
+  # Computation
+  - numpy
+  - pandas
+  - tensorflow
+  - tensorflow-probability
+  - statsmodels
+  - scikit-learn
+
+
+  # Plotting
+  - matplotlib
+
+  # Debugging
+  - jupyter
+  - pylint
+  - rope
+  - black
+
+  - pip:
+    - interpret
