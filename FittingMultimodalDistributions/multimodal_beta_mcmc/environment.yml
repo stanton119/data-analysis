@@ -1,0 +1,25 @@
+name: pymc_env
+channels:
+  - conda-forge
+dependencies:
+  - python=3.9
+  - pip
+  
+  # Computation
+  - numpy
+  - pandas
+
+  # pymc
+  - pymc3
+  - theano-pymc
+  - mkl
+  - mkl-service
+
+  # Plotting
+  - matplotlib
+  - arviz
+  
+  # Debugging
+  - notebook
+  - pylint
+  - black

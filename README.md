@@ -25,7 +25,7 @@ Repo directory:
     *   Trying out `PyTorch Lightning`
 *   [PyTorchStuff/elastic_net/elastic_linear.md](https://github.com/stanton119/data-analysis/blob/master/PyTorchStuff/elastic_net/elastic_linear.md)
     *   Implementing an elastic net model in PyTorch
-*   [PyTorchStuff/fitting_multimodal_distributions/multimodal_beta.md](https://github.com/stanton119/data-analysis/blob/master/PyTorchStuff/fitting_multimodal_distributions/multimodal_beta.md)
+*   [FittingMultimodalDistributions/multimodal_beta_pytorch/multimodal_beta.md](https://github.com/stanton119/data-analysis/blob/master/FittingMultimodalDistributions/multimodal_beta_pytorch/multimodal_beta.md)
     *   Fitting a multimodal beta distribution via gradient descent
 
 ### [Pyro](FitDistWithPyro/)
@@ -78,6 +78,10 @@ Repo directory:
 *   [SequentialBayesianRegression/adaptive_coefficients.md](https://github.com/stanton119/data-analysis/blob/master/SequentialBayesianRegression/adaptive_coefficients.md)
     *   Bayesian regression adapting to non-stationary data
 
+### Causal Inference
+*   [CausalInference/causal_regression_coefficient.ipynb](https://github.com/stanton119/data-analysis/blob/master/CausalInference/causal_regression_coefficient.ipynb)
+    *   Exploring the effect of confounding variables on regression coefficients
+
 ## Installation
 The various analysis was built in Python 3.
 
@@ -98,6 +102,9 @@ Custom library installed as a dev library for continued development
 Use the `settings.json` file in the repo
 
 ## Future areas
+
+Aim is for future work to be incorporated by working on separate branches and merge to master when finished.
+
 ### Tools/areas to explore
 *   Time series forecasting
     *   Greykite
