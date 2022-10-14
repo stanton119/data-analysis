@@ -27,6 +27,8 @@ Repo directory:
     *   Implementing an elastic net model in PyTorch
 *   [FittingMultimodalDistributions/multimodal_beta_pytorch/multimodal_beta.md](https://github.com/stanton119/data-analysis/blob/master/FittingMultimodalDistributions/multimodal_beta_pytorch/multimodal_beta.md)
     *   Fitting a multimodal beta distribution via gradient descent
+*   [FittingMultimodalDistributions/zero_inflated_poisson_pytorch/zero_inflated_poisson.md](https://github.com/stanton119/data-analysis/blob/master/FittingMultimodalDistributions/zero_inflated_poisson_pytorch/zero_inflated_poisson.md)
+    *   Fitting a zero-inflated Poisson distribution via gradient descent
 
 ### [Pyro](FitDistWithPyro/)
 *   [FitDistWithPyro/fit_pyro_distribution.ipynb](https://github.com/stanton119/data-analysis/blob/master/FitDistWithPyro/fit_pyro_distribution.ipynb)
@@ -94,6 +96,9 @@ source dataAnalysisEnv/bin/activate
 python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
+
+### Markdown from Notebooks
+`jupyter nbconvert notebook.ipynb --to markdown`
 
 ### Standard library
 Custom library installed as a dev library for continued development
@@ -169,7 +174,7 @@ Aim is for future work to be incorporated by working on separate branches and me
 *   Optimal car charging schedule
 *   Media pipe - 3d audio
     *   Face distance javascript web app with react
-*   Covid UK plot against time
+*   Covid UK plot against time on a map
     *   https://www.reddit.com/r/dataisbeautiful/comments/pay78n/oc_active_covid19_cases_per_capita_in_usa_1212020/
 *   Autoencoder using transfer learning?
     *   what do we use for the decoder?
@@ -179,6 +184,5 @@ Aim is for future work to be incorporated by working on separate branches and me
     *   MCMC
     *   Variational inference
 *   Double dip loss trajectories
-    *   
 *   Fitting NNs to common functions (exp etc.), deep vs wide, number of parameters for given error
 *   Fit a NN to seasonal data with fourier series components
