@@ -2,6 +2,7 @@
 !.vscode/settings.json
 
 dataAnalysisEnv/
+data/
 */data/*.csv
 */data/*.pq
 */HeartDisease/data/*
