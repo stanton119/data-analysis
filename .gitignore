@@ -1,8 +1,11 @@
 .vscode/*
 !.vscode/settings.json
 
-dataAnalysisEnv/
+# general stuff
 data/
+
+# project specific
+dataAnalysisEnv/
 */data/*.csv
 */data/*.pq
 */HeartDisease/data/*
