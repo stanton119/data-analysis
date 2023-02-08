@@ -3,20 +3,6 @@
 Repo directory:  
 *   Projects are split by folders
 
-## Applied datasets
-*   [TFL Cycle Analysis](https://github.com/stanton119/data-analysis/tree/master/TFLCycles)
-    *   Analysis in to the number of bike trips taken per day in London.
-*   [NBA Score Trajectories](https://github.com/stanton119/nba-scores)
-    *   Flask app to show scores of a basketball match against time.
-*   [Installed energy capacity](https://github.com/stanton119/data-analysis/blob/master/EnergyCapacity/installed_energy_capacity.ipynb)
-    *   Analysis into European installed energy capacity
-*   [NBA LeBron Minutes](https://github.com/stanton119/data-analysis/tree/master/NBA/minutes_played/minutes_played.md)
-    *   Analysis into LeBron James playing minutes
-*   [NBA Shooting - Kedro project](https://github.com/stanton119/data-analysis/tree/master/NBA/nba-analysis)
-    *   Kedro data pipelines to plot player scoring probability distributions
-*   [NBA Shooting Data](https://github.com/stanton119/data-analysis/tree/master/NBA/NBAShotSelection)
-    *   Not finished yet - animations of shots taken by Kobe Bryant over time.
-
 ## Model frameworks
 ### [Pytorch](PyTorchStuff/)
 *   [PyTorchStuff/nonlinear_regression/nonlinear_regression.md](https://github.com/stanton119/data-analysis/blob/master/PyTorchStuff/nonlinear_regression/nonlinear_regression.md)
@@ -84,6 +70,20 @@ Repo directory:
 *   [CausalInference/causal_regression_coefficient.ipynb](https://github.com/stanton119/data-analysis/blob/master/CausalInference/causal_regression_coefficient.ipynb)
     *   Exploring the effect of confounding variables on regression coefficients
 
+## Applied datasets
+*   [TFL Cycle Analysis](https://github.com/stanton119/data-analysis/tree/master/TFLCycles)
+    *   Analysis in to the number of bike trips taken per day in London.
+*   [NBA Score Trajectories](https://github.com/stanton119/nba-scores)
+    *   Flask app to show scores of a basketball match against time.
+*   [Installed energy capacity](https://github.com/stanton119/data-analysis/blob/master/EnergyCapacity/installed_energy_capacity.ipynb)
+    *   Analysis into European installed energy capacity
+*   [NBA LeBron Minutes](https://github.com/stanton119/data-analysis/tree/master/NBA/minutes_played/minutes_played.md)
+    *   Analysis into LeBron James playing minutes
+*   [NBA Shooting - Kedro project](https://github.com/stanton119/data-analysis/tree/master/NBA/nba-analysis)
+    *   Kedro data pipelines to plot player scoring probability distributions
+*   [NBA Shooting Data](https://github.com/stanton119/data-analysis/tree/master/NBA/NBAShotSelection)
+    *   Not finished yet - animations of shots taken by Kobe Bryant over time.
+
 ## Installation
 The various analysis was built in Python 3.
 
@@ -98,7 +98,10 @@ pip install -r requirements.txt
 ```
 
 ### Markdown from Notebooks
-`jupyter nbconvert notebook.ipynb --to markdown`
+```
+jupyter nbconvert notebook.ipynb --to markdown
+```
+This is automated via github actions.
 
 ### Standard library
 Custom library installed as a dev library for continued development
@@ -148,7 +151,7 @@ Aim is for future work to be incorporated by working on separate branches and me
     *   Dropout better than regularisation?
 *   GBM/LightGBM
 
-### Datasets
+### Datasets to explore
 *   https://archive-beta.ics.uci.edu/ml/datasets#music
 *   https://ritual.uh.edu/mpst-2018/
     *   NLP
@@ -186,3 +189,8 @@ Aim is for future work to be incorporated by working on separate branches and me
 *   Double dip loss trajectories
 *   Fitting NNs to common functions (exp etc.), deep vs wide, number of parameters for given error
 *   Fit a NN to seasonal data with fourier series components
+*   DoubleML on heart data to find CATE
+*   Github action to publish ipynbs to markdown
+*   Mixed effects model - is it the same as a fixed effects model (lin/log regression) with one hot encoding for the categorical variables + a fixed effect?
+*   Bimomial regression = logistic regression
+*   Linear regression = logistic regression, relationship to Linear Thompson Sampling
