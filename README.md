@@ -135,7 +135,6 @@ Aim is for future work to be incorporated by working on separate branches and me
 *   Causal inference
 *   Data validations - great expectations
     *   https://github.com/tamsanh/kedro-great
-*   Docker
 *   Computer vision
 *   NLP
     *   Keyword extraction from reviews etc.
@@ -150,6 +149,10 @@ Aim is for future work to be incorporated by working on separate branches and me
     *   Lasso regression
     *   Dropout better than regularisation?
 *   GBM/LightGBM
+*   Data engineering
+    *   Polars
+    *   DuckDB
+*   Docker
 
 ### Datasets to explore
 *   https://archive-beta.ics.uci.edu/ml/datasets#music
@@ -191,6 +194,13 @@ Aim is for future work to be incorporated by working on separate branches and me
 *   Fit a NN to seasonal data with fourier series components
 *   DoubleML on heart data to find CATE
 *   Github action to publish ipynbs to markdown
-*   Mixed effects model - is it the same as a fixed effects model (lin/log regression) with one hot encoding for the categorical variables + a fixed effect?
+*   Hierarchical models
+    *   Mixed effects model - is it the same as a fixed effects model (lin/log regression) with one hot encoding for the categorical variables + a fixed effect?
+    *   Hierarchical bayesian models - for when we have categorical features with share effects over other features
+    *   Fit with MCMC
+    *   Similarities to ridge regression - only some coefficients are regularised
+    *   Generate data and fit each model
+    *   Ref
+        *   https://www.youtube.com/watch?v=38yOWMMCeMk&list=WL&index=5
 *   Bimomial regression = logistic regression
 *   Linear regression = logistic regression, relationship to Linear Thompson Sampling
