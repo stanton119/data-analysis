@@ -1,0 +1,74 @@
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+    paths:
+      - '**.py'
+      - '**/**.py'
+      - '**.ipynb'
+      - '**/**.ipynb'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  OnCommit:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10' 
+          cache: 'pip' # caching pip dependencies
+          cache-dependency-path: '**/requirements-ci.txt'
+      - run: pip install -r requirements-ci.txt
+        
+      - name: Auto format
+        run: black .
+
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          committer_name: GitHub Actions
+          committer_email: actions@github.com
+          # author_name: Your Name
+          # author_email: mail@example.com
+          message: 'Autoformat'
+          add: "['*.py','*.ipynb']"
+
+      - name: Print SHAs
+        run: |
+          echo "github.event.pull_request.base.sha"
+          echo "${{ github.event.pull_request.base.sha }}"
+          echo "github.event.pull_request.head.sha"
+          echo "${{ github.event.pull_request.head.sha }}"
+          echo "github.event.before"
+          echo "${{ github.event.before }}"
+          echo "github.event.after"
+          echo "${{ github.event.after }}"
+          echo "github.sha"
+          echo "${{ github.sha }}"
+        
+      - name: Convert to markdown
+        run: ./convert_to_markdown.sh ${{ github.event.before }} ${{ github.event.after }}
+        
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          committer_name: GitHub Actions
+          committer_email: actions@github.com
+          # author_name: Your Name
+          # author_email: mail@example.com
+          message: 'CI - markdown conversion'
+          add: "*"
