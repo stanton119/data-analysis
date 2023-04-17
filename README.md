@@ -144,7 +144,7 @@ Aim is for future work to be incorporated by working on separate branches and me
 *   Recommender systems
     *   Automatic playlist continuation
     *   Thompson sampling example
-*   Switch away from Matplotlib
+*   Switch away from Matplotlib, try plotly express in markdown
 *   Quantile regression in pytorch
     *   Lasso regression
     *   Dropout better than regularisation?
@@ -177,13 +177,14 @@ Aim is for future work to be incorporated by working on separate branches and me
 *   Word embeddings plot with hiplot
     *   Plot with PCA first and compare with hiplot
 *   Compare linear regression MC dropout to theoretical results
-*   Optimal car charging schedule
+*   Optimal car charging schedule based on energy prices or carbon output
 *   Media pipe - 3d audio
     *   Face distance javascript web app with react
 *   Covid UK plot against time on a map
     *   https://www.reddit.com/r/dataisbeautiful/comments/pay78n/oc_active_covid19_cases_per_capita_in_usa_1212020/
 *   Autoencoder using transfer learning?
     *   what do we use for the decoder?
+    *   MNIST auto-encoder to digit classifier
 *   Fit a sinusoid to noisy data
     *   Fourier
     *   Gradient descent
@@ -204,3 +205,7 @@ Aim is for future work to be incorporated by working on separate branches and me
         *   https://www.youtube.com/watch?v=38yOWMMCeMk&list=WL&index=5
 *   Bimomial regression = logistic regression
 *   Linear regression = logistic regression, relationship to Linear Thompson Sampling
+*   Blurred images classifier
+    *   ImageNet based, data augment to blur images.
+*   Country embeddings - create country embeddings by predicting various macro level metrics (GDP, population etc. in a multi task model), from OHE through a NN. Does the embedding space make sense?
+*   [MovieLens](https://grouplens.org/datasets/movielens/) dataset to get title embeddings, find nearest neighbour titles
