@@ -209,3 +209,4 @@ Aim is for future work to be incorporated by working on separate branches and me
     *   ImageNet based, data augment to blur images.
 *   Country embeddings - create country embeddings by predicting various macro level metrics (GDP, population etc. in a multi task model), from OHE through a NN. Does the embedding space make sense?
 *   [MovieLens](https://grouplens.org/datasets/movielens/) dataset to get title embeddings, find nearest neighbour titles
+    *   Using word2vec to predict similar titles. Similar given as titles streamed by the same customer
