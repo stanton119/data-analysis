@@ -8,17 +8,21 @@ dependencies:
   # Computation
   - numpy
   - pandas
+  - 'polars[all]'
   - scikit-learn
   - statsmodels
   - dowhy
 
   # Plotting
   - matplotlib
+  - seaborn
 
   # Debugging
   - jupyter
   - pylint
   - rope
   - black
+
+  - requests
 
   # - pip:
