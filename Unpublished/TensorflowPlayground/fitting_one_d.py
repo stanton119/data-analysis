@@ -29,6 +29,22 @@ y = np.log(x)
 plt.plot(x, y)
 plt.show()
 
+# %% Plot results
+def plot_results(x, y, y_est, loss):
+    fig = plt.figure(figsize=(10, 6))
+    plt.subplot(121)
+    plt.plot(x, y, label="f(x)")
+    plt.plot(x, y_est, label="NN")
+    plt.xlabel("x")
+    plt.ylabel("y")
+    plt.legend()
+
+    plt.subplot(122)
+    plt.plot(loss)
+    plt.xlabel("epoch")
+    plt.ylabel("loss")
+    plt.show()
+
 # %%
 # Model with one input for x, one output layer for y, hidden layer of 10 nodes
 # Linear activation function
@@ -99,19 +115,4 @@ plt.plot(model.weights[0].numpy().squeeze())
 plt.plot(model.weights[2].numpy())
 plt.show
 
-# %% Plot results
-def plot_results(x, y, y_est, loss):
-    fig = plt.figure(figsize=(10, 6))
-    plt.subplot(121)
-    plt.plot(x, y, label="f(x)")
-    plt.plot(x, y_est, label="NN")
-    plt.xlabel("x")
-    plt.ylabel("y")
-    plt.legend()
-
-    plt.subplot(122)
-    plt.plot(loss)
-    plt.xlabel("epoch")
-    plt.ylabel("loss")
-    plt.show()
 

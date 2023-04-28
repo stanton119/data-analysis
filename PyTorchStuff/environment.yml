@@ -14,13 +14,8 @@ dependencies:
 
   # Plotting
   - matplotlib
-  - seaborn
-
+  
   # Debugging
-  - jupyter
+  - notebook
   - pylint
-  - rope
   - black
-
-  - pip:
-      - lightning-bolts

@@ -3,6 +3,7 @@ numpy
 pandas
 tensorflow
 tensorflow-dataset
+tensorflow-probability
 torch
 statsmodels
 scikit-learn

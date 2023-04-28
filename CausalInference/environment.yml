@@ -12,6 +12,9 @@ dependencies:
   - scikit-learn
   - statsmodels
   - dowhy
+  - causalml
+  - doubleml
+  - tqdm
 
   # Plotting
   - matplotlib

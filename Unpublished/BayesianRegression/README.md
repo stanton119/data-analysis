@@ -14,4 +14,6 @@ Regression analysis:
 
 
 ## Todo
-* 
+* Fit regression withs statsmodels
+* Fit bayesian regression with pytorch and tensorflow
+* Compare coefficient distributions to theoretical variance

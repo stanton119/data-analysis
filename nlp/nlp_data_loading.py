@@ -52,8 +52,15 @@ The output of the embedding layer is:
 or
 [TrainingExample, features]
 
+EmbeddingBag layer is simiar to nn.Embedding - where the embedding size = vocab size/max token.
+
 This output is appropriate to flow into linear layers etc..
 
+
+
+Alternative we can pad sequences so they are the same length.
+We will get a lot of sparsity in many cases.
+This converts to a standard supervised training matrix.
 
 source: https://pytorch.org/tutorials/beginner/text_sentiment_ngrams_tutorial.html
 """
