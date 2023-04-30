@@ -148,7 +148,6 @@ Aim is for future work to be incorporated by working on separate branches and me
 *   Quantile regression in pytorch
     *   Lasso regression
     *   Dropout better than regularisation?
-*   GBM/LightGBM
 *   Data engineering
     *   Polars
     *   DuckDB
@@ -194,6 +193,7 @@ Aim is for future work to be incorporated by working on separate branches and me
 *   Fitting NNs to common functions (exp etc.), deep vs wide, number of parameters for given error
 *   Fit a NN to seasonal data with fourier series components
 *   DoubleML on heart data to find CATE
+*   DoubleML on dummy data vs other causal models. How robust are they to model mis-specification and missing confounders?
 *   Github action to publish ipynbs to markdown
 *   Hierarchical models
     *   Mixed effects model - is it the same as a fixed effects model (lin/log regression) with one hot encoding for the categorical variables + a fixed effect?
@@ -209,4 +209,6 @@ Aim is for future work to be incorporated by working on separate branches and me
     *   ImageNet based, data augment to blur images.
 *   Country embeddings - create country embeddings by predicting various macro level metrics (GDP, population etc. in a multi task model), from OHE through a NN. Does the embedding space make sense?
 *   [MovieLens](https://grouplens.org/datasets/movielens/) dataset to get title embeddings, find nearest neighbour titles
-    *   Using word2vec to predict similar titles. Similar given as titles streamed by the same customer
+    *   Using word2vec to predict similar titles. Train on movies watched. Similar given as titles streamed by the same customer
+*   Finding similar images in a photo library - given a few examples find similar photos
+    *   Use an image net model. Find new example images, positive and negative. Fine tune the model via a classification task. Predict prob of positive result for unseen images. Use the latent space embeddings to find cosine similarity between images.
