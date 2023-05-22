@@ -116,4 +116,18 @@ df = pl.read_parquet(
 
 ```
 
+## Debugging
+
+Profiling within Notebooks [ref](https://stackoverflow.com/questions/44734297/how-to-profile-python-3-5-code-line-by-line-in-jupyter-notebook-5):
+* install `line_profiler` via `pip` or `conda`
+* add the extension to the notebook `%load_ext line_profiler`
+* create a function to profile, e.g. `prof_function`
+* run profile profiler `%lprun -f prof_function prof_function()`
+
+Memory profile within Notebooks:
+* `pip install memory_profiler`
+* `%load_ext memory_profiler`
+* `%memit prof_function()` - where `prof_function` is defined as an import from a file
+
+
 ## Other
