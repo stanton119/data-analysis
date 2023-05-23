@@ -93,6 +93,15 @@ estimator = sklearn.pipeline.make_pipeline(
 )
 ```
 
+## PyTorch
+Dataloader from numpy array:
+```python
+dataset = torch.utils.data.TensorDataset(torch.Tensor(X), torch.Tensor(y))
+dataloader = torch.utils.data.DataLoader(
+    dataset, batch_size=32, shuffle=False
+)
+```
+
 ## Polars
 Polars increase string display:
 ```python
