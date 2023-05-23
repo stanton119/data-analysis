@@ -15,6 +15,8 @@ Repo directory:
     *   Fitting a multimodal beta distribution via gradient descent
 *   [FittingMultimodalDistributions/zero_inflated_poisson_pytorch/zero_inflated_poisson.md](https://github.com/stanton119/data-analysis/blob/master/FittingMultimodalDistributions/zero_inflated_poisson_pytorch/zero_inflated_poisson.md)
     *   Fitting a zero-inflated Poisson distribution via gradient descent
+*   [PyTorchStuff/binary_loss_functions.ipynb](https://github.com/stanton119/data-analysis/blob/master/PyTorchStuff/binary_loss_functions.ipynb)
+    *   Is there a material difference between using `BCEWithLogitsLoss` and `CrossEntropyLoss` for binary classification tasks?
 
 ### [Pyro](FitDistWithPyro/)
 *   [FitDistWithPyro/fit_pyro_distribution.ipynb](https://github.com/stanton119/data-analysis/blob/master/FitDistWithPyro/fit_pyro_distribution.ipynb)
@@ -212,3 +214,4 @@ Aim is for future work to be incorporated by working on separate branches and me
     *   Using word2vec to predict similar titles. Train on movies watched. Similar given as titles streamed by the same customer
 *   Finding similar images in a photo library - given a few examples find similar photos
     *   Use an image net model. Find new example images, positive and negative. Fine tune the model via a classification task. Predict prob of positive result for unseen images. Use the latent space embeddings to find cosine similarity between images.
+    *   Build small image dataset from cifar 10. Compare models - PCA/logistic regression, CNN, efficientNet, transfer learnt weights
