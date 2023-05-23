@@ -102,6 +102,11 @@ dataloader = torch.utils.data.DataLoader(
 )
 ```
 
+To initialise the output layer bias:
+```python
+self.classifier.bias.data.fill_(output_bias)
+```
+
 ## Polars
 Polars increase string display:
 ```python
