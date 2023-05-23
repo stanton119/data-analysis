@@ -16,7 +16,9 @@ Repo directory:
 *   [FittingMultimodalDistributions/zero_inflated_poisson_pytorch/zero_inflated_poisson.md](https://github.com/stanton119/data-analysis/blob/master/FittingMultimodalDistributions/zero_inflated_poisson_pytorch/zero_inflated_poisson.md)
     *   Fitting a zero-inflated Poisson distribution via gradient descent
 *   [PyTorchStuff/binary_loss_functions.ipynb](https://github.com/stanton119/data-analysis/blob/master/PyTorchStuff/binary_loss_functions.ipynb)
-    *   Is there a material difference between using `BCEWithLogitsLoss` and `CrossEntropyLoss` for binary classification tasks?
+    *   Is there a material difference between using `BCEWithLogitsLoss` and `CrossEntropyLoss` for binary classification tasks? - No
+*   [PyTorchStuff/output_layer_bias.ipynb](https://github.com/stanton119/data-analysis/blob/master/PyTorchStuff/output_layer_bias.ipynb)
+    *   Does initialising the output of a neural net to match your target distribution help? - Yes
 
 ### [Pyro](FitDistWithPyro/)
 *   [FitDistWithPyro/fit_pyro_distribution.ipynb](https://github.com/stanton119/data-analysis/blob/master/FitDistWithPyro/fit_pyro_distribution.ipynb)
