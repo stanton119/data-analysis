@@ -129,5 +129,8 @@ Memory profile within Notebooks:
 * `%load_ext memory_profiler`
 * `%memit prof_function()` - where `prof_function` is defined as an import from a file
 
+## Data analysis
+* Check for missing: https://github.com/ResidentMario/missingno
+* General profiling: ydata-profiling
 
 ## Other
