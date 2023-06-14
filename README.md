@@ -217,3 +217,4 @@ Aim is for future work to be incorporated by working on separate branches and me
 *   Finding similar images in a photo library - given a few examples find similar photos
     *   Use an image net model. Find new example images, positive and negative. Fine tune the model via a classification task. Predict prob of positive result for unseen images. Use the latent space embeddings to find cosine similarity between images.
     *   Build small image dataset from cifar 10. Compare models - PCA/logistic regression, CNN, efficientNet, transfer learnt weights
+*   Fourier transform via linear regression on sinusoids. Similar approach with Lasso regression to find compressed sensing approaches, with non-uniform sampling.
