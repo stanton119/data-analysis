@@ -127,7 +127,6 @@ df = pl.read_parquet(
         ],
     ),
 )
-
 ```
 
 ## Debugging
@@ -142,6 +141,48 @@ Memory profile within Notebooks:
 * `pip install memory_profiler`
 * `%load_ext memory_profiler`
 * `%memit prof_function()` - where `prof_function` is defined as an import from a file
+
+### Exception handling
+```python
+import traceback
+
+try:
+    1/0
+except Exception as e:
+    traceback.print_exc()
+```
+or via logging:
+```python
+import logging
+
+try:
+    1/0
+except Exception:
+    logging.exception("An exception was thrown!")
+```
+
+### Logging
+
+Default logging setup within a module
+```python
+import logging
+logger = logging.getLogger(__name__)
+...
+logger.info("Message")
+```
+
+Default logging setup with a notebook calling modules
+```python
+import logging
+logging.basicConfig()
+logging.getLogger().setLevel(logging.WARNING)
+```
+
+Change logging level on another logger
+```python
+logger = logging.getLogger('fbprophet')
+logger.setLevel(logging.WARNING)
+```
 
 ## Data analysis
 * Check for missing: https://github.com/ResidentMario/missingno
