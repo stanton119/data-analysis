@@ -188,4 +188,26 @@ logger.setLevel(logging.WARNING)
 * Check for missing: https://github.com/ResidentMario/missingno
 * General profiling: ydata-profiling
 
+## Environment variables
+```bash
+pip install python-dotenv
+```
+
+`.env` file as:
+```
+key=value
+```
+
+```python
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+print(os.getenv('key'))
+```
+
 ## Other
+Run bash without getting interrupted:
+```bash
+nohup sh shell_script.sh &
+```
