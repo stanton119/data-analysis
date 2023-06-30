@@ -177,6 +177,7 @@ Aim is for future work to be incorporated by working on separate branches and me
     *   Greykite
 *   PCA via embedding layer
 *   NN to predict tempo from song, generate dummy dataset
+    *   NN to predict tab from music sections
 *   Word embeddings plot with hiplot
     *   Plot with PCA first and compare with hiplot
 *   Compare linear regression MC dropout to theoretical results
@@ -217,4 +218,5 @@ Aim is for future work to be incorporated by working on separate branches and me
 *   Finding similar images in a photo library - given a few examples find similar photos
     *   Use an image net model. Find new example images, positive and negative. Fine tune the model via a classification task. Predict prob of positive result for unseen images. Use the latent space embeddings to find cosine similarity between images.
     *   Build small image dataset from cifar 10. Compare models - PCA/logistic regression, CNN, efficientNet, transfer learnt weights
+    *   Build lookup table of image and its compact embedding. Given a new image find the inner product with the other images
 *   Fourier transform via linear regression on sinusoids. Similar approach with Lasso regression to find compressed sensing approaches, with non-uniform sampling.
