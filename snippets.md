@@ -129,6 +129,41 @@ df = pl.read_parquet(
 )
 ```
 
+How to apply a common set of statements to a dataframe via a function:
+```python
+df = pl.DataFrame(
+    {
+        "col_a": ["a", "b", "a", "b", "c"],
+        "col_b": [1, 2, 1, 3, 3],
+        "col_c": [5, 4, 3, 2, 1],
+    }
+)
+df.groupby("col_a").agg(
+    [
+        pl.count().alias("count"),
+        pl.col("col_b").sum().alias("col_b_sum"),
+        pl.col("col_b").mean().alias("col_b_mean"),
+        pl.col("col_c").sum().alias("col_c_sum"),
+        pl.col("col_c").mean().alias("col_c_mean"),
+    ]
+)
+```
+We can define the columns in a function and use that within a groupby aggregatin or select statement:
+```python
+def agg_data():
+    return [
+        pl.count().alias("count"),
+        pl.col("col_b").sum().alias("col_b_sum"),
+        pl.col("col_b").mean().alias("col_b_mean"),
+        pl.col("col_c").sum().alias("col_c_sum"),
+        pl.col("col_c").mean().alias("col_c_mean"),
+    ]
+
+
+df.groupby("col_a").agg(agg_data())
+df.select(agg_data())
+```
+
 ## Debugging
 
 Profiling within Notebooks [ref](https://stackoverflow.com/questions/44734297/how-to-profile-python-3-5-code-line-by-line-in-jupyter-notebook-5):
@@ -141,25 +176,6 @@ Memory profile within Notebooks:
 * `pip install memory_profiler`
 * `%load_ext memory_profiler`
 * `%memit prof_function()` - where `prof_function` is defined as an import from a file
-
-### Exception handling
-```python
-import traceback
-
-try:
-    1/0
-except Exception as e:
-    traceback.print_exc()
-```
-or via logging:
-```python
-import logging
-
-try:
-    1/0
-except Exception:
-    logging.exception("An exception was thrown!")
-```
 
 ### Logging
 
@@ -184,6 +200,25 @@ logger = logging.getLogger('fbprophet')
 logger.setLevel(logging.WARNING)
 ```
 
+### Exception handling
+```python
+import traceback
+
+try:
+    1/0
+except Exception as e:
+    traceback.print_exc()
+```
+or via logging:
+```python
+import logging
+
+try:
+    1/0
+except Exception:
+    logging.exception("An exception was thrown!")
+```
+
 ## Data analysis
 * Check for missing: https://github.com/ResidentMario/missingno
 * General profiling: ydata-profiling
@@ -206,8 +241,24 @@ load_dotenv()
 print(os.getenv('key'))
 ```
 
+## Argparsers
+
+```python
+parser = argparse.ArgumentParser()
+parser.add_argument("--param", type=int)
+parser.add_argument("--param2", type=str, default="default_str")
+args = parser.parse_args()
+```
+
 ## Other
 Run bash without getting interrupted:
 ```bash
 nohup sh shell_script.sh &
 ```
+
+Check memory usage:
+```bash
+top
+```
+Sort by memory: `shift+m`.
+Change units: `shift+e`
