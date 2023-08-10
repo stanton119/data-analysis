@@ -32,6 +32,10 @@ Rotate matplotlib axis labels:
 ```python
 ax.tick_params(axis="x", labelrotation=90)
 ```
+Horizontal/vertical line:
+```python
+ax.axhline(y=0, linestyle="--", color="k", alpha=0.5)
+```
 
 ## Docker
 ```
@@ -248,6 +252,26 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--param", type=int)
 parser.add_argument("--param2", type=str, default="default_str")
 args = parser.parse_args()
+```
+
+## Decorators
+```python
+import functools
+
+def decorator(func):
+    @functools.wraps(func)
+    def wrapper_decorator(*args, **kwargs):
+        print("do something pre function")
+        result = func(*args, **kwargs)
+        print("do something post function")
+        return result
+    return wrapper_decorator
+
+@decorator
+def test_fun(a:int=0)->int:
+    return a+1
+
+test_fun(1)
 ```
 
 ## Other
