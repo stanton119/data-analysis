@@ -57,7 +57,7 @@ Batch mode allows faster computation. Particularly given that we would commonly 
       * context: [[np.array, np.array, np.array], [np.array, np.array]]
   * output: selected arms: list[list[str]], selection propensities: list[list[float]], reward estimates: list[list[float]]
 * update
-  * takes selected arms: list[list[str]], observed rewards and update the model
+  * takes selected arms: list[list[str]], associated context vectors, observed rewards and update the model
   * input: arms, context, reward: list[list[float]]
 
 * Thompson sampling

@@ -3,6 +3,7 @@ import pandas as pd
 import scipy.stats
 import matplotlib.pyplot as plt
 import seaborn as sns
+import tqdm
 
 plt.style.use("seaborn-whitegrid")
 
@@ -101,7 +102,6 @@ class GaussianArm(Arm):
         y = self.dist.pdf(x)
         y = y / y.max()
         ax.plot(x, y)
-        ax.legend()
         return fig
 
 
@@ -147,6 +147,10 @@ class Policy:
         self.top_k = top_k
 
     def predict(self, arms: list[list[str]], context: list[list[np.array]]):
+        """
+        arms: 1 list per round. In each round we have a list of available arms.
+        context: 1 list per round. In each round we have a list of context vectors, 1 per available arm.
+        """
         ...
 
     def update(
@@ -155,6 +159,10 @@ class Policy:
         context: list[list[np.array]],
         rewards: list[list[float]],
     ):
+        """
+        we expect only selected arms, not all available arms.
+        context and rewards dimensions match the selected arms.
+        """
         ...
 
 
@@ -393,11 +401,11 @@ class UCB(Policy):
         reward_estimates = []
 
         for _arms in arms:
-            _arm_counts = np.maximum(self.arm_counts[_arms], np.full(fill_value=1,shape=len(_arms)))
+            _arm_counts = np.maximum(
+                self.arm_counts[_arms], np.full(fill_value=1, shape=len(_arms))
+            )
             _ucb_values = self.reward_means[_arms] + np.sqrt(
-                self.explore_threshold
-                * np.log(_arm_counts.sum())
-                / _arm_counts
+                self.explore_threshold * np.log(_arm_counts.sum()) / _arm_counts
             )
 
             # find top_k samples
@@ -426,19 +434,203 @@ class UCB(Policy):
 
 
 # Simulations
-def simulate_batch(arms: list[Arm], policy: Policy, batch_size: int = 10):
-    n_arms = len(arms)
+def simulate_batch(
+    policy: Policy,
+    arms: list[Arm],
+    available_arms: list[list[int]] = None,
+    context: list[list[np.array]] = None,
+    batch_size: int = 10,
+    return_regret: bool = False,
+):
+    """
+    Assumes fixed arm availability for each round if no available_arms given.
+    batch_size - number of rounds to simulate.
+
+    TODO fix context to each arm sample method
+    """
+
+    if available_arms is None:
+        n_arms = len(arms)
+        available_arms = [range(0, n_arms)] * batch_size
+
+    # select from policy, observe rewards and update policy
     selected_arms, selection_propensities, reward_estimates = policy.predict(
-        arms=[range(0, n_arms)] * batch_size
+        arms=available_arms, context=context
     )
     rewards = [
         [arms[_idx].sample()[0] for _idx in _selected_arms]
         for _selected_arms in selected_arms
     ]
-    policy.update(arms=selected_arms, rewards=rewards)
+    if context is not None:
+        selected_context = []
+        for _round in batch_size:
+            selected_context.append(
+                [context[_round][_idx] for _idx in selected_arms[_round]]
+            )
+    else:
+        selected_context = None
+    policy.update(arms=selected_arms, context=selected_context, rewards=rewards)
 
-    # regret
-    arms[0].expected_reward()
-    # get max expected reward
-    # diff with observed reward
-    rewards
+    regret = None
+    if return_regret:
+        raise NotImplementedError
+        # regret if case of known arms
+        # find best arm
+        expected_rewards = [
+            [arms[_arm].expected_reward(context=context)[0] for _arm in _available_arms]
+            for _available_arms in available_arms
+        ]
+
+        # find top_k samples
+        _arm_order = np.flip(np.argsort(expected_rewards))
+        _selected_arm_arg = _arm_order[: policy.top_k]
+        _selected_arm = [_arms[_sel] for _sel in _selected_arm_arg]
+        selected_arms.append(_selected_arm)
+
+        # get max expected reward
+        # diff with observed reward
+        rewards
+
+        # get max expected reward
+        expected_rewards = [
+            [arms[_arm].expected_reward()[0] for _arm in _available_arms]
+            for _available_arms in available_arms
+        ]
+        max_expected_reward = np.max(expected_rewards, axis=1)
+        # diff with observed reward
+        max_expected_reward
+        rewards
+
+    return {
+        "selected_arms": selected_arms,
+        "selection_propensities": selection_propensities,
+        "reward_estimates": reward_estimates,
+        "rewards": rewards,
+        "regret": regret,
+    }
+
+
+def simulate_batches(
+    policy: Policy,
+    arms: list[Arm],
+    available_arms: list[list[int]] = None,
+    context: list[list[np.array]] = None,
+    n_batches: int = 10,
+    batch_size: int = 10,
+    return_regret: bool = False,
+):
+    selected_arms = []
+    selection_propensities = []
+    reward_estimates = []
+    rewards = []
+    regret = []
+
+    for _batch_id in tqdm.trange(n_batches):
+        _batch_idx = (_batch_id * batch_size, (_batch_id + 1) * batch_size)
+
+        batch_results = simulate_batch(
+            policy=policy,
+            arms=arms,
+            available_arms=available_arms[_batch_idx[0] : _batch_idx[1]]
+            if available_arms is not None
+            else None,
+            context=context[_batch_idx[0] : _batch_idx[1]]
+            if context is not None
+            else None,
+            batch_size=batch_size,
+            return_regret=return_regret,
+        )
+        # append results
+        selected_arms = selected_arms + batch_results["selected_arms"]
+        if batch_results["selection_propensities"] is None:
+            selection_propensities = None
+        else:
+            selection_propensities = (
+                selection_propensities + batch_results["selection_propensities"]
+            )
+        if batch_results["reward_estimates"] is None:
+            reward_estimates = None
+        else:
+            reward_estimates = reward_estimates + batch_results["reward_estimates"]
+        rewards = rewards + batch_results["rewards"]
+        if batch_results["regret"] is None:
+            regret = None
+        else:
+            regret = regret + batch_results["regret"]
+
+    return {
+        "selected_arms": selected_arms,
+        "selection_propensities": selection_propensities,
+        "reward_estimates": reward_estimates,
+        "rewards": rewards,
+        "regret": regret if return_regret else None,
+    }
+
+
+def plot_simulation_batches(simulation_results: dict):
+    # plot arm selection
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(6, 4))
+    else:
+        fig = None
+
+    x = np.linspace(0, 1, 100)
+    for _idx, (_a, _b) in enumerate(zip(self.a, self.b)):
+        y = scipy.stats.beta(_a, _b).pdf(x)
+        ax.plot(x, y, label=_idx)
+    ax.legend()
+    return fig
+
+
+def plot_arm_selection(selected_arms: list[list[int]], ax=None) -> plt.figure:
+    # if in multiple batches, combine together to single long list
+    if not isinstance(selected_arms[0][0], int):
+        raise NotImplementedError
+
+    # plot arm selection
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(6, 4))
+    else:
+        fig = None
+
+    # cumulative sum selected arms by arm index
+    selected_arms = np.array(selected_arms)
+    selected_arms_idx = np.zeros(
+        shape=(selected_arms.shape[0], selected_arms.max() + 1)
+    )
+    for _k in range(selected_arms.shape[1]):
+        selected_arms_idx[np.arange(selected_arms.shape[0]), selected_arms[:, _k]] = 1
+    selected_arms_cumsum = selected_arms_idx.cumsum(axis=0)
+
+    # add preceeding row to start counts from 0
+    selected_arms_cumsum = np.vstack(
+        [np.zeros(shape=(1, selected_arms.max() + 1)), selected_arms_cumsum]
+    )
+
+    x = np.arange(selected_arms_cumsum.shape[0])
+    for _idx in range(selected_arms_cumsum.shape[1]):
+        ax.plot(x, selected_arms_cumsum[:, _idx], label=_idx)
+    ax.set(title='Arm selection against round', xlabel='Round number', ylabel='Arm count')
+    ax.legend()
+    return fig
+
+
+def plot_rewards(rewards: list[list[float]], ax=None, label:str=None) -> plt.figure:
+    
+    # plot arm selection
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(6, 4))
+    else:
+        fig = None
+
+    # cumulative sum selected arms by arm index
+    rewards = np.array(rewards)
+    rewards = rewards.sum(axis=1)
+    rewards_cumsum = rewards.cumsum(axis=0)
+    # add preceeding row to start counts from 0
+    rewards_cumsum = np.append(0, rewards.cumsum())
+
+    x = np.arange(rewards_cumsum.shape[0])
+    ax.plot(x, rewards_cumsum, label=label)
+    ax.set(title='Observed rewards against round', xlabel='Round number', ylabel='Cumulative reward')
+    return fig
