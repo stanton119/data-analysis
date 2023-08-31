@@ -3,22 +3,22 @@
 ## Maths
 Setup:
 
-We have $D$ possible actions/arms to select from.
-Each arm, $a$, has an associated reward distribution, $r$.
-Rewards are specified for each arm, $a$, as a function of some features (context vector, $x$): $r(x,a) \in D$.
+We have a set of possible actions/arms, $\mathcal{A}$, to select from.
+Each arm, $a \in \mathcal{A}$, has an associated reward distribution. When we select an arm we receive a reward, $r$, sampled from the reward distribution.
+We want to select the arm which maximises the expected reward:
+$a^*=\mathrm{argmax}_a E\{r(x,a)\}$. As we only can only observed a subset of rewards, we have to estimate the optimal arm.
 
-The optimal arm is the one that maximises the expected reward:
-$a^*=\mathrm{argmax}_a E\{r(x,a)\}$.
+Rewards are specified for each arm, $a$, as a function of some features (context vector, $x$): $r(x,a) \in \mathbb{R}^D$.
 
-As we only can only observed a subset of rewards, we have to estimate the optimal arm.
+
 
 ### Thompson sampling
-We estimate the reward distribution for each arm as a context-free distribution. To select an arm, we sample from the reward distributions and select the highest sample. The reward distributions can updated with observed rewards via Bayes rule.
+We estimate the reward distribution for each arm as a context-free distribution. To select an arm, we sample from the estimated reward distributions and select the highest sample. The reward distributions can be updated with observed rewards via Bayes rule.
 
 $r(x,a) = f(a)$.
 
 ### Linear Thompson sampling
-We estimate the reward distribution for each arm as a linear combination of context features and model weights, $\theta$. It is common to have a single set of model weights and different features for each arm. Features would be created with a common context and the arm, $g(x,a)$.
+We estimate the reward distribution for each arm as a linear combination of context features and model weights, $\theta$. It is common to have a single set of model weights and different features for each arm. Features would be created with a common context, $x_c$ and the arm features, $x_a$. We defined $g$ as the function which combines context and arm features: $g(x_c,x_a)$.
 
 $r(x,a) = \langle g(x,a), \theta \rangle$.
 The weights distribution can be modelled as a multivariate Gaussian.
@@ -77,6 +77,9 @@ Dict of arms, dict[str, Arm]
   * for a list of context/available arms, returns rewards
   * input: arms: list[int], context: list[float] or np.array?
   * output: rewards: list[float] or np.array?
+* expected_reward
+  * Arm rewards are stochastic. Having the expected reward allows us to better represent regret.
+  * expected_reward(self, context: list[np.array] = None) -> np.ndarray:
 
 ### Off-policy evaluation
 
