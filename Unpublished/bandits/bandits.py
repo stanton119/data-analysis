@@ -91,7 +91,7 @@ class GaussianArm(Arm):
             n_samples = len(context)
         return np.repeat(self.mu, n_samples)
 
-    def plot_pdf(self, ax=None) -> plt.figure:
+    def plot_pdf(self, ax=None, label:str=None) -> plt.figure:
         if ax is None:
             fig, ax = plt.subplots(figsize=(6, 4))
         else:
@@ -101,7 +101,7 @@ class GaussianArm(Arm):
         x = np.linspace(x_lim[0], x_lim[1], 100)
         y = self.dist.pdf(x)
         y = y / y.max()
-        ax.plot(x, y)
+        ax.plot(x, y, label=label)
         return fig
 
 
@@ -565,21 +565,6 @@ def simulate_batches(
         "rewards": rewards,
         "regret": regret if return_regret else None,
     }
-
-
-def plot_simulation_batches(simulation_results: dict):
-    # plot arm selection
-    if ax is None:
-        fig, ax = plt.subplots(figsize=(6, 4))
-    else:
-        fig = None
-
-    x = np.linspace(0, 1, 100)
-    for _idx, (_a, _b) in enumerate(zip(self.a, self.b)):
-        y = scipy.stats.beta(_a, _b).pdf(x)
-        ax.plot(x, y, label=_idx)
-    ax.legend()
-    return fig
 
 
 def plot_arm_selection(selected_arms: list[list[int]], ax=None) -> plt.figure:
