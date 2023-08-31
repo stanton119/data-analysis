@@ -25,7 +25,7 @@ fig, ax = plt.subplots(figsize=(10, 6))
 Style matplotlib
 ```python
 import matplotlib.pyplot as plt
-plt.style.use("seaborn-whitegrid")
+plt.style.use("seaborn-v0_8-whitegrid")
 ```
 
 Rotate matplotlib axis labels:
