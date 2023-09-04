@@ -26,8 +26,36 @@ We can sample the reward distributions by sampling the weights distribution and 
 
 To update the model weights with Bayes rule, there is an analytical solution in the case of a linear reward, but not in the case of a binary/categorical reward (logistic model).
 
-### Off-policy evaluation
+> [TODO] - how do context vector vary between arms if we assume a single weights vector.
 
+### Arms with context
+The reward from a Gaussian context arm can be represented as a linear combination of weights and the context vector.
+
+$r(x,a) = \langle g(x,a), \theta \rangle$.
+
+This can be relaxed to only non-linear function of the context vector.
+
+### Off-policy evaluation
+We have a logging policy, $\pi_0$, which was online used to select arms and observe rewards.
+We want to evaluate offline a different target policy, $\pi$, on the data saved from the logging policy.
+
+The bandit problem is trying to learn from incomplete data.
+Our logging policy only observed the reward from the arms selected. We do not observe the rewards from the non selected arms.
+Off policy evaluation is the technique to evaluate a training policy using data which was logged by a different logging policy.
+
+The data we collect from the logging policy is specified as follows. For each round, $i$, we received a context vector, $x_i$, from the available arms, $\mathcal{A}_i$, we selected an arm, $a_i$, which had propensity, $p_i$, and we observed a reward, $r_i$. The set of $n$ rounds is collected as:
+$$\mathcal{D} = (a_i, r_i, x_i, \mathcal{A}_i, p_i)_{i=1}^n$$
+
+### Importance weighting
+We can use importance weightings to debias the target policy training.
+
+### Replay method
+One approach to off-policy evaluation is the [replay method](https://arxiv.org/abs/1003.5956).
+Here we select from our target policy, and filter the logged policy data to those rounds where the observed arm matches the selected arm.
+We can then update our policy with those actions and repeat for the next batch.
+This combines off-policy evaluation and off-policy learning as the policy is updated each batch.
+As we don't typically have uniform support for the arms from the logging policy, the regret/performance bounds are typically violated when using replay.
+For the same number of rounds, we will observe inflated variance around reward estimations due to the sub-sampled of the observed rewards.
 
 ## API
 Batch mode is the default API call in each case. If one sample/selection requested, convert to a list first.
@@ -84,9 +112,13 @@ Dict of arms, dict[str, Arm]
 ### Off-policy evaluation
 
 ## TODO
-* Thompson sampling
-* Gaussian policy updates
+* Off policy evaluation
+  * Generate dataset with one policy, train off policy with another
+  * inverse propensity scores from Thompson sampling
 * Linear arm, linear logistic arm
 * Linear Thompson sampling
-* Off policy evaluation
-  * inverse propensity scores from Thompson sampling
+* General scikit based learn
+  * Takes estimator
+  * Store data for each arm and refits from scratch at each update call
+* Regret
+  * Function to get optimal policy, simulate it, find different to cumumlative reward from target policy
