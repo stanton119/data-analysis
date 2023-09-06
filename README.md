@@ -220,3 +220,5 @@ Aim is for future work to be incorporated by working on separate branches and me
     *   Build small image dataset from cifar 10. Compare models - PCA/logistic regression, CNN, efficientNet, transfer learnt weights
     *   Build lookup table of image and its compact embedding. Given a new image find the inner product with the other images
 *   Fourier transform via linear regression on sinusoids. Similar approach with Lasso regression to find compressed sensing approaches, with non-uniform sampling.
+* Multi task neural network training
+    * train a single model to predict multiple ready fields from a single dataset
