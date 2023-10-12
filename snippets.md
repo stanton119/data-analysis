@@ -97,6 +97,21 @@ estimator = sklearn.pipeline.make_pipeline(
 )
 ```
 
+## Statsmodels
+Linear regression:
+```
+import statsmodels.api as sm
+
+sm_results = sm.OLS(y_train, x_train).fit()
+sm_results.summary()
+```
+Get coefficients and standard deviations:
+```
+sm_results.params
+np.sqrt(np.diag(sm_results.normalized_cov_params))
+```
+
+
 ## PyTorch
 Dataloader from numpy array:
 ```python
