@@ -222,3 +222,8 @@ Aim is for future work to be incorporated by working on separate branches and me
 *   Fourier transform via linear regression on sinusoids. Similar approach with Lasso regression to find compressed sensing approaches, with non-uniform sampling.
 * Multi task neural network training
     * train a single model to predict multiple ready fields from a single dataset
+* Learning interactions after main effects
+    * Create a synthetic dataset with interaction effects
+    * Fit models with/without interaction effects with incrementally more data
+    * Does interaction effects model fit with more data to higher out of sample performance
+    * Fit a model without interactions, introduction interactions after in some way. Perhaps tight priors on an interaction effects more which are relaxed with time.
