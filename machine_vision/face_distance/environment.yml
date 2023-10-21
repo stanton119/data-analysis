@@ -1,0 +1,18 @@
+name: machine_vision_env
+channels:
+  - conda-forge
+dependencies:
+  - python
+  - pip
+  
+  # Computation
+  - pillow
+  - pip:
+    - opencv-python
+    - mediapipe
+
+  # Debugging
+  - jupyter
+  - pylint
+  - rope
+  - black
