@@ -197,8 +197,10 @@ Aim is for future work to be incorporated by working on separate branches and me
 *   Double dip loss trajectories
 *   Fitting NNs to common functions (exp etc.), deep vs wide, number of parameters for given error
 *   Fit a NN to seasonal data with fourier series components
-*   DoubleML on heart data to find CATE
-*   DoubleML on dummy data vs other causal models. How robust are they to model mis-specification and missing confounders?
+*   Causal inference
+    *   DoubleML on heart data to find CATE
+    *   DoubleML on dummy data vs other causal models. How robust are they to model mis-specification and missing confounders?
+    *   Inverse propensity scoring - comparing different methods - manual Inverse Probability of Treatment Weighting, as variance in regression, sample weights, econML based. Do they match?
 *   Github action to publish ipynbs to markdown
 *   Hierarchical models
     *   Mixed effects model - is it the same as a fixed effects model (lin/log regression) with one hot encoding for the categorical variables + a fixed effect?
@@ -227,3 +229,61 @@ Aim is for future work to be incorporated by working on separate branches and me
     * Fit models with/without interaction effects with incrementally more data
     * Does interaction effects model fit with more data to higher out of sample performance
     * Fit a model without interactions, introduction interactions after in some way. Perhaps tight priors on an interaction effects more which are relaxed with time.
+* A/B test distribution comparison
+    * We often compare just the means. If we find plot a Q-Q plot is it more informative, bootstrapping would construct confidence intervals
+
+## TODO
+* Restructure:
+    * Remove .md/images, keep notebooks only where possible
+    * Change readme links
+* Rename folders
+* Regroup notebooks into high level folders
+    * technique/area
+        * NLP
+            * SarcasmDetection
+            * RNN/NameClassification
+        * MachineVision
+            * FasionCNN
+            * TransferLearning/ImageFineTuning
+        * Regression
+            * BootstrappedRegerssionCoefficients
+            * BinomialRegression
+            * SequentialBayesianRegression
+        * NeuralNetworks
+            * ElasticNetPyTorch
+            * NonLinearRegression
+            * FitDistWithPyro
+            * FittingMultimodelDistributions
+            * transformers_notes
+            * OverfittingNN
+            * Autoencoders
+            * BinaryLossFunctions
+            * DoubleDescent
+            * OutputLayerBias
+            * PytorchLightning
+        * CausalInference
+        * Recommenders
+            * MultiArmedBandits
+            * BanditsLibrary
+        * TimeSeries
+            * NeuralProphet
+        * Notes
+            * A lot of notebooks overlap categories
+            * Docs/notes in each topic area
+    * other
+        * ToSort/Delete
+        * Unpublished
+            * Split into each topic area?
+        * Talks
+        * Tools/Python
+            * InterpretML
+            * DataGenerationFromDrawings
+            * ParquetDatasets
+            * ParallelProcessing
+        * Other
+            * EnergyCapacity
+            * GameOfLife
+            * NBA
+            * TFLCycles
+* rename environment/requirements files to match the notebook
+* change markdown actions to stop markdown conversion
