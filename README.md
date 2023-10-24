@@ -4,10 +4,16 @@ Repo directory:
 *   Projects are split by folders
 
 ## Topic areas
-### Causal inference
+### Causal inference
 *   Causal regression - [notebook](causal_inference/causal_regression_coefficient.ipynb)
 *   Causal regression with DoWhy - [notebook](causal_inference/causal_regression_coefficient_dowhy.ipynb)
 *   Double machine learning and marginal effects - [notebook](causal_inference/doubleml_marginal_effects.ipynb)
+
+### Machine Vision
+*   Using Google's `mediapipe` to try simulate a 3D screen - [folder](machine_vision/3d_screen)
+*   Using Google's `mediapipe`, measure the distance of a face to the screen from a webcam feed - [folder](machine_vision/face_distance)
+*   FashionCNN - Convolution neural network for predicting the Fashion MNIST dataset - [notebook](machine_vision/fashion_cnn/fashion_batch_norm.ipynb)
+*   FashionCNN - Batch normalisation layer applied to the above CNN model - [notebook](machine_vision/fashion_cnn/fashion_batch_norm.ipynb)
 
 
 ## Model frameworks
@@ -42,20 +48,12 @@ Repo directory:
 ### [Tensorflow](TensorflowStuff/)
 *   [TensorflowStuff/overfitting_nn.ipynb](https://github.com/stanton119/data-analysis/blob/master/TensorflowStuff/overfitting_nn.ipynb)
     *   Do Neural Networks overfit?
-*   [FashionCNN/fashion_cnn.ipynb](https://github.com/stanton119/data-analysis/blob/master/FashionCNN/fashion_cnn.ipynb)
-    *   Convolution neural network for predicting the Fashion MNIST dataset.
-*   [FashionCNN/fashion_batch_norm.ipynb](https://github.com/stanton119/data-analysis/blob/master/FashionCNN/fashion_batch_norm.ipynb)
-    *   Batch normalisation layer applied to the above CNN model
 
 ### Others
 *   [TimeSeries/neural_prophet/neural_prophet_speed_test.md](https://github.com/stanton119/data-analysis/blob/master/TimeSeries/neural_prophet/neural_prophet_speed_test.md)
     *   Speed of fitting and predict of `neuralprophet` vs `fbprophet`
 *   [TimeSeries/neural_prophet/arima.md](https://github.com/stanton119/data-analysis/blob/master/TimeSeries/neural_prophet/arima.md)
     *   Can we fit long AR models with `neuralprophet`
-*   [machine_vision/3d_screen](https://github.com/stanton119/data-analysis/tree/master/machine_vision/3d_screen)
-    *   Using Google's `mediapipe` to try simulate a 3D screen
-*   [machine_vision/face_distance](https://github.com/stanton119/data-analysis/tree/master/machine_vision/face_distance)
-    *   Using Google's `mediapipe`, measure the distance of a face to the screen from a webcam feed
 
 ## Techniques
 *   [ParquetDatasets/parquet_datasets.ipynb](https://github.com/stanton119/data-analysis/blob/master/ParquetDatasets/parquet_datasets.ipynb)
