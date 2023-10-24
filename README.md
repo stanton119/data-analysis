@@ -3,6 +3,13 @@
 Repo directory:  
 *   Projects are split by folders
 
+## Topic areas
+### Causal inference
+*   Causal regression - [notebook](causal_inference/causal_regression_coefficient.ipynb)
+*   Causal regression with DoWhy - [notebook](causal_inference/causal_regression_coefficient_dowhy.ipynb)
+*   Double machine learning and marginal effects - [notebook](causal_inference/doubleml_marginal_effects.ipynb)
+
+
 ## Model frameworks
 ### [Pytorch](PyTorchStuff/)
 *   [PyTorchStuff/nonlinear_regression/nonlinear_regression.md](https://github.com/stanton119/data-analysis/blob/master/PyTorchStuff/nonlinear_regression/nonlinear_regression.md)
