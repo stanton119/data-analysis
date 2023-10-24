@@ -9,21 +9,28 @@ Repo directory:
 *   Causal regression with DoWhy - [notebook](causal_inference/causal_regression_coefficient_dowhy.ipynb)
 *   Double machine learning and marginal effects - [notebook](causal_inference/doubleml_marginal_effects.ipynb)
 
-### Machine Vision
+### Machine vision
 *   Using Google's `mediapipe` to try simulate a 3D screen - [folder](machine_vision/3d_screen)
 *   Using Google's `mediapipe`, measure the distance of a face to the screen from a webcam feed - [folder](machine_vision/face_distance)
 *   FashionCNN - Convolution neural network for predicting the Fashion MNIST dataset - [notebook](machine_vision/fashion_cnn/fashion_batch_norm.ipynb)
 *   FashionCNN - Batch normalisation layer applied to the above CNN model - [notebook](machine_vision/fashion_cnn/fashion_batch_norm.ipynb)
 
+### Neural networks
+*   Autoencoders - Using PCA to compress MNIST images - [notebook](neural_networks/autoencoders/pca.ipynb)
+*   Autoencoders - Using a dense autoencoder to compress MNIST images - [notebook](neural_networks/autoencoders/autoencoder.ipynb)
+*   Implementing an elastic net model in PyTorch - [notebook](neural_networks/elastic_net/elastic_linear.ipynb)
+*   Fitting distributions with variational inference - Simple example fitting a Gaussian distribution to data with Pyro - [notebook](neural_networks/fit_dist_with_pyro/fit_pyro_distribution.ipynb)
+*   Fitting distributions with variational inference - Simple example fitting a beta distribution to data with Pyro - [notebook](neural_networks/fit_dist_with_pyro/fit_beta_distribution.ipynb)
 
+
+# Appendix
 ## Model frameworks
 ### [Pytorch](PyTorchStuff/)
 *   [PyTorchStuff/nonlinear_regression/nonlinear_regression.md](https://github.com/stanton119/data-analysis/blob/master/PyTorchStuff/nonlinear_regression/nonlinear_regression.md)
     *   Linear regression to non linear probabilistic neural network.
 *   [PyTorchStuff/pytorch_lightning/pytorch_lightning_regression.md](https://github.com/stanton119/data-analysis/blob/master/PyTorchStuff/pytorch_lightning/pytorch_lightning_regression.md)
     *   Trying out `PyTorch Lightning`
-*   [PyTorchStuff/elastic_net/elastic_linear.md](https://github.com/stanton119/data-analysis/blob/master/PyTorchStuff/elastic_net/elastic_linear.md)
-    *   Implementing an elastic net model in PyTorch
+
 *   [FittingMultimodalDistributions/multimodal_beta_pytorch/multimodal_beta.md](https://github.com/stanton119/data-analysis/blob/master/FittingMultimodalDistributions/multimodal_beta_pytorch/multimodal_beta.md)
     *   Fitting a multimodal beta distribution via gradient descent
 *   [FittingMultimodalDistributions/zero_inflated_poisson_pytorch/zero_inflated_poisson.md](https://github.com/stanton119/data-analysis/blob/master/FittingMultimodalDistributions/zero_inflated_poisson_pytorch/zero_inflated_poisson.md)
@@ -34,10 +41,7 @@ Repo directory:
     *   Does initialising the output of a neural net to match your target distribution help? - Yes
 
 ### [Pyro](FitDistWithPyro/)
-*   [FitDistWithPyro/fit_pyro_distribution.ipynb](https://github.com/stanton119/data-analysis/blob/master/FitDistWithPyro/fit_pyro_distribution.ipynb)
-    *   Simple example fitting a Gaussian distribution to data using Pyro.
-*   [FitDistWithPyro/fit_beta_distribution.ipynb](https://github.com/stanton119/data-analysis/blob/master/FitDistWithPyro/fit_beta_distribution.ipynb)
-    *   Simple example fitting a beta distribution to data using Pyro.
+
 
 ### [Tensorflow Probability](TensorflowProbability/)
 *   [TensorflowProbability/nonlinear_regression.ipynb](https://github.com/stanton119/data-analysis/blob/master/TensorflowProbability/nonlinear_regression.ipynb)
@@ -62,10 +66,6 @@ Repo directory:
     *   Comparing the API fo dask to multiprocessing for general functions
 *   [recommenders/multi_armed_bandits_benchmarks](https://github.com/stanton119/data-analysis/blob/master/recommenders/multi_armed_bandits_benchmarks/multi_armed_bandits.md)
     *   Exploring multi-armed bandit benchmarks
-*   [PCA image compression](https://github.com/stanton119/data-analysis/blob/master/PyTorchStuff/autoencoders/pca.md)
-    *   Using PCA to compress MNIST images
-*   [Dense autoencoder image compression](https://github.com/stanton119/data-analysis/blob/master/PyTorchStuff/autoencoders/autoencoder.md)
-    *   Using a dense autoencoder to compress MNIST images
 
 ### Bayesian Regression
 *   [BootstrappedRegessionCoefficients/bootstrap_regression.ipynb](https://github.com/stanton119/data-analysis/blob/master/BootstrappedRegessionCoefficients/bootstrap_regression.ipynb)
@@ -245,3 +245,4 @@ Aim is for future work to be incorporated by working on separate branches and me
 * rename environment/requirements files to match the notebook
 * change markdown actions to stop markdown conversion
 * update blog articles for markdown images
+* Add year to each analysis link
