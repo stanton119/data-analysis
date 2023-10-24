@@ -236,54 +236,7 @@ Aim is for future work to be incorporated by working on separate branches and me
 * Restructure:
     * Remove .md/images, keep notebooks only where possible
     * Change readme links
-* Rename folders
-* Regroup notebooks into high level folders
-    * technique/area
-        * NLP
-            * SarcasmDetection
-            * RNN/NameClassification
-        * MachineVision
-            * FasionCNN
-            * TransferLearning/ImageFineTuning
-        * Regression
-            * BootstrappedRegerssionCoefficients
-            * BinomialRegression
-            * SequentialBayesianRegression
-        * NeuralNetworks
-            * ElasticNetPyTorch
-            * NonLinearRegression
-            * FitDistWithPyro
-            * FittingMultimodelDistributions
-            * transformers_notes
-            * OverfittingNN
-            * Autoencoders
-            * BinaryLossFunctions
-            * DoubleDescent
-            * OutputLayerBias
-            * PytorchLightning
-        * CausalInference
-        * Recommenders
-            * MultiArmedBandits
-            * BanditsLibrary
-        * TimeSeries
-            * NeuralProphet
-        * Notes
-            * A lot of notebooks overlap categories
-            * Docs/notes in each topic area
-    * other
-        * ToSort/Delete
-        * Unpublished
-            * Split into each topic area?
-        * Talks
-        * Tools/Python
-            * InterpretML
-            * DataGenerationFromDrawings
-            * ParquetDatasets
-            * ParallelProcessing
-        * Other
-            * EnergyCapacity
-            * GameOfLife
-            * NBA
-            * TFLCycles
+    * Optional action to create markdowns on separate branch
 * rename environment/requirements files to match the notebook
 * change markdown actions to stop markdown conversion
+* update blog articles for markdown images
