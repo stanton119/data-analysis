@@ -21,27 +21,27 @@ Repo directory:
 *   Implementing an elastic net model in PyTorch - [notebook](neural_networks/elastic_net/elastic_linear.ipynb)
 *   Fitting distributions with variational inference - Simple example fitting a Gaussian distribution to data with Pyro - [notebook](neural_networks/fit_dist_with_pyro/fit_pyro_distribution.ipynb)
 *   Fitting distributions with variational inference - Simple example fitting a beta distribution to data with Pyro - [notebook](neural_networks/fit_dist_with_pyro/fit_beta_distribution.ipynb)
+*   Fitting a multimodal beta distribution with Pytorch - [notebook](neural_networks/fitting_multimodal_distributions/multimodal_beta_pytorch/multimodal_beta.ipynb)
+*   Fitting a zero inflated Poisson distribution with Pytorch - [notebook](neural_networks/fitting_multimodal_distributions/zero_inflated_poisson_pytorch/zero_inflated_poisson.ipynb)
+*   PyTorch: Linear regression to non linear probabilistic neural network - [notebook](neural_networks/nonlinear_regression/nonlinear_regression.ipynb)
+*   TensorflowProbability: Linear regression to non linear probabilistic neural network - [notebook](neural_networks/tensorflow_probability/nonlinear_regression.ipynb)
+*   Trying out `PyTorch Lightning` - [notebook](neural_networks/pytorch_lightning/pytorch_lightning_regression.ipynb)
+*   Tensorflow - Do Neural Networks overfit?[notebook](neural_networks/overfitting_nn/overfitting_nn.ipynb)
+*   Fitting a normal distribution with tensorflow probability - [notebook](neural_networks/tensorflow_probability/fit_gaussian_tfp.ipynb)
+*   Binary loss functions - Is there a material difference between using `BCEWithLogitsLoss` and `CrossEntropyLoss` for binary classification tasks? - No - [notebook](neural_networks/binary_loss_functions.ipynb)
+*   Does initialising the output of a neural net to match your target distribution help? - Yes - [notebook](neural_networks/output_layer_bias.ipynb)
+
+### Other
+*   Analysis into European installed energy capacity - [notebook](other/energy_capacity/installed_energy_capacity.ipynb)
+*   The Game of Life computed with convolution - [folder](other/game_of_life)
+*   NBA - Analysis into LeBron James playing minutes - [notebook](other/nba/minutes_played/minutes_played.ipynb)
+*   TFL - Analysis in to the number of bike trips taken per day in London - [notebook](other/tfl_cycles/data_exploration.ipynb)
+*   NBA Score Trajectories - Flask app to show scores of a basketball match against time - [repo](https://github.com/stanton119/nba-scores)
+*   NBA Shooting - Kedro data pipelines to plot player scoring probability distributions [repo](https://github.com/stanton119/nba-analysis)
 
 
 # Appendix
 ## Model frameworks
-### [Pytorch](PyTorchStuff/)
-*   [PyTorchStuff/nonlinear_regression/nonlinear_regression.md](https://github.com/stanton119/data-analysis/blob/master/PyTorchStuff/nonlinear_regression/nonlinear_regression.md)
-    *   Linear regression to non linear probabilistic neural network.
-*   [PyTorchStuff/pytorch_lightning/pytorch_lightning_regression.md](https://github.com/stanton119/data-analysis/blob/master/PyTorchStuff/pytorch_lightning/pytorch_lightning_regression.md)
-    *   Trying out `PyTorch Lightning`
-
-*   [FittingMultimodalDistributions/multimodal_beta_pytorch/multimodal_beta.md](https://github.com/stanton119/data-analysis/blob/master/FittingMultimodalDistributions/multimodal_beta_pytorch/multimodal_beta.md)
-    *   Fitting a multimodal beta distribution via gradient descent
-*   [FittingMultimodalDistributions/zero_inflated_poisson_pytorch/zero_inflated_poisson.md](https://github.com/stanton119/data-analysis/blob/master/FittingMultimodalDistributions/zero_inflated_poisson_pytorch/zero_inflated_poisson.md)
-    *   Fitting a zero-inflated Poisson distribution via gradient descent
-*   [PyTorchStuff/binary_loss_functions.ipynb](https://github.com/stanton119/data-analysis/blob/master/PyTorchStuff/binary_loss_functions.ipynb)
-    *   Is there a material difference between using `BCEWithLogitsLoss` and `CrossEntropyLoss` for binary classification tasks? - No
-*   [PyTorchStuff/output_layer_bias.ipynb](https://github.com/stanton119/data-analysis/blob/master/PyTorchStuff/output_layer_bias.ipynb)
-    *   Does initialising the output of a neural net to match your target distribution help? - Yes
-
-### [Pyro](FitDistWithPyro/)
-
 
 ### [Tensorflow Probability](TensorflowProbability/)
 *   [TensorflowProbability/nonlinear_regression.ipynb](https://github.com/stanton119/data-analysis/blob/master/TensorflowProbability/nonlinear_regression.ipynb)
@@ -50,8 +50,7 @@ Repo directory:
     *   Fitting a normal distribution with tensorflow probability.
 
 ### [Tensorflow](TensorflowStuff/)
-*   [TensorflowStuff/overfitting_nn.ipynb](https://github.com/stanton119/data-analysis/blob/master/TensorflowStuff/overfitting_nn.ipynb)
-    *   Do Neural Networks overfit?
+
 
 ### Others
 *   [TimeSeries/neural_prophet/neural_prophet_speed_test.md](https://github.com/stanton119/data-analysis/blob/master/TimeSeries/neural_prophet/neural_prophet_speed_test.md)
@@ -79,19 +78,6 @@ Repo directory:
 *   [CausalInference/causal_regression_coefficient.ipynb](https://github.com/stanton119/data-analysis/blob/master/CausalInference/causal_regression_coefficient.ipynb)
     *   Exploring the effect of confounding variables on regression coefficients
 
-## Applied datasets
-*   [TFL Cycle Analysis](https://github.com/stanton119/data-analysis/tree/master/TFLCycles)
-    *   Analysis in to the number of bike trips taken per day in London.
-*   [NBA Score Trajectories](https://github.com/stanton119/nba-scores)
-    *   Flask app to show scores of a basketball match against time.
-*   [Installed energy capacity](https://github.com/stanton119/data-analysis/blob/master/EnergyCapacity/installed_energy_capacity.ipynb)
-    *   Analysis into European installed energy capacity
-*   [NBA LeBron Minutes](https://github.com/stanton119/data-analysis/tree/master/NBA/minutes_played/minutes_played.md)
-    *   Analysis into LeBron James playing minutes
-*   [NBA Shooting - Kedro project](https://github.com/stanton119/data-analysis/tree/master/NBA/nba-analysis)
-    *   Kedro data pipelines to plot player scoring probability distributions
-*   [NBA Shooting Data](https://github.com/stanton119/data-analysis/tree/master/NBA/NBAShotSelection)
-    *   Not finished yet - animations of shots taken by Kobe Bryant over time.
 
 ## Installation
 The various analysis was built in Python 3.
