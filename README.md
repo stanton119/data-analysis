@@ -31,53 +31,34 @@ Repo directory:
 *   Binary loss functions - Is there a material difference between using `BCEWithLogitsLoss` and `CrossEntropyLoss` for binary classification tasks? - No - [notebook](neural_networks/binary_loss_functions.ipynb)
 *   Does initialising the output of a neural net to match your target distribution help? - Yes - [notebook](neural_networks/output_layer_bias.ipynb)
 
+### Recommenders
+*   Exploring multi-armed bandit benchmarks - [notebook](recommenders/multi_armed_bandits_benchmarks/multi_armed_bandits.ipynb)
+
+### Regression
+*   Bootstrapping regression coefficients - Confirming theoretical regression coefficient distributions with bootstrapped samples - [notebook](regression/bootstrapped_regession_coefficients/bootstrap_regression.ipynb)
+*   Interaction coefficients regularisation - [notebook](regression/interactions_linear_models/interactions_convergence.ipynb)
+*   Sequential Bayesian linear regression model - [notebook](regression/sequential_bayesian_regression/sequential_bayesian_linear_regression.ipynb)
+*   Bayesian regression adapting to non-stationary data - [notebook](regression/sequential_bayesian_regression/adaptive_coefficients.ipynb)
+*   Binomial regression vs logistic regression - [notebook](regression/binomial_regression.ipynb)
+*   Investigating double descent with linear regression - [notebook](regression/double_descent.ipynb)
+
+### Time series
+*   Speed of fitting and predict of `neuralprophet` vs `fbprophet` - [notebook](time_series/neural_prophet/neural_prophet_speed_test.ipynb)
+*   Can we fit long AR models with `neuralprophet` - [notebook](time_series/neural_prophet/arima.ipynb)
+
+### Tools/Python
+*   Dask vs multiprocessing - Comparing the API of dask to multiprocessing for general functions - [python](tools_python/parallel_processing/dask_vs_multiprocessing.py)
+*   Parquet datasets - Exporting writing dataframes to partitioned parquet files - [notebook](tools_python/parquet_datasets/parquet_datasets.ipynb)
+*   Data generating functions from drawing data - [notebook](tools_python/data_generation_from_drawings.ipynb)
+
 ### Other
 *   Analysis into European installed energy capacity - [notebook](other/energy_capacity/installed_energy_capacity.ipynb)
 *   The Game of Life computed with convolution - [folder](other/game_of_life)
 *   NBA - Analysis into LeBron James playing minutes - [notebook](other/nba/minutes_played/minutes_played.ipynb)
 *   TFL - Analysis in to the number of bike trips taken per day in London - [notebook](other/tfl_cycles/data_exploration.ipynb)
 *   NBA Score Trajectories - Flask app to show scores of a basketball match against time - [repo](https://github.com/stanton119/nba-scores)
-*   NBA Shooting - Kedro data pipelines to plot player scoring probability distributions [repo](https://github.com/stanton119/nba-analysis)
-
-
-# Appendix
-## Model frameworks
-
-### [Tensorflow Probability](TensorflowProbability/)
-*   [TensorflowProbability/nonlinear_regression.ipynb](https://github.com/stanton119/data-analysis/blob/master/TensorflowProbability/nonlinear_regression.ipynb)
-    *   Linear regression to non linear probabilistic neural network.
-*   [TensorflowProbability/fit_gaussian_tfp.ipynb](https://github.com/stanton119/data-analysis/blob/master/TensorflowProbability/fit_gaussian_tfp.ipynb)
-    *   Fitting a normal distribution with tensorflow probability.
-
-### [Tensorflow](TensorflowStuff/)
-
-
-### Others
-*   [TimeSeries/neural_prophet/neural_prophet_speed_test.md](https://github.com/stanton119/data-analysis/blob/master/TimeSeries/neural_prophet/neural_prophet_speed_test.md)
-    *   Speed of fitting and predict of `neuralprophet` vs `fbprophet`
-*   [TimeSeries/neural_prophet/arima.md](https://github.com/stanton119/data-analysis/blob/master/TimeSeries/neural_prophet/arima.md)
-    *   Can we fit long AR models with `neuralprophet`
-
-## Techniques
-*   [ParquetDatasets/parquet_datasets.ipynb](https://github.com/stanton119/data-analysis/blob/master/ParquetDatasets/parquet_datasets.ipynb)
-    *   Exporting dataframes to partitioned parquet files.
-*   [Dask vs multiprocessing](https://github.com/stanton119/data-analysis/blob/master/parallel_processing/dask_vs_multiprocessing.py)
-    *   Comparing the API fo dask to multiprocessing for general functions
-*   [recommenders/multi_armed_bandits_benchmarks](https://github.com/stanton119/data-analysis/blob/master/recommenders/multi_armed_bandits_benchmarks/multi_armed_bandits.md)
-    *   Exploring multi-armed bandit benchmarks
-
-### Bayesian Regression
-*   [BootstrappedRegessionCoefficients/bootstrap_regression.ipynb](https://github.com/stanton119/data-analysis/blob/master/BootstrappedRegessionCoefficients/bootstrap_regression.ipynb)
-    *   Confirming theoretical regression coefficient distributions with bootstrapped samples.
-*   [SequentialBayesianRegression/sequential_bayesian_linear_regression.md](https://github.com/stanton119/data-analysis/blob/master/SequentialBayesianRegression/sequential_bayesian_linear_regression.md)
-    *   Sequential Bayesian linear regression model
-*   [SequentialBayesianRegression/adaptive_coefficients.md](https://github.com/stanton119/data-analysis/blob/master/SequentialBayesianRegression/adaptive_coefficients.md)
-    *   Bayesian regression adapting to non-stationary data
-
-### Causal Inference
-*   [CausalInference/causal_regression_coefficient.ipynb](https://github.com/stanton119/data-analysis/blob/master/CausalInference/causal_regression_coefficient.ipynb)
-    *   Exploring the effect of confounding variables on regression coefficients
-
+*   NBA Shooting - Kedro data pipelines to plot player scoring probability distributions - [repo](https://github.com/stanton119/nba-analysis)
+*   The classic birthday problem - [notebook](other/birthday_problems.ipynb)
 
 ## Installation
 The various analysis was built in Python 3.
