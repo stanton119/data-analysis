@@ -74,3 +74,4 @@ jobs:
           add: "*"
           new_branch: markdown
           tag_push: '--force'
+          push: 'origin markdown --set-upstream --force'
