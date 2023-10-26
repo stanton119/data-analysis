@@ -5,7 +5,7 @@ echo $2
 
 # ignore deleted files, filter for .ipynb only, filter for last 10 commits
 # files=$(git diff --name-only --diff-filter=d $1 $2 | grep .ipynb)
-files=$(git diff --name-only HEAD^..HEAD | grep .ipynb)
+files=$(git diff --name-only HEAD~10 | grep .ipynb | grep -v 'unfinished')
 for i in $files;
 do
    echo $i
