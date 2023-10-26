@@ -34,18 +34,18 @@ jobs:
           cache-dependency-path: '**/requirements-ci.txt'
       - run: pip install -r requirements-ci.txt
         
-      - name: Auto format
-        run: black . --exclude *unfinished*
+      # - name: Auto format
+      #   run: black . --exclude *unfinished*
 
-      - name: Commit changes
-        uses: EndBug/add-and-commit@v9
-        with:
-          committer_name: GitHub Actions
-          committer_email: actions@github.com
-          # author_name: Your Name
-          # author_email: mail@example.com
-          message: 'Autoformat'
-          add: "['*.py','*.ipynb']"
+      # - name: Commit changes
+      #   uses: EndBug/add-and-commit@v9
+      #   with:
+      #     committer_name: GitHub Actions
+      #     committer_email: actions@github.com
+      #     # author_name: Your Name
+      #     # author_email: mail@example.com
+      #     message: 'Autoformat'
+      #     add: "['*.py','*.ipynb']"
 
       - name: Print SHAs
         run: |
