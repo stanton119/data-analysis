@@ -72,3 +72,5 @@ jobs:
           # author_email: mail@example.com
           message: 'CI - markdown conversion'
           add: "*"
+          new_branch: markdown-branch
+          # tag_push: '--force'
