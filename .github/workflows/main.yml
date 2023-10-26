@@ -73,4 +73,4 @@ jobs:
           message: 'CI - markdown conversion'
           add: "*"
           new_branch: markdown
-          # tag_push: '--force'
+          tag_push: '--force'
