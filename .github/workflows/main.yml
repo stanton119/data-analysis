@@ -4,7 +4,7 @@ name: CI
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
     paths:
       - '**.py'
       - '**/**.py'
@@ -72,5 +72,5 @@ jobs:
           # author_email: mail@example.com
           message: 'CI - markdown conversion'
           add: "*"
-          new_branch: markdown-branch
+          new_branch: markdown
           # tag_push: '--force'
