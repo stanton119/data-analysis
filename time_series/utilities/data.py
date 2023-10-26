@@ -13,16 +13,14 @@ DATA_PATH = Path(__file__).parents[1] / "data"
 def gen_dummy_data():
     if 1:
         df = pd.DataFrame()
-        df["ds"] = pd.date_range(
-            start="2010-01-01", end="2025-01-01", freq="1D"
-        )
+        df["ds"] = pd.date_range(start="2010-01-01", end="2025-01-01", freq="1D")
         df["y"] = np.random.rand(df.shape[0], 1)
         df["x1"] = np.random.rand(df.shape[0], 1)
     else:
-        data_location = "https://raw.githubusercontent.com/ourownstory/neural_prophet/master/"
-        df = pd.read_csv(
-            data_location + "example_data/wp_log_peyton_manning.csv"
+        data_location = (
+            "https://raw.githubusercontent.com/ourownstory/neural_prophet/master/"
         )
+        df = pd.read_csv(data_location + "example_data/wp_log_peyton_manning.csv")
 
     df_train = df.iloc[: int(df.shape[0] / 2)]
     df_test = df.iloc[int(df.shape[0] / 2) :]
@@ -42,12 +40,12 @@ def get_weather_data() -> pd.DataFrame:
     df = df.rename(columns={"Date Time": "ds", "T (degC)": "y"})
     df["ds"] = pd.to_datetime(df["ds"], format=r"%d.%m.%Y %H:%M:%S")
 
-    filt = (df["ds"].dt.hour==0) & (df["ds"].dt.minute==0)
+    filt = (df["ds"].dt.hour == 0) & (df["ds"].dt.minute == 0)
     df = df.loc[filt]
     df = df.drop_duplicates()
     r = pd.date_range(start=df["ds"].min(), end=df["ds"].max(), freq="D")
     df = df.set_index("ds").reindex(r).rename_axis("ds").reset_index()
-    df['y'] = df['y'].fillna(method='ffill')
+    df["y"] = df["y"].fillna(method="ffill")
 
     return df.set_index("ds")[["y"]]
 

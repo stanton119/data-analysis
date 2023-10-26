@@ -2,7 +2,7 @@
 # # Neural prophet - ARNet
 # Build a model to predict multiple future time steps.
 # This is broken at the moment. Increasing `n_forecasts` > 1 causes the library to crash.
-# 
+#
 # Import some relevant libraries:
 # %%
 import numpy as np
@@ -28,13 +28,9 @@ import data
 df = pd.DataFrame()
 df["ds"] = pd.date_range(start="2010-01-01", end="2025-01-01", freq="1D")
 freq = 10
-df["x1"] = np.sin(
-    np.linspace(start=0, stop=freq * 2 * np.math.pi, num=df.shape[0])
-)
+df["x1"] = np.sin(np.linspace(start=0, stop=freq * 2 * np.math.pi, num=df.shape[0]))
 freq = 3
-df["x2"] = np.sin(
-    np.linspace(start=0, stop=freq * 2 * np.math.pi, num=df.shape[0])
-)
+df["x2"] = np.sin(np.linspace(start=0, stop=freq * 2 * np.math.pi, num=df.shape[0]))
 df["y"] = df["x1"] + df["x2"]
 
 df.set_index("ds")["y"].plot()
@@ -53,7 +49,7 @@ t2 = process_time() - t1
 
 t3 = process_time()
 future_nprophet = model_nprophet.make_future_dataframe(
-    df=df_train,#.iloc[[-1]],
+    df=df_train,  # .iloc[[-1]],
     regressors_df=df_test[["x1", "x2"]],
     periods=df_test.shape[0],
 )

@@ -58,9 +58,7 @@ def get_avg_eye_coordinates(points, unique_eye_coordinates):
     for unique_coordinates in unique_eye_coordinates:
         _avg_coordinates = list()
         for point in unique_coordinates:
-            _avg_coordinates.append(
-                [points[point].x, points[point].y, points[point].z]
-            )
+            _avg_coordinates.append([points[point].x, points[point].y, points[point].z])
         _avg_coordinates = np.array(_avg_coordinates)
         _avg_coordinates = np.mean(_avg_coordinates, axis=0)
         avg_coordinates.append(_avg_coordinates)
@@ -74,18 +72,14 @@ def get_landmarks_from_np(coordinates):
     LandmarkPoint = namedtuple("Point", ["x", "y", "z"])
     landmarks = list()
     for coordinate in coordinates:
-        landmarks.append(
-            LandmarkPoint(coordinate[0], coordinate[1], coordinate[2])
-        )
+        landmarks.append(LandmarkPoint(coordinate[0], coordinate[1], coordinate[2]))
     return landmarks
 
 
 def get_avg_landmarks_from_results(results, unique_eye_coordinates):
     # get 1st face only
     points = results.multi_face_landmarks[0].landmark
-    avg_eye_coordinates = get_avg_eye_coordinates(
-        points, unique_eye_coordinates
-    )
+    avg_eye_coordinates = get_avg_eye_coordinates(points, unique_eye_coordinates)
     landmarks = get_landmarks_from_np(avg_eye_coordinates)
     return landmarks
 

@@ -11,12 +11,7 @@ plt.style.use("seaborn-whitegrid")
 n = 2000
 x = np.random.uniform(-10, 10, size=n)
 noise_std = np.sin(x * 0.4) + 1
-y = (
-    -0.5
-    + 1.3 * x
-    + 3 * np.cos(x * 0.5)
-    + np.random.normal(loc=0, scale=noise_std)
-)
+y = -0.5 + 1.3 * x + 3 * np.cos(x * 0.5) + np.random.normal(loc=0, scale=noise_std)
 
 x_train = x[: n // 2]
 x_test = x[n // 2 :]
@@ -42,10 +37,12 @@ dataloader_train = DataLoader(dataset_train, batch_size=64, shuffle=True)
 dataset_test = TensorDataset(x_test_t, y_test_t)
 dataloader_test = DataLoader(dataset_test, batch_size=64, shuffle=True)
 
+
 # %%
 def loss_fn_loglike(y_hat, y):
     negloglik = -y_hat.log_prob(y)
     return torch.mean(negloglik)
+
 
 def plot_loss(loss_train, loss_test):
     fig, ax = plt.subplots(figsize=(10, 6))
@@ -78,9 +75,11 @@ def plot_model_results(model, x, y):
     y_est_mu = y_hat.mean.detach().numpy()
     y_est_std = y_hat.scale.detach().numpy()
     plot_results(x, y, y_est_mu, y_est_std)
-    
+
+
 # %% pytorch lightning
 import pytorch_lightning as pl
+
 
 class DeepNormalModelPL(pl.LightningModule):
     def __init__(self, n_inputs: int = 1, n_hidden: int = 10):
@@ -99,7 +98,7 @@ class DeepNormalModelPL(pl.LightningModule):
         scale = torch.nn.functional.softplus(self.scale_linear(outputs))
 
         return torch.distributions.Normal(mean, scale)
-    
+
     def configure_optimizers(self, learning_rate=0.05):
         optimizer = torch.optim.Adam(self.parameters(), lr=learning_rate)
         return optimizer
@@ -109,6 +108,7 @@ class DeepNormalModelPL(pl.LightningModule):
         y_hat = self(x)
         loss = loss_fn_loglike(y_hat, y)
         return loss
+
 
 model_lightning = DeepNormalModelPL()
 trainer = pl.Trainer(max_epochs=100)

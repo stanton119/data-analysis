@@ -15,14 +15,10 @@ class GameOfLife:
 
     def update_state(self):
         # convolve kernel and apply game of life logic to number of neighbours
-        conv_state = scipy.signal.convolve2d(
-            self.state, self.kernel, mode="same"
-        )
+        conv_state = scipy.signal.convolve2d(self.state, self.kernel, mode="same")
         temp_state = np.zeros(shape=self.shape)
         temp_state[(conv_state < 2) | (conv_state > 3)] = 0
-        temp_state[
-            ((conv_state == 2) | (conv_state == 3)) & (self.state == 1)
-        ] = 1
+        temp_state[((conv_state == 2) | (conv_state == 3)) & (self.state == 1)] = 1
         temp_state[conv_state == 3] = 1
         self.state = temp_state
 
@@ -41,9 +37,7 @@ class GameOfLife:
 
     def animate(self, filename):
         self.fig, self.ax = plt.subplots(figsize=(12, 12), dpi=self.shape[0])
-        ani = animation.FuncAnimation(
-            self.fig, self._animate, frames=300, interval=10
-        )
+        ani = animation.FuncAnimation(self.fig, self._animate, frames=300, interval=10)
         ani.save(filename)
         return ani
 

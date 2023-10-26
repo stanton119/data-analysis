@@ -60,12 +60,8 @@ def get_square_position_from_landmarks(landmarks, depth=1.0):
 
 
 image = blank_screen()
-image = draw_square(
-    image, x_per=(0.3, 0.7), y_per=(0.3, 0.7), colour=(0, 255, 0)
-)
-image = draw_square(
-    image, x_per=(0.4, 0.6), y_per=(0.4, 0.6), colour=(255, 0, 0)
-)
+image = draw_square(image, x_per=(0.3, 0.7), y_per=(0.3, 0.7), colour=(0, 255, 0))
+image = draw_square(image, x_per=(0.4, 0.6), y_per=(0.4, 0.6), colour=(255, 0, 0))
 Image.fromarray(image)
 
 

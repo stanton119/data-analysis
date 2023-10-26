@@ -7,15 +7,14 @@ save_folder.mkdir(exist_ok=True)
 
 cap = cv2.VideoCapture(0)
 n_img = 3
-for idx in range(n_img+1):
-
+for idx in range(n_img + 1):
     success, image = cap.read()
     if not success:
         print("Ignoring empty camera frame.")
         # If loading a video, use 'break' instead of 'continue'.
         continue
 
-    if idx==0:
+    if idx == 0:
         # low brightness on first frame
         continue
 

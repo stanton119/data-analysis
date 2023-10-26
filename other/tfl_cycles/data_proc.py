@@ -28,7 +28,6 @@ def change_column_names(cycle_data: pd.DataFrame) -> pd.DataFrame:
 
 # %%
 def convert_to_timestamp_objects(cycle_data: pd.DataFrame) -> pd.DataFrame:
-
     # 2015-01-04 00:00:00
     cycle_data["timestamp_obj"] = cycle_data["timestamp"].apply(
         lambda x: datetime.datetime.strptime(x, "%Y-%m-%d %H:%M:%S")

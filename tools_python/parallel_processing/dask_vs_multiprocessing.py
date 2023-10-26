@@ -20,9 +20,7 @@ import requests
 
 def fetch_results(date):
     date_str = date.strftime("%Y-%m-%d")
-    r = requests.get(
-        f"https://api.carbonintensity.org.uk/intensity/date/{date_str}"
-    )
+    r = requests.get(f"https://api.carbonintensity.org.uk/intensity/date/{date_str}")
     return r.json()
 
 

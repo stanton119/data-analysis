@@ -1,4 +1,3 @@
-
 # %%
 """
 # Text classification
@@ -68,8 +67,8 @@ source: https://pytorch.org/tutorials/beginner/text_sentiment_ngrams_tutorial.ht
 # %%
 import torch
 
-class TextClassificationModel(torch.nn.Module):
 
+class TextClassificationModel(torch.nn.Module):
     def __init__(self, vocab_size, embed_dim, num_class):
         super(TextClassificationModel, self).__init__()
         self.embedding = torch.nn.EmbeddingBag(vocab_size, embed_dim, sparse=True)
@@ -85,6 +84,8 @@ class TextClassificationModel(torch.nn.Module):
     def forward(self, text, offsets):
         embedded = self.embedding(text, offsets)
         return self.fc(embedded)
+
+
 model = TextClassificationModel(10, 5, 3)
 
 from torchinfo import summary

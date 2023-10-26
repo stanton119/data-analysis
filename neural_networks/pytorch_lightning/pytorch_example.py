@@ -11,12 +11,7 @@ plt.style.use("seaborn-whitegrid")
 n = 2000
 x = np.random.uniform(-10, 10, size=n)
 noise_std = np.sin(x * 0.4) + 1
-y = (
-    -0.5
-    + 1.3 * x
-    + 3 * np.cos(x * 0.5)
-    + np.random.normal(loc=0, scale=noise_std)
-)
+y = -0.5 + 1.3 * x + 3 * np.cos(x * 0.5) + np.random.normal(loc=0, scale=noise_std)
 
 x_train = x[: n // 2]
 x_test = x[n // 2 :]
@@ -41,6 +36,7 @@ dataset_train = TensorDataset(x_train_t, y_train_t)
 dataloader_train = DataLoader(dataset_train, batch_size=64, shuffle=True)
 dataset_test = TensorDataset(x_test_t, y_test_t)
 dataloader_test = DataLoader(dataset_test, batch_size=64, shuffle=True)
+
 
 # %%
 def loss_fn_loglike(y_hat, y):
@@ -88,9 +84,7 @@ def test_loop_dl(dataloader, model, loss_fn):
     return test_loss
 
 
-def train_dl(
-    model, dataloader_train, dataloader_test, loss_fn, optimizer, epochs=20
-):
+def train_dl(model, dataloader_train, dataloader_test, loss_fn, optimizer, epochs=20):
     loss_train = []
     loss_test = []
     for t in range(epochs):
@@ -159,7 +153,8 @@ def plot_model_results(model, x, y):
     y_est_mu = y_hat.mean.detach().numpy()
     y_est_std = y_hat.scale.detach().numpy()
     plot_results(x, y, y_est_mu, y_est_std)
-    
+
+
 # %%
 class DeepNormalModel(torch.nn.Module):
     def __init__(self, n_inputs: int = 1, n_hidden: int = 10):
@@ -178,6 +173,8 @@ class DeepNormalModel(torch.nn.Module):
         scale = torch.nn.functional.softplus(self.scale_linear(outputs))
 
         return torch.distributions.Normal(mean, scale)
+
+
 # %%
 model_dnm = DeepNormalModel(1)
 

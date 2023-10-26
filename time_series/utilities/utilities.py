@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from tqdm import trange
 
+
 # processing functions
 def split_ts(
     df: pd.DataFrame, split_frac: float = 0.8
@@ -12,9 +13,7 @@ def split_ts(
     return df_train, df_test
 
 
-def split_sequence(
-    df, y_col: str, train_len=30, forecast_gap=1, forecast_len=3
-):
+def split_sequence(df, y_col: str, train_len=30, forecast_gap=1, forecast_len=3):
     # split time series into training samples
     # forecast_gap = distance to first forecast
 
@@ -37,9 +36,9 @@ def construct_results_df(df, y, y_hat, train_len, forecast_gap, forecast_len):
     df_results = pd.DataFrame(index=df.index)
     df_results["y"] = df["y"]
     df_results["tf_y"] = np.nan
-    df_results["tf_y"].iloc[
-        train_len + forecast_gap - 1 : -forecast_len - 1
-    ] = y[:, 0].flatten()
+    df_results["tf_y"].iloc[train_len + forecast_gap - 1 : -forecast_len - 1] = y[
+        :, 0
+    ].flatten()
 
     for col in range(y_hat.shape[1]):
         df_results[f"y_hat_{col}"] = np.nan
@@ -56,7 +55,6 @@ def one_step_ar_predict(
 ):
     y_test_hat_ar = initial_x
     for i in trange(no_forecasts):
-
         # transform if possible
         if scaler is not None:
             _x_test = scaler.transform(y_test_hat_ar[-train_len:, np.newaxis])
