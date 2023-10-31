@@ -1,0 +1,25 @@
+name: econml_env
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+  
+  # Computation
+  - numpy
+  - pandas
+  - 'polars[all]'
+  - scikit-learn
+  - statsmodels
+  - econml
+  - tqdm
+
+  # Plotting
+  - matplotlib
+  - seaborn
+
+  # Debugging
+  - jupyter
+  - black
+
+  # - pip:
