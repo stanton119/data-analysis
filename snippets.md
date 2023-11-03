@@ -267,6 +267,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--param", type=int)
 parser.add_argument("--param2", type=str, default="default_str")
 args = parser.parse_args()
+args.param...:
 ```
 
 ## Decorators
