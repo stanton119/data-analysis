@@ -266,6 +266,9 @@ print(os.getenv('key'))
 parser = argparse.ArgumentParser()
 parser.add_argument("--param", type=int)
 parser.add_argument("--param2", type=str, default="default_str")
+parser.add_argument(
+    "--bool_arg", type=bool, default=False, action=argparse.BooleanOptionalAction
+)
 args = parser.parse_args()
 args.param...:
 ```
