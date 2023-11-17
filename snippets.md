@@ -1,5 +1,17 @@
 # Snippets
 
+## Standard imports
+```
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+import pandas as pd
+import polars as pl
+
+plt.style.use("seaborn-v0_8-whitegrid")
+pl.Config.set_fmt_str_lengths(30)
+```
+
 ## IO
 Loading from S3
 For datasets that are small enough to save to disk:
