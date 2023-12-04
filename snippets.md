@@ -250,6 +250,13 @@ except Exception:
     logging.exception("An exception was thrown!")
 ```
 
+### Timing execution
+```
+import timeit
+t1 = timeit.default_timer()
+logger.info(f"Time taken: {timeit.default_timer() - t1}s")
+```
+
 ## Data analysis
 * Check for missing: https://github.com/ResidentMario/missingno
 * General profiling: ydata-profiling
