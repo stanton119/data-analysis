@@ -155,5 +155,18 @@ https://arxiv.org/pdf/2107.03342.pdf
 https://arxiv.org/pdf/1806.01768.pdf
 * 2018
 * Classification models only with softmax are over confident in predictions when uncertainty is high.
-* Proposed to model the NN output as a Dirchlet distribution (multivariate beta distribution).
+* Proposed to model the NN output as a Dirichlet distribution (multivariate beta distribution).
 * The parameters of the distribution represent the evidence in each output class.
+* The network weights are trained via the likelihood.
+* A classifier network maximises the loglikelihood of a multinomial distribution over the class probabilities.
+* The multinomial probabilities come from the Dirichlet prior distribution.
+* The multinomial class probabilities are marginalised out to give the likelihood from the Dirichlet evidence parameters.
+* This is the same approach as empirical Bayes and Type II maximium Likelihood.
+* Probability simplex = a unit vector (sums to one) where each component is between 0 and 1.
+* They add a KL divergence term to a uniform distribution to penalise divergences for uncertain predictions that do not contribute towards the data fit.
+* Results
+  * It was tested comparing against other uncertainty methods by training the same network architecture each time.
+  * Uses MNIST and CIFAR10. The first 5 from CIFAR are used for training, the last 5 used for uncertainty quanitifcation.
+  * Predictive performance is similar to other methods like MC dropout.
+  * Uncertainty estimates are improved as measured in entropy on dummy MNIST data.
+* Code: https://muratsensoy.github.io/uncertainty.html
