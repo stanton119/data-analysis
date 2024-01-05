@@ -118,4 +118,42 @@ https://arxiv.org/abs/1003.0146
 *   maximises click through rate by select optimal stories to recommend
 *   Uses info on user and article
 *   Suggests how the methods can be tested offline with random data
-*   
+
+### A Survey of Uncertainty in Deep Neural Networks
+https://arxiv.org/pdf/2107.03342.pdf
+* 2022
+* Summary paper discussion methods to capture uncertainty in neural networks.
+* Single Deterministic Methods
+  * Internal Uncertainty Quantification Approaches - using a single network to predict distribution parameters.
+    * Classification problems have commonly been modelled with Dirichlet distributions over the binary outputs.
+    * Dirichlet (multivariate beta distribution) is the conjugate prior of the multinomial distribution which corresponds to a multi class classification problem.
+  * External - using a separate network to model the uncertainty alone.
+  * These methods are fast at inference time due to a single forward pass used, though can be slower during training due to more complex loss functions.
+* Bayesian Networks
+  * Learns distributions over the network parameters.
+  * The network outputs are found by marginalising over the network parameters, however this is typically intractable.
+  * Inference is therefore costly as we typically sample from the parameters to form a distribution over the network outputs.
+  * Practical solutions include varitional inference, sampling approaches and the Laplace approximation.
+  * Variational inference forces the posterior parameter distributions to follow a family of tractable solutions.
+    * This includes ELBO approaches and MC drop out
+  * Sampling includes MCMC.
+  * Laplace approximation assumes the loss surface is uni-modal and approximates it with a normal distribution.
+    * The parameter log posterior distribution is represented by the Hessian, which is complex to compute for NNs and typically requires approximate solutions.
+* Ensemble methods
+  * Using multiple models can converge to different local optima, therefore we can more easily get multi-modal output distributions.
+  * Need to maximise the variety across single networks to maximise generalisation.
+    * Methods include random initialisation, random data shuffling, standard practices (bagging, boosting), data augmentation and ensembling across architectures.
+  * Random initialisation is shown as a good solution. Bagging has been found to degrade uncertainty estimation.
+  * Ensembles found to be more reliable than MC dropout.
+  * Ensembles are computationally complex. Pruning or distillation of the ensemble members can help.
+* Test time augmentation
+  * This uses data augmentation on the input data (mostly applied to image data).
+  * Each version is passed through a single network and the results are collected to form a probabilistic output.
+* Measurement - the paper looks at methods to quantify performance which I did not read in detail.
+
+### Evidential Deep Learning to Quantify Classification Uncertainty
+https://arxiv.org/pdf/1806.01768.pdf
+* 2018
+* Classification models only with softmax are over confident in predictions when uncertainty is high.
+* Proposed to model the NN output as a Dirchlet distribution (multivariate beta distribution).
+* The parameters of the distribution represent the evidence in each output class.
