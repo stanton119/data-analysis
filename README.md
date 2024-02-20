@@ -203,6 +203,10 @@ Aim is for future work to be incorporated by working on separate branches and me
     * Fit a model without interactions, introduction interactions after in some way. Perhaps tight priors on an interaction effects more which are relaxed with time.
 * A/B test distribution comparison
     * We often compare just the means. If we find plot a Q-Q plot is it more informative, bootstrapping would construct confidence intervals
+* Common data science tasks
+    * Association and causality
+        * Associations fast - from clustering propensity model predictions and find average features in each group.
+        * Causality - doubleML etc. to removing confounding features and finding conditional average treatment effects. How this relates to groupby and average.
 
 ## TODO
 * Restructure:
