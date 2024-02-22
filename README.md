@@ -197,6 +197,10 @@ Aim is for future work to be incorporated by working on separate branches and me
     * train a single model to predict multiple ready fields from a single dataset
 * A/B test distribution comparison
     * We often compare just the means. If we find plot a Q-Q plot is it more informative, bootstrapping would construct confidence intervals
+* Common data science tasks
+    * Association and causality
+        * Associations fast - from clustering propensity model predictions and find average features in each group.
+        * Causality - doubleML etc. to removing confounding features and finding conditional average treatment effects. How this relates to groupby and average.
 
 ## TODO
 * rename environment/requirements files to match the notebook

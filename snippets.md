@@ -324,3 +324,8 @@ top
 ```
 Sort by memory: `shift+m`.
 Change units: `shift+e`
+
+Check disk space:
+```bash
+df -h
+```

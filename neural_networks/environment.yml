@@ -2,7 +2,7 @@ name: pytorch_env
 channels:
   - conda-forge
 dependencies:
-  - python
+  - python<3.12
   - pip
   
   # Computation
@@ -18,4 +18,4 @@ dependencies:
   # Debugging
   - notebook
   - pylint
-  - black
+  - "black[jupyter]"
