@@ -173,7 +173,6 @@ Aim is for future work to be incorporated by working on separate branches and me
     *   DoubleML on heart data to find CATE
     *   DoubleML on dummy data vs other causal models. How robust are they to model mis-specification and missing confounders?
     *   Inverse propensity scoring - comparing different methods - manual Inverse Probability of Treatment Weighting, as variance in regression, sample weights, econML based. Do they match?
-*   Github action to publish ipynbs to markdown
 *   Hierarchical models
     *   Mixed effects model - is it the same as a fixed effects model (lin/log regression) with one hot encoding for the categorical variables + a fixed effect?
     *   Hierarchical bayesian models - for when we have categorical features with share effects over other features
@@ -182,13 +181,13 @@ Aim is for future work to be incorporated by working on separate branches and me
     *   Generate data and fit each model
     *   Ref
         *   https://www.youtube.com/watch?v=38yOWMMCeMk&list=WL&index=5
-*   Bimomial regression = logistic regression
 *   Linear regression = logistic regression, relationship to Linear Thompson Sampling
 *   Blurred images classifier
     *   ImageNet based, data augment to blur images.
 *   Country embeddings - create country embeddings by predicting various macro level metrics (GDP, population etc. in a multi task model), from OHE through a NN. Does the embedding space make sense?
 *   [MovieLens](https://grouplens.org/datasets/movielens/) dataset to get title embeddings, find nearest neighbour titles
     *   Using word2vec to predict similar titles. Train on movies watched. Similar given as titles streamed by the same customer
+        *   Train embedding for movies based on sequential ordering. Predict the next/middle movie.
 *   Finding similar images in a photo library - given a few examples find similar photos
     *   Use an image net model. Find new example images, positive and negative. Fine tune the model via a classification task. Predict prob of positive result for unseen images. Use the latent space embeddings to find cosine similarity between images.
     *   Build small image dataset from cifar 10. Compare models - PCA/logistic regression, CNN, efficientNet, transfer learnt weights
@@ -196,20 +195,11 @@ Aim is for future work to be incorporated by working on separate branches and me
 *   Fourier transform via linear regression on sinusoids. Similar approach with Lasso regression to find compressed sensing approaches, with non-uniform sampling.
 * Multi task neural network training
     * train a single model to predict multiple ready fields from a single dataset
-* Learning interactions after main effects
-    * Create a synthetic dataset with interaction effects
-    * Fit models with/without interaction effects with incrementally more data
-    * Does interaction effects model fit with more data to higher out of sample performance
-    * Fit a model without interactions, introduction interactions after in some way. Perhaps tight priors on an interaction effects more which are relaxed with time.
 * A/B test distribution comparison
     * We often compare just the means. If we find plot a Q-Q plot is it more informative, bootstrapping would construct confidence intervals
 
 ## TODO
-* Restructure:
-    * Remove .md/images, keep notebooks only where possible
-    * Change readme links
-    * Optional action to create markdowns on separate branch
 * rename environment/requirements files to match the notebook
-* change markdown actions to stop markdown conversion
 * update blog articles for markdown images
+    * TFL, Pyro notebooks re-run
 * Add year to each analysis link
