@@ -138,6 +138,26 @@ To initialise the output layer bias:
 self.classifier.bias.data.fill_(output_bias)
 ```
 
+### Dataset and Dataloaders
+The [dataloader](https://pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader) converts to tensors when called.
+```
+from torch.utils.data import Dataset, DataLoader
+
+class CustomDataset(Dataset):
+    def __init__(self, data):
+        self.data = data
+        
+    def __len__(self):
+        return len(self.data)
+    
+    def __getitem__(self, idx):
+        return self.data[idx]
+
+dataloader = DataLoader(dataset, batch_size=32, collate_fn=collate_fn)
+batch = next(iter(dataloader))
+```
+
+
 ## Polars
 Polars increase string display:
 ```python
@@ -221,8 +241,7 @@ logger.info("Message")
 Default logging setup with a notebook calling modules
 ```python
 import logging
-logging.basicConfig()
-logging.getLogger().setLevel(logging.WARNING)
+logging.basicConfig(format="%(asctime)s - %(levelname)s - %(message)s", level=logging.WARNING)
 ```
 
 Change logging level on another logger
