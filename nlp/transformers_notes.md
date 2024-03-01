@@ -1,5 +1,63 @@
 # Transformers
 
+## Tokenisation
+Tokenisation is where we encode sentences of text into lists of integers, ready for embedding.
+
+GPT-2 as others use Byte-Pair encoding. It encodes each letter (and unicode) as a based vocabulary.
+Then common pairs of letters are merged and added to the vocabulary.
+This is repeated with triple of letters until the vocabulary reaches an ideal size.
+It can encode any artitary string without loss.
+
+GPT-2 encoding is given here: https://openaipublic.blob.core.windows.net/gpt-2/models/124M/encoder.json
+and has 50k tokens.
+
+Ref:
+* https://huggingface.co/learn/nlp-course/chapter6/5?fw=pt
+* https://jaykmody.com/blog/gpt-from-scratch/
+
+## Embedding layer
+Tokens are converted to a vector representing an embedding.
+The embeddings are learnt during the transformer training.
+
+Transformers are invarient to the input token ordering. Shuffling will give the same output.
+Therefore we add positional encodings to the word embeddings to address ordering.
+Typically we use cos/sin pairs for a range of frequencies (rather than trained parameters) to uniquely encode each position in a sequence.
+
+## Attention
+Attention uses values from all input tokens/embeddings in the sequence to compute the output for a given input token.
+Each embedding vector in a sequence goes through a linear layer ($w_v$) to obtain a *Value*.
+The output from any given embedding vector in a sequence is a weighted sum of all the *Values* in the sequence.
+The weights come from a softmax from a *Query* and *Key*.
+The *Query* is taken from the embedding vector through a linear layer ($w_q$).
+A *Key* is computed for each vector in the sequence using another linear layer ($w_k$).
+The weights are the dot product of the *Query* with each *Key* and then normalised with a softmax:
+
+$$
+\mathrm{attention}(Q,K,V)=\mathrm{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V,
+$$
+where $d_k$ is the lenght of the sequence.
+
+As such we have 3 sets of weights for linear layers - *Value*, *Query* and *Key*.
+
+Ref:
+* https://jaykmody.com/blog/attention-intuition/#word-vectors-and-similarity
+* https://jaykmody.com/blog/gpt-from-scratch/
+* https://lilianweng.github.io/posts/2018-06-24-attention/
+* https://jalammar.github.io/visualizing-neural-machine-translation-mechanics-of-seq2seq-models-with-attention/
+
+## GPT
+In addition to attention:
+* Decoder only - there is no encoder used. We auto-regressing to append outputs to the inputs to generate the next output token.
+We can sample from the output layer, which gives logits for each token, to give stochasic outputs. Using the temperature of the softmax will change how deterministic the output sequence is.
+
+* Self-attention - attention is used within the sequence to model based on the vectors within the sequence. The *Query*, *Key* and *Value* are all calculated from the same input sequence.
+
+* We have a causal mask applied to ensure the attention weights only look at vectors in the sequence prior to the current vector.
+This avoids learning from the subsequent vectors in the sequence.
+
+* Residual connections - attention layers are stacked. To reduce the problem of vanishing/exploding gradients, the attentions outputs are added to the original embedding vectors each time to allow a residual connection.
+
+* Multi-head attention - we use multiple attention blocks in parallel, with different $w_q$, $w_k$, $w_v$ weights for each. The heads are concatenated at the end and a linear layer projects back down the embedding space dimension.
 
 ## Article 1
 `https://machinelearningmastery.com/the-transformer-positional-encoding-layer-in-keras-part-2/`
