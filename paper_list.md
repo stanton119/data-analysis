@@ -170,3 +170,27 @@ https://arxiv.org/pdf/1806.01768.pdf
   * Predictive performance is similar to other methods like MC dropout.
   * Uncertainty estimates are improved as measured in entropy on dummy MNIST data.
 * Code: https://muratsensoy.github.io/uncertainty.html
+
+### The Era of 1-bit LLMs: All Large Language Models are in 1.58 Bits
+https://arxiv.org/abs/2402.17764v1
+* Summary
+  * Quantises LLM to signed binary (ternary) values. This makes multiplication become additions.
+  * Reports similar performance to full precision LLMs for the same model size and training tokens.
+* Background
+  * Most quantisation efforts are applied post training, but is suboptimal.
+  * Previous 1-bit BitNet was using only -1 and 1 as weights.
+    * https://arxiv.org/abs/2310.11453
+  * This paper has -1, 0, 1 for 1.58 bits per weight. Same benefits but improved performance.
+* Method
+  * The model is trained from scratch.
+  * The weights in a layer are quantized by scaling by the average absolute value, rounding to integers and clipping to [-1,1]
+* Results
+  * Perplexity (exponential of log likelihood of seing the next token)
+  * Performances better than FP16 model at large sizes but worse on small sizes.
+  * Larger models benefit significantly from ternary weights.
+* Questions
+  * Bias terms also ternary? - has no bias terms
+  * Hardware implications?
+  * Performance gains at same energy consumption?
+  * How to train effectively? Gradient descent needs to be quantised?
+  * Why do we not have FP16 additions if the original embeddings are floating points? Are they quantised as well - wouldn't make much sense unless the embedding space has very high dimension?
