@@ -194,3 +194,21 @@ https://arxiv.org/abs/2402.17764v1
   * Performance gains at same energy consumption?
   * How to train effectively? Gradient descent needs to be quantised?
   * Why do we not have FP16 additions if the original embeddings are floating points? Are they quantised as well - wouldn't make much sense unless the embedding space has very high dimension?
+
+### Deep Bayesian Bandits: Exploring in Online Personalized Recommendations
+https://arxiv.org/abs/2008.00727
+* Summary
+  * Estimates posterior distribution from a deep neural network for use in bandit applications
+* Background
+  * Dropout is computationally expensive to train and predict
+  * Bootstrapping NNs - multiple networks, with a sample trained for each is computationally expensive
+* Method
+  * Uses dropout in the 2nd last layer only
+  * Has multiple output heads for the same output prediction
+  * Dropout applies a Bernoulli mask which approximates bootstrap sampling
+  * Can use a single pass of the shared layers and parallel pass of the final multiple output heads for approximate posterior inference
+  * Uses a fully connected NN to estimate CTR
+* Results
+  * Tests by doing off-policy and online evaluation
+  * Dropout based models perform worse likely due to increased time to converge during training
+  * Did not observe significant performance benefits but has lower computation complexity
