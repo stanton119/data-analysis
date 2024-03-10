@@ -212,3 +212,35 @@ https://arxiv.org/abs/2008.00727
   * Tests by doing off-policy and online evaluation
   * Dropout based models perform worse likely due to increased time to converge during training
   * Did not observe significant performance benefits but has lower computation complexity
+
+### ADAM: A Method For Stochastic Optimization [2015]
+https://arxiv.org/pdf/1412.6980.pdf
+Read 2024/03
+* Summary
+  * optimiser for parameters that can handle non-stationary gradients, sparse gradients and a stochastic optimisation function.
+  * Based on adaptive estimates (exponentially average) of the gradient first and second order moments ($E\{g\}$, $E\{g^2\}$).
+  * The gradient moment estimates are vectors and we have a single learning for all parameters.
+* Algorithm
+  * At every time step, $t$,  (batch update) we calculate gradients, $g_t$, of $f(\theta_t)$.
+  * Where $\theta$ are our optimisation parameters (NN model weights).
+  * We update our estimate of first and second order moments of the gradients as an exponential average:
+    * $m_t = \beta_1 * m_{t-1} + (1-\beta_1) * g_t$
+    * $v_t = \beta_2 * v_{t-1} + (1-\beta_2) * g^2_t$
+    * Typical values for $\beta_1=0.9$ and $\beta_2=0.999$, which suggests slow/stable updates to the gradient first moment estimate, and very slow updates to the second order moment.
+  * Then we update our parameters:
+    * $\theta_t = \theta_{t-1} - \alpha * m_t/(\sqrt{v_t}+\epsilon)$,
+    * where $\alpha$ is the learning rate and $\epsilon$ is a parameter for tuning non-stationarity effects.
+    * When the second order moment estimate is high (high uncertainty) then the updates are small.
+    * The typical max step size is approx bounded by $\alpha$.
+  * The gradients are assumed to be initialised to 0 and therefore biased towards 0.
+    * So a bias correction term is applied.
+    * So the expected values are updated in the above as:
+    * $m_t = m_t/(1-\beta^t_1)$
+    * $v_t = v_t/(1-\beta^t_2)$
+    * The higher the $\beta$ values the more time we average over and the lower the bias correction.
+* Convergence analysis
+  * Shows regret bound of $O(\sqrt{T})$
+  * Using a learning rate decay of $\alpha_t=\alpha/\sqrt{t}$ is common.
+* Results
+  * Performs similarly to SGD with momentum on dense MNIST
+  * Performas similarly to AdaGrad on sparse problems (best of both worlds)
