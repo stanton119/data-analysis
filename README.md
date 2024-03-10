@@ -87,8 +87,6 @@ Use the `settings.json` file in the repo
 
 ## Future areas
 
-Aim is for future work to be incorporated by working on separate branches and merge to master when finished.
-
 ### Tools/areas to explore
 *   Time series forecasting
     *   Greykite
@@ -197,6 +195,9 @@ Aim is for future work to be incorporated by working on separate branches and me
     * train a single model to predict multiple ready fields from a single dataset
 * A/B test distribution comparison
     * We often compare just the means. If we find plot a Q-Q plot is it more informative, bootstrapping would construct confidence intervals
+* Non-stationarity with ADAM
+    * Can Adam optimisers adapt to non-stationary datasets. Therefore does batch ordering make a difference to the model coefficients.
+    * Compare against batch mode linear/logistic bayesian regression and show that data ordering is irrelevant.
 * Common data science tasks
     * Association and causality
         * Associations fast - from clustering propensity model predictions and find average features in each group.
