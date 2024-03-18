@@ -215,6 +215,27 @@ df.groupby("col_a").agg(agg_data())
 df.select(agg_data())
 ```
 
+Applying a Python function to each row, we can create a struct and use apply:
+```python
+df.with_columns(
+    pl.struct(["col1", "col2"]).apply(
+        lambda x: python_function(x["col1"], x["col2"])
+    )
+)
+```
+
+Applying a groupby with a Python function, we need to pass and return a dataframe:
+```python
+def _python_wrapper(df: pl.DataFrame)->pl.DataFrame:
+    value = python_function(
+        x=df["col1"],
+        y=df["col2"],
+    )
+    return pl.DataFrame(data={"group_id": df["group_id"].head(1), "value": value})
+
+df = df.groupby("group_id").apply(_python_wrapper)
+```
+
 ## Debugging
 
 Profiling within Notebooks [ref](https://stackoverflow.com/questions/44734297/how-to-profile-python-3-5-code-line-by-line-in-jupyter-notebook-5):
