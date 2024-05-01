@@ -51,3 +51,19 @@ The uplift from the treatment ($D$), is not linear in $Y$ and is a function of c
 
 [ref 1](https://matheusfacure.github.io/python-causality-handbook/22-Debiased-Orthogonal-Machine-Learning.html)
 [ref 2](https://towardsdatascience.com/double-machine-learning-for-causal-inference-78e0c6111f9d)
+
+### Propensity scores
+
+Intuition:
+Example where we have two actions (pictures of a dog or cat) and we want people to click like or not.
+We have logged data from our existing ranker which selects to show dogs 80% of the time and cats 20%.
+We can average the number of likes over all the impressions to assess the ranker's value.
+
+Now we want to assess a new proposed ranker which shows dogs 20% of the time and cats 80%.
+We need a counterfactual evaluation as the logged data doesn't match the distribution from the proposed ranker.
+To assess the value of our proposed ranker we can down scale the reward from dogs and upscale the reward from cats.
+We scale to match the expected reward from the distribution of the proposed ranker.
+The scale weights come from the propensity scores (importance sampling).
+The logged propensity scores for dog are 0.8 and 0.2 for cats. In the proposed ranker they are 0.2 and 0.8.
+We use 0.2/0.8 as the weight for dog impression and 0.8/0.2 for the cat impressions.
+We multiply the logged rewards by these weights to get an estimate reward for the proposed ranker.

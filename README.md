@@ -191,20 +191,23 @@ Use the `settings.json` file in the repo
     *   Build small image dataset from cifar 10. Compare models - PCA/logistic regression, CNN, efficientNet, transfer learnt weights
     *   Build lookup table of image and its compact embedding. Given a new image find the inner product with the other images
 *   Fourier transform via linear regression on sinusoids. Similar approach with Lasso regression to find compressed sensing approaches, with non-uniform sampling.
-* Multi task neural network training
-    * train a single model to predict multiple ready fields from a single dataset
-* A/B test distribution comparison
-    * We often compare just the means. If we find plot a Q-Q plot is it more informative, bootstrapping would construct confidence intervals
-* Non-stationarity with ADAM
-    * Can Adam optimisers adapt to non-stationary datasets. Therefore does batch ordering make a difference to the model coefficients.
-    * Compare against batch mode linear/logistic bayesian regression and show that data ordering is irrelevant.
-* Common data science tasks
-    * Association and causality
-        * Associations fast - from clustering propensity model predictions and find average features in each group.
-        * Causality - doubleML etc. to removing confounding features and finding conditional average treatment effects. How this relates to groupby and average.
+*   Multi task neural network training
+    *   train a single model to predict multiple ready fields from a single dataset
+*   A/B test distribution comparison
+    *   We often compare just the means. If we find plot a Q-Q plot is it more informative, bootstrapping would construct confidence intervals
+*   Non-stationarity with ADAM
+    *   Can Adam optimisers adapt to non-stationary datasets. Therefore does batch ordering make a difference to the model coefficients.
+    *   Compare against batch mode linear/logistic bayesian regression and show that data ordering is irrelevant.
+*   Beta Bernouli bandit vs logistic regression with no features
+*   NN multi-row vs multi-column - do they perform similarly?
+*   Common data science tasks
+    *   Why do we need a model to find relationships? Conditional relationships are easier to define
+    *   Association and causality
+        *   Associations fast - from clustering propensity model predictions and find average features in each group.
+        *   Causality - doubleML etc. to removing confounding features and finding conditional average treatment effects. How this relates to groupby and average.
 
 ## TODO
-* rename environment/requirements files to match the notebook
-* update blog articles for markdown images
-    * TFL, Pyro notebooks re-run
-* Add year to each analysis link
+*   rename environment/requirements files to match the notebook
+*   update blog articles for markdown images
+    *   TFL, Pyro notebooks re-run
+*   Add year to each analysis link

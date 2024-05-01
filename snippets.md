@@ -49,6 +49,11 @@ Horizontal/vertical line:
 ax.axhline(y=0, linestyle="--", color="k", alpha=0.5)
 ```
 
+Add annotation:
+```python
+plt.annotate("Caption", (x_val, y_val), bbox=dict(boxstyle="round", fc="1"))
+```
+
 ## Docker
 ```
 CMD ["val"]
@@ -234,6 +239,12 @@ def _python_wrapper(df: pl.DataFrame)->pl.DataFrame:
     return pl.DataFrame(data={"group_id": df["group_id"].head(1), "value": value})
 
 df = df.groupby("group_id").apply(_python_wrapper)
+```
+
+Applying to each group any transform:
+```python
+for df_group in df.partition_by("group_col"):
+    df_group...
 ```
 
 ## Debugging
