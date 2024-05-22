@@ -54,6 +54,22 @@ Add annotation:
 plt.annotate("Caption", (x_val, y_val), bbox=dict(boxstyle="round", fc="1"))
 ```
 
+Histograms of multiple columns:
+```python
+plot_df = df.select(
+    pl.col(
+        [
+            "col1",
+            ...
+            "colN",
+        ]
+    )
+).melt()
+fig, ax = plt.subplots(figsize=(6, 4))
+sns.histplot(data=plot_df, x="value", hue="variable", stat="probability", common_norm=False, ax=ax)
+fig.show()
+```
+
 ## Docker
 ```
 CMD ["val"]
