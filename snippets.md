@@ -49,6 +49,11 @@ Horizontal/vertical line:
 ax.axhline(y=0, linestyle="--", color="k", alpha=0.5)
 ```
 
+Move legend outside:
+```python
+ax.legend(loc="upper left", bbox_to_anchor=(1, 0.5))
+```
+
 Add annotation:
 ```python
 plt.annotate("Caption", (x_val, y_val), bbox=dict(boxstyle="round", fc="1"))
@@ -377,6 +382,18 @@ def test_fun(a:int=0)->int:
     return a+1
 
 test_fun(1)
+```
+
+## LaTex
+Align equations in a notebook:
+```
+$$
+\begin{align}
+x & = y &\\
+  & = 1 &\\
+  & = 2
+\end{align}
+$$
 ```
 
 ## Other
