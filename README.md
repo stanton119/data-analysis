@@ -88,19 +88,6 @@ Use the `settings.json` file in the repo
 ## Future areas
 
 ### Tools/areas to explore
-*   Time series forecasting
-    *   Greykite
-        *   https://arxiv.org/abs/2105.01098
-        *   https://towardsdatascience.com/linkedins-response-to-prophet-silverkite-and-greykite-4fd0131f64cb
-        *   Imputation of missing regressors
-        *   Change points in seasonalities
-        *   Quantiles loss
-        *   Utilities for diagnosing
-        *   faster inference
-        *   Autoregressive
-    *   LightGBM
-    *   Orbit
-        *   https://eng.uber.com/orbit/
 *   Deep learning
     *   Pytorch
     *   Embeddings
@@ -118,13 +105,9 @@ Use the `settings.json` file in the repo
 *   Recommender systems
     *   Automatic playlist continuation
     *   Thompson sampling example
-*   Switch away from Matplotlib, try plotly express in markdown
 *   Quantile regression in pytorch
     *   Lasso regression
     *   Dropout better than regularisation?
-*   Data engineering
-    *   Polars
-    *   DuckDB
 *   Docker
 
 ### Datasets to explore
@@ -145,6 +128,16 @@ Use the `settings.json` file in the repo
     *   Walmart demand forecasting
     *   with LightGBM
     *   Greykite
+        *   https://arxiv.org/abs/2105.01098
+        *   https://towardsdatascience.com/linkedins-response-to-prophet-silverkite-and-greykite-4fd0131f64cb
+        *   Imputation of missing regressors
+        *   Change points in seasonalities
+        *   Quantiles loss
+        *   Utilities for diagnosing
+        *   faster inference
+        *   Autoregressive
+    *   Orbit
+        *   https://eng.uber.com/orbit/
 *   PCA via embedding layer
 *   NN to predict tempo from song, generate dummy dataset
     *   NN to predict tab from music sections
@@ -200,6 +193,10 @@ Use the `settings.json` file in the repo
     *   Compare against batch mode linear/logistic bayesian regression and show that data ordering is irrelevant.
 *   Beta Bernouli bandit vs logistic regression with no features
 *   NN multi-row vs multi-column - do they perform similarly?
+*   Multi horizon forecasting direct method - with shared NN architecture - compare separate models for each horizon with a NN that shares layers. Compare with sequence to sequence models.
+*   Probabilistic neural networks
+    *   Normalizing flows - model complex distributions with transformations of gaussians
+    *   Can we train an output layer as a gaussian mixture to model complex distirbutions via gradient descent
 *   Common data science tasks
     *   Why do we need a model to find relationships? Conditional relationships are easier to define
     *   Association and causality
