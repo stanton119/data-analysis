@@ -413,3 +413,7 @@ Check disk space:
 ```bash
 df -h
 ```
+Check folder size:
+```bash
+du -sh * | sort -h 
+```
