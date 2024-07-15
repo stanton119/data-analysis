@@ -67,3 +67,24 @@ The scale weights come from the propensity scores (importance sampling).
 The logged propensity scores for dog are 0.8 and 0.2 for cats. In the proposed ranker they are 0.2 and 0.8.
 We use 0.2/0.8 as the weight for dog impression and 0.8/0.2 for the cat impressions.
 We multiply the logged rewards by these weights to get an estimate reward for the proposed ranker.
+
+Many cases we do not have the propensity scores from the logging policy. We can fit an offline model to predict the action allocation of the logged data (the direct method). We then use this model to estimate the propensity scores.
+
+## Statistics
+
+
+The join probability function denotes is the function mapping over multiple variables, $p_{X,Y}(x,y)$. Where $X, Y$ are random variables and $x, y$ are samples of those random variables.
+
+The conditional probability is the probability of an event given that (conditioned on) another event already happening, $p(x|y)$.
+
+Marginal probabilities denote the probability of an event marginalising over the other variables in the joint distribution, $p(x)$.
+
+For a joint probability function, $p_{X,Y}$, the marginal probability $p(x)$ is:
+$$
+p_X(x)=\int_y p_{X|Y}(x|y) p_Y(y) dy
+$$
+To obtain the marginal distribution for $x$ we sum/integrate over the other variables in the joint distribution ($y$).
+This is the same as integating the conditional probability of $x$ over the distribution of $y$.
+
+
+High entropy = uniform distribution
