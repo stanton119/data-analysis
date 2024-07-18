@@ -194,6 +194,8 @@ Use the `settings.json` file in the repo
 *   Beta Bernouli bandit vs logistic regression with no features
 *   NN multi-row vs multi-column - do they perform similarly?
 *   Multi horizon forecasting direct method - with shared NN architecture - compare separate models for each horizon with a NN that shares layers. Compare with sequence to sequence models.
+*   Gaussian process from scratch
+    *   ref - https://www.youtube.com/watch?v=HA-VHNVbvwQ&list=WL&index=26
 *   Probabilistic neural networks
     *   Normalizing flows - model complex distributions with transformations of gaussians
     *   Can we train an output layer as a gaussian mixture to model complex distirbutions via gradient descent

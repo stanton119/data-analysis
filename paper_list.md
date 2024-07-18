@@ -244,3 +244,9 @@ Read 2024/03
 * Results
   * Performs similarly to SGD with momentum on dense MNIST
   * Performas similarly to AdaGrad on sparse problems (best of both worlds)
+
+### The LambdaLoss Framework for Ranking Metric Optimization [2018]
+https://dl.acm.org/doi/10.1145/3269206.3271784
+Read 2024/03
+* Summary
+  * Formulates a general framework for optimise learn to rank problems
