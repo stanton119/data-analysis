@@ -8,6 +8,8 @@ dependencies:
   # Computation
   - numpy
   - pandas
+  - polars
+  - pyarrow
   - pytorch
   - pytorch-lightning
   - scikit-learn
