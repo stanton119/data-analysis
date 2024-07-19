@@ -189,6 +189,11 @@ Polars increase string display:
 ```python
 pl.Config.set_fmt_str_lengths(30)
 ```
+Show more rows display:
+```python
+with pl.Config(set_tbl_rows=50):
+    display(pl)
+```
 
 Load partitioned parquet:
 ```python
