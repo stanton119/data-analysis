@@ -51,7 +51,7 @@ ax.axhline(y=0, linestyle="--", color="k", alpha=0.5)
 
 Move legend outside:
 ```python
-ax.legend(loc="upper left", bbox_to_anchor=(1, 0.5))
+ax.legend(loc="upper left", bbox_to_anchor=(1, 1))
 ```
 
 Add annotation:
@@ -387,6 +387,58 @@ def test_fun(a:int=0)->int:
     return a+1
 
 test_fun(1)
+```
+
+## Testing
+Fixtures:
+```python
+@pytest.fixture
+def fixture_1():
+    return {"a":1, "b":2}
+
+def test_1(fixture_1):
+    assert f(fixture_1)
+```
+
+Parameterise:
+```python
+@pytest.mark.parametrize(
+    "param1, param2",
+    [
+        ("a", 1),
+    ],
+)
+def test_1(param1, param2):
+    assert f(param1) == param2
+```
+
+Patch:
+```python
+from unittest.mock import patch
+@patch("module.const", "value")
+def test_1():
+    assert f()
+
+@patch("module.function_name")
+def test_2(function_name):
+    function_name.return_value = {"a": 1}
+    assert f()
+```
+
+## AWS
+
+Get credentials from profile name:
+```
+import boto3
+session = boto3.session.Session(profile_name=profile_name)
+credentials = session.get_credentials().get_frozen_credentials()
+
+storage_options={
+    "aws_access_key_id": credentials.access_key,
+    "aws_secret_access_key": credentials.secret_key,
+    "aws_session_token": credentials.token,
+    "aws_region": session.region_name,
+}
 ```
 
 ## LaTex
