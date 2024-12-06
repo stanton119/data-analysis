@@ -246,6 +246,14 @@ df.groupby("col_a").agg(agg_data())
 df.select(agg_data())
 ```
 
+Run dataframe functions
+```python
+def fun(df):
+    return df.with_columns(pl.len())
+
+df.pipe(fun)
+```
+
 Applying a Python function to each row, we can create a struct and use apply:
 ```python
 df.with_columns(
@@ -428,7 +436,7 @@ def test_2(function_name):
 ## AWS
 
 Get credentials from profile name:
-```
+```python
 import boto3
 session = boto3.session.Session(profile_name=profile_name)
 credentials = session.get_credentials().get_frozen_credentials()
