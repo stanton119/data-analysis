@@ -3,24 +3,11 @@
 
 # general stuff
 data/
-
-# project specific
-dataAnalysisEnv/
-*/data/*.csv
-*/data/*.pq
-*/HeartDisease/data/*
-FashionCNN/data/*
-*/TensorflowPlayground/data/*
-ParquetDatasets/data/*
-EnergyCapacity/data/*
-Unpublished/auto_ml/auto_ml/*
-Unpublished/auto_ml/structured_data_classifier/*
-**/lightning_logs/
-PyTorchStuff/autoencoders/data/*
-nlp/sarcasm_detection/data/*
-TimeSeries/data/*
+lightning_logs/
 *.pt
-Unpublished/image_fine_tune_classifier/images/*
+uv.lock
+
+
 
 #### standard stuff ####
 # Created by https://www.gitignore.io/api/macos,python,jupyternotebook

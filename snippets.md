@@ -433,6 +433,42 @@ def test_2(function_name):
     assert f()
 ```
 
+## Python setup - UV
+Setup project:
+```
+uv init project-name
+uv init # if project folder already exists
+uv python install 3.12 # if needed
+```
+
+Add dependency:
+```
+uv add package
+```
+
+Run scripts:
+```
+uv run python script.py
+```
+
+Tools (formatters etc., which don't need the project package installed) are run as:
+```
+uvx ruff format .
+uvx black .
+uvx isort .
+```
+
+Testing is inside the project venv as it needs the project installed:
+```
+uv add pytest --dev # add to dev group
+uv run pytest
+```
+
+Notebook usage:
+```
+uv add ipykernel --dev
+```
+
 ## AWS
 
 Get credentials from profile name:
