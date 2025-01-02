@@ -49,6 +49,31 @@ def get_most_frequent_movies(ratings_df: pl.DataFrame, n: int = 50) -> pl.Series
     return top_movie_ids
 
 
+def map_users_and_movies(
+    ratings_df: pl.DataFrame,
+) -> Tuple[pl.DataFrame, pl.DataFrame, pl.DataFrame]:
+    """
+    Maps movie and user IDs to incremental integers.
+    """
+
+    user_id_mapping = (
+        ratings_df[["userId"]]
+        .unique()
+        .sort("userId")
+        .with_row_index(name="userIdMapped")
+    )
+    movie_id_mapping = (
+        ratings_df[["movieId"]]
+        .unique()
+        .sort("movieId")
+        .with_row_index(name="movieIdMapped")
+    )
+    ratings_df = ratings_df.join(user_id_mapping, on="userId", how="left").join(
+        movie_id_mapping, on="movieId", how="left"
+    )
+    return ratings_df, user_id_mapping, movie_id_mapping
+
+
 # ######### similarity functions #########
 def plot_similarities(similarity_matrix: np.array, labels: List[str]):
     fig, ax = plt.subplots(figsize=(10, 10))
@@ -95,7 +120,9 @@ def get_top_similarities(
     return list(zip(row_indices, col_indices, similarities))
 
 
-def get_extreme_similarities(similarity_matrix: np.array, labels: List[str], top_n: int = 5):
+def get_extreme_similarities(
+    similarity_matrix: np.array, labels: List[str], top_n: int = 5
+):
     print("Most similar:")
     indices = get_top_similarities(similarity_matrix, top_n=top_n, highest=True)
     for result in indices:
