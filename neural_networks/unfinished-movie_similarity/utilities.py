@@ -10,8 +10,8 @@ import seaborn as sns
 plt.style.use("seaborn-v0_8-whitegrid")
 
 
-DATA_PATH = pathlib.Path().absolute() / "data" / "ml-25m"
-DATA_ZIP_PATH = pathlib.Path().absolute() / "data" / "ml-25m.zip"
+DATA_PATH = pathlib.Path(__file__).absolute().parent / "data" / "ml-25m"
+DATA_ZIP_PATH = pathlib.Path(__file__).absolute().parent / "data" / "ml-25m.zip"
 
 
 def download_data():
@@ -49,6 +49,7 @@ def get_most_frequent_movies(ratings_df: pl.DataFrame, n: int = 50) -> pl.Series
     return top_movie_ids
 
 
+# ######### similarity functions #########
 def plot_similarities(similarity_matrix: np.array, labels: List[str]):
     fig, ax = plt.subplots(figsize=(10, 10))
     sns.heatmap(
@@ -94,14 +95,14 @@ def get_top_similarities(
     return list(zip(row_indices, col_indices, similarities))
 
 
-def get_extreme_similarities(similarity_matrix: np.array, labels: List[str]):
+def get_extreme_similarities(similarity_matrix: np.array, labels: List[str], top_n: int = 5):
     print("Most similar:")
-    indices = get_top_similarities(similarity_matrix, top_n=5, highest=True)
+    indices = get_top_similarities(similarity_matrix, top_n=top_n, highest=True)
     for result in indices:
         print(f"{result[2]:.2f} - {labels[result[0]]}, {labels[result[1]]}")
 
     print("")
     print("Least similar:")
-    indices = get_top_similarities(similarity_matrix, top_n=5, highest=False)
+    indices = get_top_similarities(similarity_matrix, top_n=top_n, highest=False)
     for result in indices:
         print(f"{result[2]:.2f} - {labels[result[0]]}, {labels[result[1]]}")
