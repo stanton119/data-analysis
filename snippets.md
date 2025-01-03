@@ -183,6 +183,18 @@ dataloader = DataLoader(dataset, batch_size=32, collate_fn=collate_fn)
 batch = next(iter(dataloader))
 ```
 
+Iterate a dataloader to get predictions:
+```python
+y_est, y_true = [], []
+for idx, batch in enumerate(dataloader):
+    _x, _y = batch
+    _y_est = model(_x)
+    y_est.append(_y_est.detach().numpy())
+    y_true.append(_y.detach().numpy())
+
+y_est = np.concatenate(y_est)
+y_true = np.concatenate(y_true)
+```
 
 ## Polars
 Polars increase string display:
