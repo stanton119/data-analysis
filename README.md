@@ -63,7 +63,7 @@ Repo directory:
 ## Installation
 The various analysis was built in Python 3.
 
-### Virtual environment setup
+### [TODO] Virtual environment setup
 Some projects have their own requirements/environment. The general setup is installed by:
 
 ```
@@ -71,6 +71,16 @@ python3 -m venv dataAnalysisEnv
 source dataAnalysisEnv/bin/activate
 python -m pip install --upgrade pip
 pip install -r requirements.txt
+```
+
+Or using UV:
+```
+uv init
+```
+
+Format as:
+``` 
+uvx ruff format .
 ```
 
 ### Markdown from Notebooks
