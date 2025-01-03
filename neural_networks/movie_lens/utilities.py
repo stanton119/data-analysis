@@ -167,11 +167,9 @@ def _create_tensor_dataset(data):
 def get_data_loaders(
     ratings_df: pl.DataFrame, sample: int = None
 ) -> Tuple[DataLoader, DataLoader, DataLoader]:
-    
-    train_data, val_data, test_data = split_train_test(
-        ratings_df=ratings_df
-    )
-    
+
+    train_data, val_data, test_data = split_train_test(ratings_df=ratings_df)
+
     dataset_train = _create_tensor_dataset(train_data)
     dataset_val = _create_tensor_dataset(val_data)
     dataset_test = _create_tensor_dataset(test_data)
