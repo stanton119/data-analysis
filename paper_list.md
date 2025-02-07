@@ -1,5 +1,5 @@
 # Paper list
-Summaries of random papers 
+Summaries of random papers. Usually not updated...
 
 ### Curveball
 https://arxiv.org/abs/1805.08095
@@ -250,3 +250,28 @@ https://dl.acm.org/doi/10.1145/3269206.3271784
 Read 2024/03
 * Summary
   * Formulates a general framework for optimise learn to rank problems
+
+### Unbiased Learning to Rank Meets Reality: Lessons from Baidu’s Large-Scale Search Dataset [2024]
+https://dl.acm.org/doi/pdf/10.1145/3626772.3657892
+Read 2025/01
+* Summary
+  * Applying unbiased learn-to-rank methods to remove biases such as position bias do not improve ranking performance on the Baidu ULTR dataset.
+  * ULTR improved the click model loss function but this didn't translate into ranking improvements.
+
+### A Semi-Personalized System for User Cold Start Recommendation on Music Streaming Apps
+http://arxiv.org/pdf/2106.03819
+Read 2025/02
+* Summary
+  * Deezer - recommending songs to stream.
+  * In a colaborative filter recommender system, cold start users do not meaningful embeddings.
+  * Using a dataset from warm start users, predict their embeddings given only demograpic and 1 day of streaming data.
+  * Use this model to predict embeddingss for cold start users from the same limited data.
+  * Use these predicted embeddings in a k-NN full personalised approach
+  * Separately they make semi-personalised approach.
+  * They cluster warm users embeddings into 1000 centroids.
+  * For each cluster they find the most popular songs.
+  * The cold start users predicted embedding is matched to the closest centroid.
+  * They are recommended the clusters popular songs.
+* Results
+  * Results suggest semi personalised approach is superior to all other approaches tried.
+  * The results are generally quite poor, so maybe some doubt on the setup.
