@@ -3,6 +3,8 @@
 
 # general stuff
 data/
+experiments/
+neural_networks/442929099651243737/
 lightning_logs/
 *.pt
 uv.lock
