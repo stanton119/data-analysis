@@ -106,3 +106,5 @@ High entropy = uniform distribution
 Given a conditional probability, P(x|θ), this is interpreted as:
 1. a probability - when the parameter, θ, is assumed fixed
 2. a likelihood - when the data, x, is assumed fixed
+
+In Bayes rule, P(x|θ), the observed evidence is considered fixed, so this is a likelihood.
