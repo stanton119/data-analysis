@@ -70,6 +70,19 @@ We multiply the logged rewards by these weights to get an estimate reward for th
 
 Many cases we do not have the propensity scores from the logging policy. We can fit an offline model to predict the action allocation of the logged data (the direct method). We then use this model to estimate the propensity scores.
 
+### Empirical Bayes
+Also known as type-II maximum likelihood.
+Calculate a Bayesian prior empircally from the dataset, the same dataset used for observed evidence.
+
+For example in baseball player skill estimation:
+The empirical prior would reduce overfitting for individual players by causing shrinkage to the global prior when limited data is available.
+
+P(θ|x) ∝ P(x|θ)P(θ)
+
+P(θ) - prior empirically estimated from all data - league wide skill estimate.
+P(x|θ) - likelihood/evidence collected on a single player
+P(θ|x) - posterior player estimates
+
 ## Statistics
 
 
@@ -88,3 +101,8 @@ This is the same as integating the conditional probability of $x$ over the distr
 
 
 High entropy = uniform distribution
+
+### Likelihood vs probability
+Given a conditional probability, P(x|θ), this is interpreted as:
+1. a probability - when the parameter, θ, is assumed fixed
+2. a likelihood - when the data, x, is assumed fixed
