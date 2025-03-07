@@ -453,6 +453,12 @@ uv init # if project folder already exists
 uv python install 3.12 # if needed
 ```
 
+Add to pyproject.toml to make buildable package:
+```
+[tool.uv]
+package = true
+```
+
 Add dependency:
 ```
 uv add package
