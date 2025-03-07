@@ -275,3 +275,12 @@ Read 2025/02
 * Results
   * Results suggest semi personalised approach is superior to all other approaches tried.
   * The results are generally quite poor, so maybe some doubt on the setup.
+
+### Chronos: Learning the Language of Time Series
+https://arxiv.org/pdf/2403.07815
+Read 2025/03
+* Summary
+  * Converts continuous time series to discrete tokens so that they can be used in a standard LLM.
+  * Time series are scaled and then quantised to give tokens.
+  * A standardised LLM architecture is then trained on these token sequences.
+  * Provides zero-shot performance is inline or better than models trained on those sequences.
