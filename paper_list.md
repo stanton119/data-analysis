@@ -286,3 +286,12 @@ Read 2025/02
   * When training adds a loss on the embedding matrices.
   * Enforces a subset has a similar cosine similarity to the full embedding table.
   * Repeats at different subsets to ensure different embedding sizes are available after training.
+
+### Chronos: Learning the Language of Time Series
+https://arxiv.org/pdf/2403.07815
+Read 2025/03
+* Summary
+  * Converts continuous time series to discrete tokens so that they can be used in a standard LLM.
+  * Time series are scaled and then quantised to give tokens.
+  * A standardised LLM architecture is then trained on these token sequences.
+  * Provides zero-shot performance is inline or better than models trained on those sequences.
