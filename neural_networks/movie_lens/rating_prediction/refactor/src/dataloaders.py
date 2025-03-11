@@ -21,7 +21,9 @@ def load_movielens_data(
     ratings_df = _load_ratings()
 
     # separate out a holdout set
-    ratings_df, holdout_df = train_test_split(ratings_df, test_size=0.1, random_state=42)
+    ratings_df, holdout_df = train_test_split(
+        ratings_df, test_size=0.1, random_state=42
+    )
     if holdout:
         ratings_df = holdout_df
 

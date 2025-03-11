@@ -10,7 +10,7 @@ class Model(pyl.LightningModule):
         n_users,
         n_movies,
         embedding_dim=10,
-                layer_sizes: List[int] = [32, 16],
+        layer_sizes: List[int] = [32, 16],
         avg_rating: float = None,
         learning_rate: float = 5e-3,
         include_bias: bool = True,

@@ -15,12 +15,12 @@ setup(
         "tensorflow",  # or "torch" depending on your model framework
         "matplotlib",
         "seaborn",
-        "jupyter"
+        "jupyter",
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.6',
+    python_requires=">=3.6",
 )

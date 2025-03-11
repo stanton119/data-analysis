@@ -70,7 +70,6 @@ def map_users_and_movies(
     return ratings_df, user_id_mapping, movie_id_mapping
 
 
-
 # ######### ratings prediction #########
 from torch.utils.data import DataLoader, TensorDataset
 import torch
