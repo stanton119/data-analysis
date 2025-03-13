@@ -534,5 +534,5 @@ df -h
 ```
 Check folder size:
 ```bash
-du -sh * | sort -h 
+du -sh -- * .[^.]* | sort -h
 ```
