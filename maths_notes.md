@@ -108,3 +108,11 @@ Given a conditional probability, P(x|θ), this is interpreted as:
 2. a likelihood - when the data, x, is assumed fixed
 
 In Bayes rule, P(x|θ), the observed evidence is considered fixed, so this is a likelihood.
+
+### Uncertainty
+Epistemic - reduces with more data rows (same features).
+Aleatoric - given infinity data rows, the remaining irreducible uncertainty.
+
+## Bandits
+
+We explore over epistemic uncertainty, not aleatoric. For example fitting a beta distribution, the variance shrinks with new data - thus reducing epistemic uncertainty and reducing exploration.
