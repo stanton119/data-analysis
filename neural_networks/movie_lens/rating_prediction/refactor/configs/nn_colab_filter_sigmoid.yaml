@@ -1,0 +1,27 @@
+dataset:
+  name: "movielens"  # Choose dataset: "movielens", "ml-100k", "ml-1m", "ml-20m"
+  # file_path: "movielens.csv"
+  batch_size: 4096
+  test_size: 0.2
+  subset_ratio: 1.0
+  # min_ratings: 5
+
+model:
+  architecture: "NeuralColabFilterSigmoid" #"neural_collaborative_filtering"  # Choose model: "matrix_factorization", "ncf", "lightgcn"
+  embedding_dim: 10
+  # hidden_layers: [128, 64, 32]  # Only used for deep models
+  n_users: 100
+  n_movies: 100
+  # dropout: 0.2
+
+training:
+  epochs: 40
+  learning_rate: 0.001
+  # optimizer: "adam"  # Options: "sgd", "adam", "rmsprop"
+  loss_function: "mse"  # Options: "mse", "bce"
+  # device: "cuda"  # "cpu" or "cuda"
+
+logging:
+  experiment_name: "movielens_rating_prediction"
+  run_name: "nn_colab_filter_sigmoid"
+  # mlflow_model_uri: "runs:/<run_id>/model"  # Replace <run_id> with the actual run ID

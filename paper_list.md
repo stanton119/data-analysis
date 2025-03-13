@@ -276,6 +276,17 @@ Read 2025/02
   * Results suggest semi personalised approach is superior to all other approaches tried.
   * The results are generally quite poor, so maybe some doubt on the setup.
 
+### Matryoshka Representation Learning [2022]
+https://arxiv.org/pdf/2205.13147
+Read 2025/02
+* Summary
+  * Embeddings where subset dimensions are meaningful.
+  * Embeddings of different sizes are trained at the same time.
+  * Allows for flexible embedding size depending on the desired action.
+  * When training adds a loss on the embedding matrices.
+  * Enforces a subset has a similar cosine similarity to the full embedding table.
+  * Repeats at different subsets to ensure different embedding sizes are available after training.
+
 ### Chronos: Learning the Language of Time Series
 https://arxiv.org/pdf/2403.07815
 Read 2025/03
