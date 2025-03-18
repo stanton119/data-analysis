@@ -196,6 +196,18 @@ y_est = np.concatenate(y_est)
 y_true = np.concatenate(y_true)
 ```
 
+### PyTorch Lightning
+We can wrap PyTorch models in a Lightning wrapper as:
+```python
+class TrainModule(pl.LightningModule):
+    def __init__(self, model):
+        self.model = model
+        ...
+
+    def forward(self, x):
+        return self.model(x)
+```
+
 ## Polars
 Polars increase string display:
 ```python
