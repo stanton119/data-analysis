@@ -533,6 +533,17 @@ Run bash without getting interrupted:
 nohup sh shell_script.sh &
 ```
 
+Or better through tmux:
+```bash
+# starts new session
+tmux new -s session_name
+sh shell_script.sh
+#  crtl+b, d to escape the session
+tmux ls
+tmux attach -t session_name
+tmux kill-session -t session_name
+```
+
 Check memory usage:
 ```bash
 top
