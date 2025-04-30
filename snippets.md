@@ -235,6 +235,16 @@ df = pl.read_parquet(
 )
 ```
 
+Load parquet from S3 (required `fsspec`):
+```python
+df = pl.read_parquet(
+    "s3://bucket/path/file.parquet",
+    use_pyarrow=True,
+    storage_options=dict(profile="AWS-profile-name"),
+    hive_partitioning=True,
+)
+```
+
 How to apply a common set of statements to a dataframe via a function:
 ```python
 df = pl.DataFrame(
