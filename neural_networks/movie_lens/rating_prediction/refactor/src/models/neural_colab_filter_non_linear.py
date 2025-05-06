@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 
 
-class Model(pyl.LightningModule):
+class Model(torch.nn.Module):
     def __init__(
         self,
         n_users,
@@ -12,7 +12,7 @@ class Model(pyl.LightningModule):
         embedding_dim=10,
         layer_sizes: List[int] = [32, 16],
         avg_rating: float = None,
-        learning_rate: float = 5e-3,
+        # learning_rate: float = 5e-3,
         include_bias: bool = True,
     ):
         super().__init__()
@@ -34,8 +34,8 @@ class Model(pyl.LightningModule):
 
         self.max_rating = 5.0
         self.min_rating = 0.5
-        self.learning_rate = learning_rate
-        self.save_hyperparameters()
+        # self.learning_rate = learning_rate
+        # self.save_hyperparameters()
 
     def forward(self, user_ids, movie_ids):
         user_embeds = self.user_embedding(user_ids)
@@ -52,25 +52,3 @@ class Model(pyl.LightningModule):
 
         prediction = torch.clamp(prediction, min=self.min_rating, max=self.max_rating)
         return prediction
-
-    def training_step(self, batch, batch_idx):
-        user_ids, movie_ids, ratings = batch
-        predictions = self(user_ids, movie_ids)
-        loss = nn.MSELoss()(predictions, ratings)
-        self.log("train_loss", loss, on_step=True, on_epoch=True, prog_bar=True)
-        return loss
-
-    def validation_step(self, batch, batch_idx):
-        user_ids, movie_ids, ratings = batch
-        predictions = self(user_ids, movie_ids)
-        loss = nn.MSELoss()(predictions, ratings)
-        self.log("val_loss", loss, on_step=True, on_epoch=True, prog_bar=True)
-
-    def test_step(self, batch, batch_idx):
-        user_ids, movie_ids, ratings = batch
-        predictions = self(user_ids, movie_ids)
-        loss = nn.MSELoss()(predictions, ratings)
-        self.log("test_loss", loss, on_step=True, on_epoch=True, prog_bar=True)
-
-    def configure_optimizers(self):
-        return torch.optim.Adam(self.parameters(), lr=self.learning_rate)

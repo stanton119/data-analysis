@@ -14,6 +14,43 @@ from datetime import datetime
 logger = logging.getLogger(__name__)
 
 
+class DefaultLightningModule(pyl.LightningModule):
+    def __init__(
+        self,
+        model: torch.nn.Module,
+        learning_rate: float = 5e-3,
+    ):
+        super().__init__()
+        self.model = model
+        self.learning_rate = learning_rate
+        self.save_hyperparameters(ignore=["model"])
+
+    def forward(self, user_ids, movie_ids):
+        return self.model(user_ids, movie_ids)
+
+    def training_step(self, batch, batch_idx):
+        user_ids, movie_ids, ratings = batch
+        predictions = self(user_ids, movie_ids)
+        loss = nn.MSELoss()(predictions, ratings)
+        self.log("train_loss", loss, on_step=True, on_epoch=True, prog_bar=True)
+        return loss
+
+    def validation_step(self, batch, batch_idx):
+        user_ids, movie_ids, ratings = batch
+        predictions = self(user_ids, movie_ids)
+        loss = nn.MSELoss()(predictions, ratings)
+        self.log("val_loss", loss, on_step=True, on_epoch=True, prog_bar=True)
+
+    def test_step(self, batch, batch_idx):
+        user_ids, movie_ids, ratings = batch
+        predictions = self(user_ids, movie_ids)
+        loss = nn.MSELoss()(predictions, ratings)
+        self.log("test_loss", loss, on_step=True, on_epoch=True, prog_bar=True)
+
+    def configure_optimizers(self):
+        return torch.optim.Adam(self.parameters(), lr=self.learning_rate)
+
+
 def setup_experiment(experiment_name: str, run_name: str):
     from pytorch_lightning.loggers import MLFlowLogger
 
@@ -76,6 +113,10 @@ def main(args):
     # Load model dynamically
     logger.info(f"Loading model: {config['model']['architecture']}")
     model = get_model(**config["model"])
+    lightning_model = DefaultLightningModule(
+        model=model,
+        learning_rate=config["training"].get("learning_rate", 5e-3),
+    )
     callbacks = get_callbacks()
 
     # Prepare dataset
@@ -83,7 +124,7 @@ def main(args):
     train_loader, eval_loader = get_dataloaders(**config["dataset"])
 
     loss = train(
-        model=model,
+        model=lightning_model,
         train_loader=train_loader,
         eval_loader=eval_loader,
         mlf_logger=mlf_logger,
@@ -94,6 +135,7 @@ def main(args):
     # mlf_logger.log_metrics({"test_loss": loss[0]["test_loss_epoch"]})
     mlf_logger.experiment.log_artifact(mlf_logger.run_id, callbacks[0].best_model_path)
     mlflow.pytorch.log_model(model, "model")
+    mlflow.pytorch.log_model(lightning_model, "lightning_model")
 
 
 if __name__ == "__main__":
@@ -102,8 +144,6 @@ if __name__ == "__main__":
     parser.add_argument(
         "--config",
         type=str,
-        # default="configs/nn_colab_filter_linear.yaml",
-        # default="/Users/rich/Developer/Github/VariousDataAnalysis/neural_networks/movie_lens/rating_prediction/refactor/config.yaml",
         required=True,
         help="Path to the config.yaml file",
     )
