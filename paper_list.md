@@ -299,3 +299,16 @@ Read 2025/03
   * Has a fixed length context window. Therefore some downsample is needed to capture long term trends. Probably cant predict short/long seasonalities at the same time.
   * Doesnt take in covariates/features, no comparison against GBM regression models for time series forecasting. Unlikely to beat GBMs in competitions at the moment.
   * Cant handle trends well when they exceed the tokenisation window.
+
+### Matryoshka-Adaptor: Unsupervised and Supervised Tuning for Smaller Embedding Dimensions [2024]
+https://arxiv.org/abs/2407.20243v1
+Read 2025/05
+* Summary
+  * Matryoshka embeddings can be truncated without loss of representation
+  * Allowing for less computation resources at runtime
+  * Original paper makes these embeddings at training time through additional loss functions on truncating the embedding space
+  * This paper extends the approach to any pre-trained embeddings
+  * Builds an adaptor architecture to create new embeddings of the same dimension
+  * Has loss functions to ensure the new embeddings preserve similarities
+* Thoughts
+  * Needs to be retrained for each embedding corpus

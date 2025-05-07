@@ -317,11 +317,12 @@ for df_group in df.partition_by("group_col"):
 
 ## Debugging
 
-Profiling within Notebooks [ref](https://stackoverflow.com/questions/44734297/how-to-profile-python-3-5-code-line-by-line-in-jupyter-notebook-5):
-* install `line_profiler` via `pip` or `conda`
-* add the extension to the notebook `%load_ext line_profiler`
-* create a function to profile, e.g. `prof_function`
-* run profile profiler `%lprun -f prof_function prof_function()`
+Profiling within Notebooks using `pyinstrument`:
+```python
+import pyinstrument
+with pyinstrument.profile():
+    ...code...
+```
 
 Memory profile within Notebooks:
 * `pip install memory_profiler`
