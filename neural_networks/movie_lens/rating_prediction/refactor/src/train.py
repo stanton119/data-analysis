@@ -1,3 +1,4 @@
+import pathlib
 import argparse
 import logging
 import mlflow
@@ -32,20 +33,26 @@ class DefaultLightningModule(pyl.LightningModule):
         user_ids, movie_ids, ratings = batch
         predictions = self(user_ids, movie_ids)
         loss = nn.MSELoss()(predictions, ratings)
-        self.log("train_loss", loss, on_step=True, on_epoch=True, prog_bar=True)
+        self.log(
+            name="train_loss", value=loss, on_step=True, on_epoch=True, prog_bar=True
+        )
         return loss
 
     def validation_step(self, batch, batch_idx):
         user_ids, movie_ids, ratings = batch
         predictions = self(user_ids, movie_ids)
         loss = nn.MSELoss()(predictions, ratings)
-        self.log("val_loss", loss, on_step=True, on_epoch=True, prog_bar=True)
+        self.log(
+            name="val_loss", value=loss, on_step=True, on_epoch=True, prog_bar=True
+        )
 
     def test_step(self, batch, batch_idx):
         user_ids, movie_ids, ratings = batch
         predictions = self(user_ids, movie_ids)
         loss = nn.MSELoss()(predictions, ratings)
-        self.log("test_loss", loss, on_step=True, on_epoch=True, prog_bar=True)
+        self.log(
+            name="test_loss", value=loss, on_step=True, on_epoch=True, prog_bar=True
+        )
 
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters(), lr=self.learning_rate)
@@ -55,10 +62,14 @@ def setup_experiment(experiment_name: str, run_name: str):
     from pytorch_lightning.loggers import MLFlowLogger
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    tracking_path = pathlib.Path(__file__).absolute().parents[1] / "experiments"
+    mlflow.set_tracking_uri(tracking_path)
+    mlflow.set_experiment(experiment_name)
     mlf_logger = MLFlowLogger(
         experiment_name=experiment_name,
-        tracking_uri="experiments",
+        tracking_uri=str(tracking_path),
         run_name=run_name + "_" + timestamp,
+        log_model=True,
     )
     return mlf_logger
 
@@ -114,8 +125,7 @@ def main(args):
     logger.info(f"Loading model: {config['model']['architecture']}")
     model = get_model(**config["model"])
     lightning_model = DefaultLightningModule(
-        model=model,
-        learning_rate=config["training"].get("learning_rate", 5e-3),
+        model=model, learning_rate=config["training"].get("learning_rate", 5e-3)
     )
     callbacks = get_callbacks()
 
@@ -132,10 +142,12 @@ def main(args):
         training_params=config["training"],
     )
 
-    # mlf_logger.log_metrics({"test_loss": loss[0]["test_loss_epoch"]})
-    mlf_logger.experiment.log_artifact(mlf_logger.run_id, callbacks[0].best_model_path)
-    mlflow.pytorch.log_model(model, "model")
-    mlflow.pytorch.log_model(lightning_model, "lightning_model")
+    with mlflow.start_run(run_id=mlf_logger.run_id):
+        model_info = mlflow.pytorch.log_model(model, "model")
+        print(model_info.model_uri)
+        print(model_info)
+        mlflow.pytorch.log_model(lightning_model, "lightning_model")
+        mlflow.log_params(config)
 
 
 if __name__ == "__main__":

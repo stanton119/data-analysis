@@ -5,7 +5,7 @@ import torch
 import yaml
 from models import get_model
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-from utils.dataset_loader import get_dataloader
+from dataloaders import get_dataloaders
 
 
 def evaluate(model, test_loader, device):
@@ -50,10 +50,15 @@ def main(args):
         config = yaml.safe_load(f)
 
     # Load model from MLflow
-    model = mlflow.pytorch.load_model(config["mlflow_model_uri"]).to(device)
+    mlflow.set_tracking_uri("../experiments")
+    mlflow.set_experiment(config["logging"]["experiment_name"])
+
+    model = mlflow.pytorch.load_model(config["evaluation"]["mlflow_model_uri"]).to(
+        device
+    )
 
     # Load dataset
-    test_loader = get_dataloader(
+    test_loader = get_dataloaders(
         config["dataset"], batch_size=config["batch_size"], train=False
     )
 
