@@ -81,6 +81,21 @@ def get_callbacks():
         dirpath="checkpoints", save_top_k=1, monitor="val_loss"
     )
 
+    class LayerwiseGradientNormLogger(Callback):
+        def __init__(self, log_every_n_steps=1):
+            super().__init__()
+            self.log_every_n_steps = log_every_n_steps
+
+        def on_after_backward(self, trainer, pl_module):
+            # Log gradient norm for each layer
+            if trainer.global_step % self.log_every_n_steps == 0:
+                for name, param in pl_module.named_parameters():
+                    if param.grad is not None:
+                        grad_norm = param.grad.norm(2).item()
+                        pl_module.log(
+                            f"grad_norm_{name}", grad_norm, on_step=True, on_epoch=False
+                        )
+
     class EarlyStoppingWithMinEpochs(Callback):
         def __init__(self, min_epochs, **kwargs):
             super().__init__()
@@ -97,7 +112,13 @@ def get_callbacks():
     early_stop_callback = EarlyStoppingWithMinEpochs(
         min_epochs=6, monitor="val_loss", patience=2, mode="min"
     )
-    callbacks = [checkpoint_callback, early_stop_callback]
+    layerwise_gradient_norm_logger = LayerwiseGradientNormLogger(log_every_n_steps=1)
+
+    callbacks = [
+        checkpoint_callback,
+        early_stop_callback,
+        layerwise_gradient_norm_logger,
+    ]
     return callbacks
 
 
@@ -143,7 +164,8 @@ def main(args):
     )
 
     with mlflow.start_run(run_id=mlf_logger.run_id):
-        model_info = mlflow.pytorch.log_model(model, "model")
+        model_info = mlflow.pytorch.log_model(model, "model", code_paths=["src"])
+        # model_info = mlflow.pytorch.log_model(model, "model2", code_paths=["models"])
         print(model_info.model_uri)
         print(model_info)
         mlflow.pytorch.log_model(lightning_model, "lightning_model")

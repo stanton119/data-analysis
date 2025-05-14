@@ -26,4 +26,4 @@ logging:
   run_name: "nn_inner_product"
 
 evaluation:
-  mlflow_model_uri: 'runs:/ffffc8663a62427a8a3cb1adbca11d41/model'
+  mlflow_model_uri: 'runs:/b195dedb03a6451bb09ecc9a8dbe9c89/model'

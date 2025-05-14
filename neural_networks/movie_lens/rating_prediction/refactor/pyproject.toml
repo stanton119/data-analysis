@@ -17,3 +17,6 @@ dev = [
     "pytest>=8.3.4",
     "refactor",
 ]
+
+[tool.uv]
+package = true
