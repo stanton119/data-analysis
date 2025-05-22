@@ -235,6 +235,18 @@ df = pl.read_parquet(
 )
 ```
 
+Load partitioned csv:
+```python
+import pyarrow.dataset as ds
+import polars as pl
+
+dataset = ds.dataset(
+    "path/to/dataset/", format="csv", partitioning="hive"
+)
+table = dataset.to_table()
+df = pl.from_arrow(table)
+```
+
 Load parquet from S3 (required `fsspec`):
 ```python
 df = pl.read_parquet(
