@@ -10,6 +10,7 @@ from src.data_generator import generate_dummy_data
 from src.dataset import TabularSequenceDataset, create_dataloaders
 from src.models import ModelProtocol, get_model
 
+
 class SequenceDataModule(pl.LightningModule):
     def __init__(self, model: ModelProtocol, learning_rate=1e-3):
         super().__init__()
@@ -38,9 +39,21 @@ class SequenceDataModule(pl.LightningModule):
         optimizer = torch.optim.Adam(self.parameters(), lr=self.learning_rate)
         return optimizer
 
-def train_model(model_name: str, num_epochs: int, batch_size: int, num_samples: int, sequence_length: int, num_features: int):
+
+def train_model(
+    model_name: str,
+    num_epochs: int,
+    batch_size: int,
+    num_samples: int,
+    sequence_length: int,
+    num_features: int,
+):
     print("Generating dummy data...")
-    dummy_data = generate_dummy_data(num_samples=num_samples, sequence_length=sequence_length, num_features=num_features)
+    dummy_data = generate_dummy_data(
+        num_samples=num_samples,
+        sequence_length=sequence_length,
+        num_features=num_features,
+    )
 
     print("Creating dataloaders...")
     train_loader, val_loader = create_dataloaders(dummy_data, batch_size=batch_size)
@@ -55,14 +68,16 @@ def train_model(model_name: str, num_epochs: int, batch_size: int, num_samples: 
         mlflow.pytorch.autolog()
 
         # Log hyperparameters
-        mlflow.log_params({
-            "model_name": model_name,
-            "num_epochs": num_epochs,
-            "batch_size": batch_size,
-            "num_samples": num_samples,
-            "sequence_length": sequence_length,
-            "num_features": num_features,
-        })
+        mlflow.log_params(
+            {
+                "model_name": model_name,
+                "num_epochs": num_epochs,
+                "batch_size": batch_size,
+                "num_samples": num_samples,
+                "sequence_length": sequence_length,
+                "num_features": num_features,
+            }
+        )
 
         model = SequenceDataModule(model=model_instance)
         logger = MLFlowLogger(experiment_name="Sequence Data Models")
@@ -71,6 +86,7 @@ def train_model(model_name: str, num_epochs: int, batch_size: int, num_samples: 
         print("Starting training...")
         trainer.fit(model, train_loader, val_loader)
         print("Training complete.")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train a sequence data model.")
@@ -106,4 +122,3 @@ if __name__ == "__main__":
         sequence_length=args.sequence_length,
         num_features=args.num_features,
     )
-

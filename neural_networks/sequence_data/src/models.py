@@ -2,9 +2,11 @@ import torch
 import torch.nn as nn
 from typing import Protocol
 
+
 class ModelProtocol(Protocol):
-    def forward(self, tabular: torch.Tensor, sequence: torch.Tensor) -> torch.Tensor:
-        ...
+    def forward(
+        self, tabular: torch.Tensor, sequence: torch.Tensor
+    ) -> torch.Tensor: ...
 
 
 class StatisticalAggregationModel(nn.Module, ModelProtocol):
@@ -59,8 +61,12 @@ class FixedPositionalWeightingModel(nn.Module, ModelProtocol):
         super().__init__()
         self.sequence_length = sequence_length
         # Create fixed linear decay weights
-        self.weights = torch.arange(1, sequence_length + 1, dtype=torch.float32).flip(dims=[0])
-        self.weights = self.weights / self.weights.sum() # Normalize weights to sum to 1
+        self.weights = torch.arange(1, sequence_length + 1, dtype=torch.float32).flip(
+            dims=[0]
+        )
+        self.weights = (
+            self.weights / self.weights.sum()
+        )  # Normalize weights to sum to 1
 
         # The input dimension will be the number of tabular features + 1 (for the weighted sequence)
         self.fc1 = nn.Linear(num_tabular_features + 1, hidden_dim)
@@ -75,9 +81,11 @@ class FixedPositionalWeightingModel(nn.Module, ModelProtocol):
 
         Returns:
             torch.Tensor: The model\'s prediction.
-        """        # Apply fixed positional weights to the sequence
+        """  # Apply fixed positional weights to the sequence
         # Ensure weights are broadcastable: [1, sequence_length]
-        weighted_sequence = (sequence * self.weights.to(sequence.device)).sum(dim=1, keepdim=True)
+        weighted_sequence = (sequence * self.weights.to(sequence.device)).sum(
+            dim=1, keepdim=True
+        )
 
         # Concatenate the tabular data with the weighted sequence
         combined_features = torch.cat([tabular, weighted_sequence], dim=1)
@@ -120,7 +128,7 @@ class LearnedStaticPositionalWeightingModel(nn.Module, ModelProtocol):
 
         Returns:
             torch.Tensor: The model\'s prediction.
-        """        # Apply learned static positional weights to the sequence
+        """  # Apply learned static positional weights to the sequence
         # Ensure weights are broadcastable: [1, sequence_length]
         weighted_sequence = (sequence * self.weights).sum(dim=1, keepdim=True)
 
@@ -165,10 +173,10 @@ class LearnedWeightedAverageModel(nn.Module, ModelProtocol):
 
         Returns:
             torch.Tensor: The model\'s prediction.
-        """        # Learn attention scores
+        """  # Learn attention scores
         # The input to attention_weights_layer should be (batch_size, sequence_length)
         attention_scores = self.attention_weights_layer(sequence)
-        
+
         # Apply softmax to get attention weights
         # dim=1 ensures softmax is applied across the sequence elements for each sample
         attention_weights = torch.softmax(attention_scores, dim=1)
@@ -187,22 +195,32 @@ class LearnedWeightedAverageModel(nn.Module, ModelProtocol):
         x = self.fc2(x)
         return x
 
-def get_model(model_name: str, num_tabular_features: int, sequence_length: int) -> ModelProtocol:
+
+def get_model(
+    model_name: str, num_tabular_features: int, sequence_length: int
+) -> ModelProtocol:
     """
     Factory function to get a model instance based on its name.
     """
     if model_name == "StatisticalAggregationModel":
         return StatisticalAggregationModel(num_tabular_features=num_tabular_features)
     elif model_name == "FixedPositionalWeightingModel":
-        return FixedPositionalWeightingModel(num_tabular_features=num_tabular_features, sequence_length=sequence_length)
+        return FixedPositionalWeightingModel(
+            num_tabular_features=num_tabular_features, sequence_length=sequence_length
+        )
     elif model_name == "LearnedStaticPositionalWeightingModel":
-        return LearnedStaticPositionalWeightingModel(num_tabular_features=num_tabular_features, sequence_length=sequence_length)
+        return LearnedStaticPositionalWeightingModel(
+            num_tabular_features=num_tabular_features, sequence_length=sequence_length
+        )
     elif model_name == "LearnedWeightedAverageModel":
-        return LearnedWeightedAverageModel(num_tabular_features=num_tabular_features, sequence_length=sequence_length)
+        return LearnedWeightedAverageModel(
+            num_tabular_features=num_tabular_features, sequence_length=sequence_length
+        )
     else:
         raise ValueError(f"Unknown model name: {model_name}")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     # Example usage of the factory function
     num_tabular_features = 10
     sequence_length = 50
@@ -212,13 +230,29 @@ if __name__ == '__main__':
     sequence_data = torch.randn(batch_size, sequence_length)
 
     # Get models using the factory function
-    stat_agg_model = get_model("StatisticalAggregationModel", num_tabular_features, sequence_length)
-    fixed_weight_model = get_model("FixedPositionalWeightingModel", num_tabular_features, sequence_length)
-    learned_static_weight_model = get_model("LearnedStaticPositionalWeightingModel", num_tabular_features, sequence_length)
-    learned_weight_model = get_model("LearnedWeightedAverageModel", num_tabular_features, sequence_length)
+    stat_agg_model = get_model(
+        "StatisticalAggregationModel", num_tabular_features, sequence_length
+    )
+    fixed_weight_model = get_model(
+        "FixedPositionalWeightingModel", num_tabular_features, sequence_length
+    )
+    learned_static_weight_model = get_model(
+        "LearnedStaticPositionalWeightingModel", num_tabular_features, sequence_length
+    )
+    learned_weight_model = get_model(
+        "LearnedWeightedAverageModel", num_tabular_features, sequence_length
+    )
 
     # Test forward pass for each model
-    print(f"StatisticalAggregationModel output shape: {stat_agg_model(tabular_data, sequence_data).shape}")
-    print(f"FixedPositionalWeightingModel output shape: {fixed_weight_model(tabular_data, sequence_data).shape}")
-    print(f"LearnedStaticPositionalWeightingModel output shape: {learned_static_weight_model(tabular_data, sequence_data).shape}")
-    print(f"LearnedWeightedAverageModel output shape: {learned_weight_model(tabular_data, sequence_data).shape}")
+    print(
+        f"StatisticalAggregationModel output shape: {stat_agg_model(tabular_data, sequence_data).shape}"
+    )
+    print(
+        f"FixedPositionalWeightingModel output shape: {fixed_weight_model(tabular_data, sequence_data).shape}"
+    )
+    print(
+        f"LearnedStaticPositionalWeightingModel output shape: {learned_static_weight_model(tabular_data, sequence_data).shape}"
+    )
+    print(
+        f"LearnedWeightedAverageModel output shape: {learned_weight_model(tabular_data, sequence_data).shape}"
+    )

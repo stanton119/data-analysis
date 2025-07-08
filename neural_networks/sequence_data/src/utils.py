@@ -5,6 +5,7 @@ import torch
 
 from src.models import ModelProtocol, get_model
 
+
 def load_learned_weights_from_mlflow(run_id: str) -> np.ndarray:
     """
     Loads the learned weights artifact from a specified MLflow run.
@@ -22,7 +23,9 @@ def load_learned_weights_from_mlflow(run_id: str) -> np.ndarray:
     client = mlflow.tracking.MlflowClient()
     try:
         # Create a temporary directory to download the artifact
-        local_path = client.download_artifacts(run_id=run_id, path="learned_weights.txt")
+        local_path = client.download_artifacts(
+            run_id=run_id, path="learned_weights.txt"
+        )
         print(f"Downloaded artifact to: {local_path}")
 
         # Read the weights from the downloaded file
@@ -34,6 +37,7 @@ def load_learned_weights_from_mlflow(run_id: str) -> np.ndarray:
         return weights
     except Exception as e:
         raise Exception(f"Error loading weights from MLflow run {run_id}: {e}")
+
 
 def load_pytorch_model_from_mlflow(run_id: str) -> ModelProtocol:
     """

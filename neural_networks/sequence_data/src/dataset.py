@@ -3,6 +3,7 @@ from torch.utils.data import Dataset, DataLoader
 import polars as pl
 import numpy as np
 
+
 class TabularSequenceDataset(Dataset):
     """PyTorch Dataset for tabular and sequence data."""
 
@@ -12,8 +13,13 @@ class TabularSequenceDataset(Dataset):
             dataframe (pl.DataFrame): DataFrame with tabular features, sequences, and target.
         """
         self.dataframe = dataframe
-        self.tabular_features = torch.tensor(dataframe.select(pl.exclude(["sequence", "target"])).to_numpy(), dtype=torch.float32)
-        self.sequences = torch.tensor(np.array(dataframe["sequence"].to_list()), dtype=torch.float32)
+        self.tabular_features = torch.tensor(
+            dataframe.select(pl.exclude(["sequence", "target"])).to_numpy(),
+            dtype=torch.float32,
+        )
+        self.sequences = torch.tensor(
+            np.array(dataframe["sequence"].to_list()), dtype=torch.float32
+        )
         self.targets = torch.tensor(dataframe["target"].to_numpy(), dtype=torch.float32)
 
     def __len__(self):
@@ -23,8 +29,9 @@ class TabularSequenceDataset(Dataset):
         return {
             "tabular": self.tabular_features[idx],
             "sequence": self.sequences[idx],
-            "target": self.targets[idx]
+            "target": self.targets[idx],
         }
+
 
 def create_dataloaders(dataframe, batch_size=32, train_split=0.8):
     """
@@ -50,7 +57,8 @@ def create_dataloaders(dataframe, batch_size=32, train_split=0.8):
 
     return train_loader, val_loader
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     from data_generator import generate_dummy_data
 
     # Generate dummy data
