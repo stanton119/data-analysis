@@ -9,6 +9,7 @@ This script provides functionality to evaluate trained models with various metri
 5. MSE (Mean Squared Error) for regression tasks
 
 It supports both synthetic datasets and the UCI Census Income dataset.
+Results are logged to MLflow, extending the same run used during training.
 """
 
 import torch
@@ -16,6 +17,8 @@ import torch.nn as nn
 import pytorch_lightning as pl
 from torch.utils.data import DataLoader
 import mlflow
+import mlflow.pytorch
+from mlflow.tracking import MlflowClient
 import argparse
 import os
 import json
@@ -43,6 +46,119 @@ from src.models import ModelProtocol, get_model
 from src.train import MultiTaskLightningModule, prepare_uci_census_data, prepare_synthetic_data
 
 
+def get_model_path_from_mlflow(
+    run_id: str = None,
+    experiment_name: str = None,
+    run_name: str = None,
+    model_name: str = "model",
+):
+    """
+    Get the path to a model artifact from MLflow using run ID, experiment name, or run name.
+    
+    Args:
+        run_id (str, optional): MLflow run ID
+        experiment_name (str, optional): MLflow experiment name
+        run_name (str, optional): MLflow run name
+        model_name (str, optional): Name of the model artifact (default: "model")
+        
+    Returns:
+        str: Path to the model artifact
+        
+    Raises:
+        ValueError: If the run or model artifact cannot be found
+    """
+    client = MlflowClient()
+    
+    print(f"Looking for model with run_id={run_id}, experiment_name={experiment_name}, run_name={run_name}")
+    
+    # Find run by ID, experiment name + run name, or just run name
+    if run_id:
+        run = client.get_run(run_id)
+    elif experiment_name and run_name:
+        experiment = client.get_experiment_by_name(experiment_name)
+        if not experiment:
+            raise ValueError(f"Experiment '{experiment_name}' not found")
+        
+        runs = client.search_runs(
+            experiment_ids=[experiment.experiment_id],
+            filter_string=f"tags.mlflow.runName = '{run_name}'"
+        )
+        if not runs:
+            raise ValueError(f"Run '{run_name}' not found in experiment '{experiment_name}'")
+        run = runs[0]
+    elif run_name:
+        # Search across all experiments
+        experiments = client.search_experiments()
+        for experiment in experiments:
+            runs = client.search_runs(
+                experiment_ids=[experiment.experiment_id],
+                filter_string=f"tags.mlflow.runName = '{run_name}'"
+            )
+            if runs:
+                run = runs[0]
+                break
+        else:
+            raise ValueError(f"Run '{run_name}' not found in any experiment")
+    else:
+        raise ValueError("Must provide run_id, experiment_name + run_name, or run_name")
+    
+    print(f"Found run with ID: {run.info.run_id}")
+    print(f"Run artifact URI: {run.info.artifact_uri}")
+    
+    # Get the artifact URI for the model
+    artifact_uri = run.info.artifact_uri
+    
+    # Check if the model exists in the artifacts
+    artifacts = client.list_artifacts(run.info.run_id)
+    print("Listing artifacts:")
+    for artifact in artifacts:
+        print(f"- {artifact.path} ({'dir' if artifact.is_dir else 'file'})")
+    
+    # First, check if there's a PyTorch model saved with mlflow.pytorch.log_model()
+    pytorch_model_path = None
+    for artifact in artifacts:
+        if artifact.path == model_name and artifact.is_dir:
+            # Found a PyTorch model directory
+            pytorch_model_path = os.path.join(artifact_uri, model_name)
+            print(f"Found PyTorch model at: {pytorch_model_path}")
+            
+            # Check if the model has the expected files
+            model_artifacts = client.list_artifacts(run.info.run_id, model_name)
+            for model_file in model_artifacts:
+                print(f"  - {model_file.path}")
+                
+            # Look for MLmodel file which indicates a proper mlflow.pytorch.log_model() artifact
+            if any(a.path == f"{model_name}/MLmodel" for a in model_artifacts):
+                print(f"Found valid PyTorch model with MLmodel file")
+                return pytorch_model_path
+    
+    # If no PyTorch model found, look for checkpoint files
+    checkpoint_artifacts = []
+    
+    def list_artifacts_recursive(run_id, path=""):
+        artifacts = client.list_artifacts(run_id, path)
+        for artifact in artifacts:
+            if artifact.is_dir:
+                list_artifacts_recursive(run_id, artifact.path)
+            elif artifact.path.endswith(".ckpt"):
+                checkpoint_artifacts.append(artifact)
+                print(f"Found checkpoint: {artifact.path}")
+    
+    list_artifacts_recursive(run.info.run_id)
+    
+    if checkpoint_artifacts:
+        # Use the first checkpoint file
+        checkpoint_path = os.path.join(artifact_uri, checkpoint_artifacts[0].path)
+        print(f"Using checkpoint file: {checkpoint_path}")
+        return checkpoint_path
+    elif pytorch_model_path:
+        # Fall back to the PyTorch model path even if it doesn't have MLmodel
+        print(f"Falling back to PyTorch model directory: {pytorch_model_path}")
+        return pytorch_model_path
+    else:
+        raise ValueError(f"No model artifacts or checkpoints found for run {run.info.run_id}")
+
+
 def evaluate_model(
     model_path: str,
     data_config: Dict[str, Any],
@@ -50,24 +166,60 @@ def evaluate_model(
     output_path: Optional[str] = None,
     generate_plots: bool = False,
     plots_dir: Optional[str] = None,
+    log_to_mlflow: bool = True,
 ):
     """
     Evaluate a trained model on test data with multiple metrics.
     
     Args:
-        model_path (str): Path to the trained model checkpoint
+        model_path (str): Path to the trained model checkpoint or MLflow model
         data_config (Dict): Configuration for the dataset
         metrics (List[str]): List of metrics to compute
         output_path (Optional[str]): Path to save evaluation results
         generate_plots (bool): Whether to generate ROC and PR curves
         plots_dir (Optional[str]): Directory to save plots
+        log_to_mlflow (bool): Whether to log metrics and plots to MLflow
         
     Returns:
         Dict: Dictionary of evaluation metrics
     """
-    # Load the model
-    model = MultiTaskLightningModule.load_from_checkpoint(model_path)
+    # Load the model - handle both PyTorch Lightning checkpoints and MLflow PyTorch models
+    try:
+        # First try loading as a PyTorch Lightning checkpoint
+        print(f"Attempting to load model from path: {model_path}")
+        if model_path.endswith('.ckpt'):
+            print("Loading as PyTorch Lightning checkpoint")
+            model = MultiTaskLightningModule.load_from_checkpoint(model_path)
+        else:
+            # Try loading as an MLflow PyTorch model
+            print("Loading as MLflow PyTorch model")
+            try:
+                # Check if it's a directory containing an MLflow model
+                if os.path.isdir(model_path) and os.path.exists(os.path.join(model_path, "MLmodel")):
+                    loaded_model = mlflow.pytorch.load_model(model_path)
+                    
+                    # If it's a MultiTaskLightningModule, use it directly
+                    if isinstance(loaded_model, MultiTaskLightningModule):
+                        model = loaded_model
+                    else:
+                        # If it's just the inner model, wrap it in a MultiTaskLightningModule
+                        # This assumes the model follows the ModelProtocol
+                        model = MultiTaskLightningModule(model=loaded_model)
+                else:
+                    # Last resort: try loading as a PyTorch Lightning checkpoint anyway
+                    model = MultiTaskLightningModule.load_from_checkpoint(model_path)
+            except Exception as e:
+                print(f"Error loading as MLflow model: {e}")
+                # Last resort: try loading as a PyTorch Lightning checkpoint anyway
+                model = MultiTaskLightningModule.load_from_checkpoint(model_path)
+    except Exception as e:
+        print(f"Failed to load model: {e}")
+        import traceback
+        traceback.print_exc()
+        raise ValueError(f"Could not load model from {model_path}: {e}")
+    
     model.eval()
+    print(f"Successfully loaded model: {type(model).__name__}")
     
     # Get the test dataloader
     test_dataloader = data_config["dataloaders"]["test"]
@@ -117,93 +269,191 @@ def evaluate_model(
     if generate_plots and plots_dir:
         os.makedirs(plots_dir, exist_ok=True)
     
-    # Compute metrics for each task
-    for task_name in all_predictions:
-        task_metrics = {}
-        predictions = all_predictions[task_name]
-        targets = all_targets[task_name]
-        
-        # Only compute classification metrics for binary tasks
-        if model.model.task_types[task_name] == "binary":
-            # Compute accuracy
-            if "accuracy" in metrics:
-                binary_preds = (predictions > 0.5).astype(float)
-                task_metrics["accuracy"] = float((binary_preds == targets).mean())
-            
-            # Compute AUC
-            if "auc" in metrics:
-                task_metrics["auc"] = float(roc_auc_score(targets, predictions))
-            
-            # Compute F1 score
-            if "f1" in metrics:
-                binary_preds = (predictions > 0.5).astype(float)
-                task_metrics["f1"] = float(f1_score(targets, binary_preds))
-            
-            # Compute average precision (area under PR curve)
-            if "average_precision" in metrics:
-                task_metrics["average_precision"] = float(average_precision_score(targets, predictions))
-            
-            # Compute confusion matrix
-            if "confusion_matrix" in metrics:
-                binary_preds = (predictions > 0.5).astype(float)
-                cm = confusion_matrix(targets, binary_preds)
-                task_metrics["confusion_matrix"] = cm.tolist()
-            
-            # Generate plots if requested
-            if generate_plots and plots_dir:
-                # ROC curve
-                fpr, tpr, _ = roc_curve(targets, predictions)
-                plt.figure(figsize=(8, 6))
-                plt.plot(fpr, tpr, label=f'AUC = {task_metrics["auc"]:.4f}')
-                plt.plot([0, 1], [0, 1], 'k--')
-                plt.xlabel('False Positive Rate')
-                plt.ylabel('True Positive Rate')
-                plt.title(f'ROC Curve - {task_name}')
-                plt.legend()
-                plt.savefig(os.path.join(plots_dir, f'{task_name}_roc_curve.png'))
-                plt.close()
-                
-                # Precision-Recall curve
-                precision, recall, _ = precision_recall_curve(targets, predictions)
-                plt.figure(figsize=(8, 6))
-                plt.plot(recall, precision, label=f'AP = {task_metrics["average_precision"]:.4f}')
-                plt.xlabel('Recall')
-                plt.ylabel('Precision')
-                plt.title(f'Precision-Recall Curve - {task_name}')
-                plt.legend()
-                plt.savefig(os.path.join(plots_dir, f'{task_name}_pr_curve.png'))
-                plt.close()
-        
-        # For regression tasks, compute regression metrics
+    # Get run ID from the checkpoint if available
+    run_id = None
+    if log_to_mlflow:
+        # Try to extract run_id from the checkpoint path
+        # PyTorch Lightning checkpoints often have the run_id in their path
+        checkpoint_path = Path(model_path)
+        if "mlruns" in str(checkpoint_path):
+            # Extract run_id from path like "mlruns/0/run_id/artifacts/model.ckpt"
+            parts = str(checkpoint_path).split("mlruns")
+            if len(parts) > 1:
+                run_parts = parts[1].split("/")
+                if len(run_parts) > 2:
+                    run_id = run_parts[2]
+    
+    # Start or resume MLflow run if logging is enabled
+    if log_to_mlflow:
+        if run_id:
+            # Resume existing run
+            mlflow.start_run(run_id=run_id)
+            print(f"Resuming MLflow run: {run_id}")
         else:
-            # Compute MSE
-            if "mse" in metrics:
-                task_metrics["mse"] = float(mean_squared_error(targets, predictions))
+            # Start a new run
+            mlflow.start_run()
+            print("Starting new MLflow run for evaluation")
+    
+    try:
+        # Compute metrics for each task
+        for task_name in all_predictions:
+            task_metrics = {}
+            predictions = all_predictions[task_name]
+            targets = all_targets[task_name]
             
-            # Compute RMSE
-            if "rmse" in metrics:
-                task_metrics["rmse"] = float(np.sqrt(mean_squared_error(targets, predictions)))
+            # Only compute classification metrics for binary tasks
+            if model.model.task_types[task_name] == "binary":
+                # Compute accuracy
+                if "accuracy" in metrics:
+                    binary_preds = (predictions > 0.5).astype(float)
+                    accuracy = float((binary_preds == targets).mean())
+                    task_metrics["accuracy"] = accuracy
+                    if log_to_mlflow:
+                        mlflow.log_metric(f"test_{task_name}_accuracy", accuracy)
+                
+                # Compute AUC
+                if "auc" in metrics:
+                    auc = float(roc_auc_score(targets, predictions))
+                    task_metrics["auc"] = auc
+                    if log_to_mlflow:
+                        mlflow.log_metric(f"test_{task_name}_auc", auc)
+                
+                # Compute F1 score
+                if "f1" in metrics:
+                    binary_preds = (predictions > 0.5).astype(float)
+                    f1 = float(f1_score(targets, binary_preds))
+                    task_metrics["f1"] = f1
+                    if log_to_mlflow:
+                        mlflow.log_metric(f"test_{task_name}_f1", f1)
+                
+                # Compute average precision (area under PR curve)
+                if "average_precision" in metrics:
+                    ap = float(average_precision_score(targets, predictions))
+                    task_metrics["average_precision"] = ap
+                    if log_to_mlflow:
+                        mlflow.log_metric(f"test_{task_name}_average_precision", ap)
+                
+                # Compute confusion matrix
+                if "confusion_matrix" in metrics:
+                    binary_preds = (predictions > 0.5).astype(float)
+                    cm = confusion_matrix(targets, binary_preds)
+                    task_metrics["confusion_matrix"] = cm.tolist()
+                    
+                    # Log confusion matrix as a figure to MLflow
+                    if log_to_mlflow:
+                        plt.figure(figsize=(8, 6))
+                        plt.imshow(cm, interpolation='nearest', cmap=plt.cm.Blues)
+                        plt.title(f'Confusion Matrix - {task_name}')
+                        plt.colorbar()
+                        tick_marks = np.arange(2)
+                        plt.xticks(tick_marks, ['Negative', 'Positive'])
+                        plt.yticks(tick_marks, ['Negative', 'Positive'])
+                        
+                        # Add text annotations
+                        thresh = cm.max() / 2.
+                        for i in range(cm.shape[0]):
+                            for j in range(cm.shape[1]):
+                                plt.text(j, i, format(cm[i, j], 'd'),
+                                        horizontalalignment="center",
+                                        color="white" if cm[i, j] > thresh else "black")
+                        
+                        plt.ylabel('True label')
+                        plt.xlabel('Predicted label')
+                        plt.tight_layout()
+                        
+                        # Save to temp file and log to MLflow
+                        cm_path = os.path.join(plots_dir if plots_dir else '.', f'{task_name}_confusion_matrix.png')
+                        plt.savefig(cm_path)
+                        if log_to_mlflow:
+                            mlflow.log_artifact(cm_path, f"evaluation/plots")
+                        plt.close()
+                
+                # Generate plots if requested
+                if generate_plots:
+                    # ROC curve
+                    fpr, tpr, _ = roc_curve(targets, predictions)
+                    plt.figure(figsize=(8, 6))
+                    plt.plot(fpr, tpr, label=f'AUC = {task_metrics["auc"]:.4f}')
+                    plt.plot([0, 1], [0, 1], 'k--')
+                    plt.xlabel('False Positive Rate')
+                    plt.ylabel('True Positive Rate')
+                    plt.title(f'ROC Curve - {task_name}')
+                    plt.legend()
+                    
+                    # Save to file
+                    roc_path = os.path.join(plots_dir if plots_dir else '.', f'{task_name}_roc_curve.png')
+                    plt.savefig(roc_path)
+                    if log_to_mlflow:
+                        mlflow.log_artifact(roc_path, f"evaluation/plots")
+                    plt.close()
+                    
+                    # Precision-Recall curve
+                    precision, recall, _ = precision_recall_curve(targets, predictions)
+                    plt.figure(figsize=(8, 6))
+                    plt.plot(recall, precision, label=f'AP = {task_metrics["average_precision"]:.4f}')
+                    plt.xlabel('Recall')
+                    plt.ylabel('Precision')
+                    plt.title(f'Precision-Recall Curve - {task_name}')
+                    plt.legend()
+                    
+                    # Save to file
+                    pr_path = os.path.join(plots_dir if plots_dir else '.', f'{task_name}_pr_curve.png')
+                    plt.savefig(pr_path)
+                    if log_to_mlflow:
+                        mlflow.log_artifact(pr_path, f"evaluation/plots")
+                    plt.close()
             
-            # Compute MAE
-            if "mae" in metrics:
-                task_metrics["mae"] = float(np.mean(np.abs(targets - predictions)))
+            # For regression tasks, compute regression metrics
+            else:
+                # Compute MSE
+                if "mse" in metrics:
+                    mse = float(mean_squared_error(targets, predictions))
+                    task_metrics["mse"] = mse
+                    if log_to_mlflow:
+                        mlflow.log_metric(f"test_{task_name}_mse", mse)
+                
+                # Compute RMSE
+                if "rmse" in metrics:
+                    rmse = float(np.sqrt(mean_squared_error(targets, predictions)))
+                    task_metrics["rmse"] = rmse
+                    if log_to_mlflow:
+                        mlflow.log_metric(f"test_{task_name}_rmse", rmse)
+                
+                # Compute MAE
+                if "mae" in metrics:
+                    mae = float(np.mean(np.abs(targets - predictions)))
+                    task_metrics["mae"] = mae
+                    if log_to_mlflow:
+                        mlflow.log_metric(f"test_{task_name}_mae", mae)
+            
+            # Store metrics for this task
+            all_metrics[task_name] = task_metrics
         
-        # Store metrics for this task
-        all_metrics[task_name] = task_metrics
+        # Log the metrics summary as a JSON artifact
+        if log_to_mlflow:
+            metrics_json_path = os.path.join(plots_dir if plots_dir else '.', 'evaluation_metrics.json')
+            with open(metrics_json_path, 'w') as f:
+                json.dump(all_metrics, f, indent=2)
+            mlflow.log_artifact(metrics_json_path, "evaluation")
+        
+        # Print metrics
+        print("\nEvaluation Results:")
+        for task_name, task_metrics in all_metrics.items():
+            print(f"\nTask: {task_name}")
+            for metric_name, value in task_metrics.items():
+                if metric_name != "confusion_matrix":  # Skip printing confusion matrix
+                    print(f"  {metric_name}: {value:.4f}")
+        
+        # Save metrics to file if output path is provided
+        if output_path:
+            with open(output_path, "w") as f:
+                json.dump(all_metrics, f, indent=2)
+            print(f"\nResults saved to {output_path}")
     
-    # Print metrics
-    print("\nEvaluation Results:")
-    for task_name, task_metrics in all_metrics.items():
-        print(f"\nTask: {task_name}")
-        for metric_name, value in task_metrics.items():
-            if metric_name != "confusion_matrix":  # Skip printing confusion matrix
-                print(f"  {metric_name}: {value:.4f}")
-    
-    # Save metrics to file if output path is provided
-    if output_path:
-        with open(output_path, "w") as f:
-            json.dump(all_metrics, f, indent=2)
-        print(f"\nResults saved to {output_path}")
+    finally:
+        # End MLflow run if we started one
+        if log_to_mlflow:
+            mlflow.end_run()
     
     return all_metrics
 
@@ -214,6 +464,7 @@ def evaluate_multiple_models(
     metrics: List[str] = ["accuracy", "auc", "f1", "average_precision"],
     output_dir: Optional[str] = None,
     generate_plots: bool = False,
+    log_to_mlflow: bool = True,
 ):
     """
     Evaluate multiple trained models in a directory.
@@ -224,6 +475,7 @@ def evaluate_multiple_models(
         metrics (List[str]): List of metrics to compute
         output_dir (Optional[str]): Directory to save evaluation results
         generate_plots (bool): Whether to generate ROC and PR curves
+        log_to_mlflow (bool): Whether to log metrics and plots to MLflow
         
     Returns:
         Dict: Dictionary mapping model names to evaluation metrics
@@ -257,6 +509,7 @@ def evaluate_multiple_models(
                 output_path=os.path.join(output_dir, f"{model_name}_metrics.json") if output_dir else None,
                 generate_plots=generate_plots,
                 plots_dir=plots_dir,
+                log_to_mlflow=log_to_mlflow,
             )
             
             all_results[model_name] = model_metrics
@@ -274,6 +527,7 @@ def evaluate_multiple_models(
 def compare_models(
     results: Dict[str, Dict[str, Dict[str, float]]],
     output_path: Optional[str] = None,
+    log_to_mlflow: bool = True,
 ):
     """
     Compare multiple models based on their evaluation metrics.
@@ -281,6 +535,7 @@ def compare_models(
     Args:
         results (Dict): Dictionary mapping model names to evaluation metrics
         output_path (Optional[str]): Path to save comparison results
+        log_to_mlflow (bool): Whether to log comparison results to MLflow
         
     Returns:
         Dict: Dictionary of comparison results
@@ -338,6 +593,55 @@ def compare_models(
             json.dump(comparison, f, indent=2)
         print(f"\nComparison saved to {output_path}")
     
+    # Log comparison to MLflow
+    if log_to_mlflow:
+        # Start a new run for the comparison
+        with mlflow.start_run(run_name="Model Comparison"):
+            # Log the comparison as a JSON artifact
+            comparison_path = output_path or "model_comparison.json"
+            if not os.path.exists(comparison_path):
+                with open(comparison_path, "w") as f:
+                    json.dump(comparison, f, indent=2)
+            mlflow.log_artifact(comparison_path)
+            
+            # Create and log comparison plots
+            for task_name, task_comparison in comparison.items():
+                for metric_name, metric_comparison in task_comparison.items():
+                    # Create bar chart
+                    plt.figure(figsize=(10, 6))
+                    models = list(metric_comparison["values"].keys())
+                    values = list(metric_comparison["values"].values())
+                    
+                    # Sort by value
+                    if metric_name in ["accuracy", "auc", "f1", "average_precision"]:
+                        # Higher is better, sort descending
+                        sorted_indices = np.argsort(values)[::-1]
+                    else:
+                        # Lower is better, sort ascending
+                        sorted_indices = np.argsort(values)
+                    
+                    sorted_models = [models[i] for i in sorted_indices]
+                    sorted_values = [values[i] for i in sorted_indices]
+                    
+                    # Create bar chart
+                    bars = plt.bar(sorted_models, sorted_values)
+                    
+                    # Highlight best model
+                    best_idx = sorted_models.index(metric_comparison["best_model"])
+                    bars[best_idx].set_color('green')
+                    
+                    plt.title(f'{task_name} - {metric_name} Comparison')
+                    plt.xlabel('Model')
+                    plt.ylabel(metric_name)
+                    plt.xticks(rotation=45, ha='right')
+                    plt.tight_layout()
+                    
+                    # Save and log
+                    comparison_plot_path = f"{task_name}_{metric_name}_comparison.png"
+                    plt.savefig(comparison_plot_path)
+                    mlflow.log_artifact(comparison_plot_path, "comparison_plots")
+                    plt.close()
+    
     return comparison
 
 
@@ -356,6 +660,30 @@ def main():
         "--model_dir",
         type=str,
         help="Directory containing multiple model checkpoints",
+    )
+    model_group.add_argument(
+        "--mlflow_run_id",
+        type=str,
+        help="MLflow run ID to load model from",
+    )
+    model_group.add_argument(
+        "--mlflow_run_name",
+        type=str,
+        help="MLflow run name to load model from",
+    )
+    
+    # MLflow experiment options
+    parser.add_argument(
+        "--mlflow_experiment_name",
+        type=str,
+        default=None,
+        help="MLflow experiment name (used with --mlflow_run_name)",
+    )
+    parser.add_argument(
+        "--mlflow_model_name",
+        type=str,
+        default="model",
+        help="Name of the model artifact in MLflow",
     )
     
     # Data options
@@ -427,6 +755,19 @@ def main():
         help="Generate ROC and PR curves",
     )
     
+    # MLflow options
+    parser.add_argument(
+        "--no_mlflow",
+        action="store_true",
+        help="Disable logging to MLflow",
+    )
+    parser.add_argument(
+        "--mlflow_logging_run_id",
+        type=str,
+        default=None,
+        help="Specific MLflow run ID to log evaluation results to (if not provided, will try to extract from checkpoint path)",
+    )
+    
     args = parser.parse_args()
     
     # Parse metrics
@@ -444,6 +785,25 @@ def main():
             use_mmoe_synthetic=args.use_mmoe_synthetic,
         )
     
+    # Set MLflow run ID for logging if provided
+    if args.mlflow_logging_run_id:
+        os.environ["MLFLOW_RUN_ID"] = args.mlflow_logging_run_id
+    
+    # Get model path from MLflow if specified
+    if args.mlflow_run_id or args.mlflow_run_name:
+        try:
+            model_path = get_model_path_from_mlflow(
+                run_id=args.mlflow_run_id,
+                experiment_name=args.mlflow_experiment_name,
+                run_name=args.mlflow_run_name,
+                model_name=args.mlflow_model_name,
+            )
+            print(f"Loaded model path from MLflow: {model_path}")
+            args.model_path = model_path
+        except Exception as e:
+            print(f"Error loading model from MLflow: {e}")
+            return
+    
     # Evaluate single model or multiple models
     if args.model_path:
         # Evaluate single model
@@ -454,6 +814,7 @@ def main():
             output_path=args.output_path,
             generate_plots=args.generate_plots,
             plots_dir=os.path.join(os.path.dirname(args.output_path), "plots") if args.output_path else None,
+            log_to_mlflow=not args.no_mlflow,
         )
     else:
         # Evaluate multiple models
@@ -463,6 +824,7 @@ def main():
             metrics=metrics,
             output_dir=args.output_dir,
             generate_plots=args.generate_plots,
+            log_to_mlflow=not args.no_mlflow,
         )
         
         # Compare models
@@ -470,6 +832,7 @@ def main():
             compare_models(
                 results=results,
                 output_path=os.path.join(args.output_dir, "comparison.json") if args.output_dir else None,
+                log_to_mlflow=not args.no_mlflow,
             )
 
 

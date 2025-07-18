@@ -131,8 +131,15 @@ def get_model(
         expert_dims = model_params.get("expert_dims", hidden_dims)
         gate_dims = model_params.get("gate_dims", [64])
 
-        # This is a placeholder for the future MMoE implementation
-        raise NotImplementedError("MultiGateMixtureOfExperts is not yet implemented")
+        return MultiGateMixtureOfExperts(
+            input_dim=num_tabular_features,
+            hidden_dims=hidden_dims,
+            task_names=task_names,
+            task_types=task_types,
+            num_experts=num_experts,
+            expert_dims=expert_dims,
+            gate_dims=gate_dims,
+        )
 
     else:
         raise ValueError(f"Unknown model name: {model_name}")
@@ -445,6 +452,131 @@ class MixtureOfExperts(nn.Module, ModelProtocol):
             if self.task_types[task_name] == "binary":
                 task_output = torch.sigmoid(task_output)
 
+            outputs[task_name] = task_output
+
+        return outputs
+
+
+class MultiGateMixtureOfExperts(nn.Module, ModelProtocol):
+    """
+    Multi-gate Mixture of Experts (MMoE) Model for multi-task learning.
+
+    This model implements the approach from "Modeling Task Relationships in Multi-task Learning 
+    with Multi-gate Mixture-of-Experts" (Ma et al., 2018) where:
+    - Multiple expert networks process the input in parallel
+    - Each task has its own gating network to determine the weight of each expert
+    - The weighted combination of expert outputs is used for task-specific predictions
+
+    As described in the README, this approach:
+    - Provides task-specific routing for more flexibility
+    - Better handles tasks with different relationships
+    - Reduces negative transfer between unrelated tasks
+    - Can model complex task relationships
+    """
+
+    def __init__(
+        self,
+        input_dim: int,
+        hidden_dims: List[int],
+        task_names: List[str],
+        task_types: Dict[str, str],
+        num_experts: int = 4,
+        expert_dims: List[int] = None,
+        gate_dims: List[int] = None,
+    ):
+        """
+        Initialize the Multi-gate Mixture of Experts Model.
+
+        Args:
+            input_dim (int): Dimension of the input features
+            hidden_dims (List[int]): List of hidden layer dimensions for each expert
+            task_names (List[str]): List of task names
+            task_types (Dict[str, str]): Dictionary mapping task names to types ('binary', 'regression')
+            num_experts (int, optional): Number of expert networks. Defaults to 4.
+            expert_dims (List[int], optional): Hidden dimensions for expert networks. Defaults to hidden_dims.
+            gate_dims (List[int], optional): Hidden dimensions for gate networks. Defaults to [64].
+        """
+        super().__init__()
+        self.task_names = task_names
+        self.task_types = task_types
+        self.num_experts = num_experts
+        
+        # Use default dimensions if not provided
+        if expert_dims is None:
+            expert_dims = hidden_dims
+        if gate_dims is None:
+            gate_dims = [64]
+
+        # Create expert networks
+        self.experts = nn.ModuleList(
+            [Expert(input_dim, expert_dims) for _ in range(num_experts)]
+        )
+
+        # Get the output dimension of experts
+        expert_output_dim = self.experts[0].output_dim
+
+        # Create task-specific gating networks
+        self.gates = nn.ModuleDict()
+        for task_name in task_names:
+            layers = []
+            prev_dim = input_dim
+            
+            for gate_dim in gate_dims:
+                layers.append(nn.Linear(prev_dim, gate_dim))
+                layers.append(nn.ReLU())
+                prev_dim = gate_dim
+                
+            layers.append(nn.Linear(prev_dim, num_experts))
+            # No softmax here as it will be applied in the forward pass
+            self.gates[task_name] = nn.Sequential(*layers)
+
+        # Create task-specific output layers
+        self.task_heads = nn.ModuleDict()
+        for task_name in task_names:
+            self.task_heads[task_name] = nn.Linear(expert_output_dim, 1)
+
+    def forward(self, x: torch.Tensor) -> Dict[str, torch.Tensor]:
+        """
+        Forward pass through the model.
+
+        Args:
+            x (torch.Tensor): Input tensor of shape (batch_size, input_dim)
+
+        Returns:
+            Dict[str, torch.Tensor]: Dictionary mapping task names to predictions
+        """
+        batch_size = x.size(0)
+
+        # Get expert outputs
+        expert_outputs = []
+        for expert in self.experts:
+            expert_outputs.append(expert(x))
+
+        # Stack expert outputs: (num_experts, batch_size, expert_output_dim)
+        expert_outputs = torch.stack(expert_outputs)
+        
+        # Permute expert outputs for proper broadcasting: (batch_size, num_experts, expert_output_dim)
+        expert_outputs = expert_outputs.permute(1, 0, 2)
+
+        # Process each task with its own gate
+        outputs = {}
+        for task_name in self.task_names:
+            # Get task-specific gating weights: (batch_size, num_experts)
+            gate_weights = F.softmax(self.gates[task_name](x), dim=1)
+            
+            # Reshape gate weights for broadcasting: (batch_size, num_experts, 1)
+            gate_weights = gate_weights.unsqueeze(-1)
+            
+            # Weighted sum of expert outputs for this task: (batch_size, expert_output_dim)
+            task_combined_output = torch.sum(gate_weights * expert_outputs, dim=1)
+            
+            # Pass through task-specific head
+            task_output = self.task_heads[task_name](task_combined_output)
+            
+            # Apply appropriate activation based on task type
+            if self.task_types[task_name] == "binary":
+                task_output = torch.sigmoid(task_output)
+                
             outputs[task_name] = task_output
 
         return outputs

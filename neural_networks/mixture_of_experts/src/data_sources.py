@@ -94,10 +94,10 @@ def load_uci_census_dataset(
     if create_multi_task:
         # Create binary marital status target (1 for married, 0 for not married)
         train_df = train_df.with_columns(
-            pl.col("marital_status").str.contains("Married").cast(pl.Int8).alias("marital_status_binary")
+            pl.col("marital_status").str.starts_with("Married").cast(pl.Int8).alias("marital_status_binary")
         )
         test_df = test_df.with_columns(
-            pl.col("marital_status").str.contains("Married").cast(pl.Int8).alias("marital_status_binary")
+            pl.col("marital_status").str.starts_with("Married").cast(pl.Int8).alias("marital_status_binary")
         )
     
     return {"train": train_df, "test": test_df}

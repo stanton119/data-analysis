@@ -186,7 +186,13 @@ def prepare_uci_census_data(batch_size: int = 32, val_ratio: float = 0.15):
         col
         for col in census_data["train"].columns
         if col
-        not in ["marital_status", "income", "income_binary", "marital_status_binary"]
+        not in [
+            "marital_status",
+            "relationship",
+            "income",
+            "income_binary",
+            "marital_status_binary",
+        ]
     ]
 
     # Define task columns and types
@@ -209,13 +215,9 @@ def prepare_uci_census_data(batch_size: int = 32, val_ratio: float = 0.15):
         dataset_kwargs=dataset_kwargs,
     )
 
-    # Create a temporary dataset to get feature dimension
-    temp_dataset = MultiTaskTabularDataset(census_data["train"], **dataset_kwargs)
-    # TODO replace with feature_cols len?
-
     return {
         "dataloaders": dataloaders,
-        "feature_dim": temp_dataset.feature_dim,
+        "feature_dim": dataloaders["train"].dataset.dataset.feature_dim,
         "task_names": task_cols,
         "task_types": task_types,
     }
@@ -285,12 +287,9 @@ def prepare_synthetic_data(
         dataset_kwargs=dataset_kwargs,
     )
 
-    # Create a temporary dataset to get feature dimension
-    temp_dataset = MultiTaskTabularDataset(data["train"], **dataset_kwargs)
-
     return {
         "dataloaders": dataloaders,
-        "feature_dim": temp_dataset.feature_dim,
+        "feature_dim": dataloaders["train"].dataset.dataset.feature_dim,
         "task_names": task_cols,
         "task_types": task_types,
         "metadata": metadata,
@@ -406,7 +405,11 @@ def train_model(
         # Set up trainer with MLflow logger
         # Note: We're using only the PyTorch Lightning MLFlowLogger, not mlflow.pytorch.autolog()
         # to avoid duplicate logging
-        logger = MLFlowLogger(experiment_name=experiment_name, run_name=run_name)
+        logger = MLFlowLogger(
+            experiment_name=experiment_name,
+            # run_name=run_name + "_lightning",
+            run_id=mlflow.active_run().info.run_id,
+        )
         trainer = pl.Trainer(
             max_epochs=num_epochs,
             logger=logger,
@@ -427,6 +430,20 @@ def train_model(
         # Log test metrics
         for key, value in test_results[0].items():
             mlflow.log_metric(key, value)
+
+        # Save the best model checkpoint to MLflow
+        if trainer.checkpoint_callback.best_model_path:
+            # Log the best model checkpoint
+            mlflow.pytorch.log_model(pytorch_model=lightning_model, name="model")
+            # Also log the raw checkpoint file
+            mlflow.log_artifact(
+                trainer.checkpoint_callback.best_model_path, "checkpoints"
+            )
+            print(
+                f"Model saved to MLflow: {trainer.checkpoint_callback.best_model_path}"
+            )
+        else:
+            print("Warning: No best model checkpoint found to save to MLflow")
 
         return lightning_model
 
@@ -536,6 +553,7 @@ def main():
         default="SharedBottomModel",
         choices=[
             "SingleTaskModel",
+            "MultiSingleTaskModel",
             "SharedBottomModel",
             "MixtureOfExperts",
             "MultiGateMixtureOfExperts",
