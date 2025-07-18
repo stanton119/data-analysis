@@ -187,31 +187,163 @@ def evaluate_model(
     try:
         # First try loading as a PyTorch Lightning checkpoint
         print(f"Attempting to load model from path: {model_path}")
-        if model_path.endswith('.ckpt'):
-            print("Loading as PyTorch Lightning checkpoint")
-            model = MultiTaskLightningModule.load_from_checkpoint(model_path)
-        else:
-            # Try loading as an MLflow PyTorch model
-            print("Loading as MLflow PyTorch model")
+        
+        # Extract run information from MLflow to get model parameters
+        client = MlflowClient()
+        run_id = None
+        
+        # Try to extract run_id from the checkpoint path
+        if "mlruns" in model_path:
+            parts = model_path.split("mlruns")
+            if len(parts) > 1:
+                run_parts = parts[1].split("/")
+                if len(run_parts) > 2:
+                    run_id = run_parts[2]
+                    print(f"Extracted run_id from path: {run_id}")
+        
+        # If we have a run_id, get the model parameters from MLflow
+        model_params = None
+        task_names = None
+        task_types = None
+        feature_dim = None
+        model_name = None
+        
+        if run_id:
             try:
-                # Check if it's a directory containing an MLflow model
-                if os.path.isdir(model_path) and os.path.exists(os.path.join(model_path, "MLmodel")):
-                    loaded_model = mlflow.pytorch.load_model(model_path)
-                    
-                    # If it's a MultiTaskLightningModule, use it directly
-                    if isinstance(loaded_model, MultiTaskLightningModule):
-                        model = loaded_model
-                    else:
-                        # If it's just the inner model, wrap it in a MultiTaskLightningModule
-                        # This assumes the model follows the ModelProtocol
-                        model = MultiTaskLightningModule(model=loaded_model)
-                else:
-                    # Last resort: try loading as a PyTorch Lightning checkpoint anyway
-                    model = MultiTaskLightningModule.load_from_checkpoint(model_path)
+                run = client.get_run(run_id)
+                params = run.data.params
+                
+                # Extract model parameters
+                model_name = params.get("model_name")
+                print(f"Model name from MLflow: {model_name}")
+                
+                # Extract task names and types
+                if "task_names" in params:
+                    task_names = params["task_names"].split(",")
+                    print(f"Task names from MLflow: {task_names}")
+                
+                if "task_types" in params:
+                    # Parse the string representation of the dictionary
+                    task_types_str = params["task_types"]
+                    # Remove curly braces and split by comma
+                    task_types_items = task_types_str.strip("{}").split(",")
+                    task_types = {}
+                    for item in task_types_items:
+                        if ":" in item:
+                            key, value = item.split(":")
+                            key = key.strip().strip("'\"")
+                            value = value.strip().strip("'\"")
+                            task_types[key] = value
+                    print(f"Task types from MLflow: {task_types}")
+                
+                # Extract feature dimension
+                if "feature_dim" in params:
+                    feature_dim = int(params["feature_dim"])
+                    print(f"Feature dimension from MLflow: {feature_dim}")
+                
+                # Extract model-specific parameters
+                model_params = {}
+                for key, value in params.items():
+                    if key.startswith("model_"):
+                        param_name = key[6:]  # Remove "model_" prefix
+                        # Try to convert to appropriate type
+                        if value.lower() == "true":
+                            model_params[param_name] = True
+                        elif value.lower() == "false":
+                            model_params[param_name] = False
+                        elif value.isdigit():
+                            model_params[param_name] = int(value)
+                        elif value.replace(".", "", 1).isdigit():
+                            model_params[param_name] = float(value)
+                        elif value.startswith('[') and value.endswith(']'):
+                            # Handle list parameters like hidden_dims
+                            try:
+                                # Parse string representation of list
+                                list_str = value.strip('[]')
+                                if list_str:
+                                    # Split by comma and convert each element
+                                    elements = list_str.split(',')
+                                    parsed_list = []
+                                    for elem in elements:
+                                        elem = elem.strip()
+                                        if elem.isdigit():
+                                            parsed_list.append(int(elem))
+                                        elif elem.replace(".", "", 1).isdigit():
+                                            parsed_list.append(float(elem))
+                                        else:
+                                            parsed_list.append(elem)
+                                    model_params[param_name] = parsed_list
+                                else:
+                                    model_params[param_name] = []
+                            except Exception as e:
+                                print(f"Error parsing list parameter {param_name}: {e}")
+                                model_params[param_name] = value
+                        else:
+                            model_params[param_name] = value
+                
+                print(f"Model parameters from MLflow: {model_params}")
             except Exception as e:
-                print(f"Error loading as MLflow model: {e}")
-                # Last resort: try loading as a PyTorch Lightning checkpoint anyway
-                model = MultiTaskLightningModule.load_from_checkpoint(model_path)
+                print(f"Error getting run information from MLflow: {e}")
+        
+        # If we couldn't get the model parameters from MLflow, use the ones from data_config
+        if task_names is None:
+            task_names = data_config["task_names"]
+        if task_types is None:
+            task_types = data_config["task_types"]
+        if feature_dim is None:
+            feature_dim = data_config["feature_dim"]
+        
+        # Create the model instance
+        if model_name and feature_dim and task_names and task_types:
+            from src.models import get_model
+            
+            # Create the model instance
+            model_instance = get_model(
+                model_name=model_name,
+                num_tabular_features=feature_dim,
+                task_names=task_names,
+                task_types=task_types,
+                model_params=model_params,
+            )
+            
+            # Create the Lightning module
+            lightning_model = MultiTaskLightningModule(
+                model=model_instance,
+                learning_rate=1e-3,  # Default value, will be overridden by checkpoint
+            )
+            
+            # Load the checkpoint
+            if model_path.endswith('.ckpt'):
+                print("Loading weights from PyTorch Lightning checkpoint")
+                # Remove file:// prefix if present
+                local_path = model_path
+                if local_path.startswith('file://'):
+                    local_path = local_path[7:]  # Remove 'file://' prefix
+                print(f"Using local path: {local_path}")
+                checkpoint = torch.load(local_path)
+                lightning_model.load_state_dict(checkpoint["state_dict"])
+            else:
+                # Try loading as an MLflow PyTorch model
+                print("Loading as MLflow PyTorch model")
+                try:
+                    # Check if it's a directory containing an MLflow model
+                    if os.path.isdir(model_path) and os.path.exists(os.path.join(model_path, "MLmodel")):
+                        loaded_model = mlflow.pytorch.load_model(model_path)
+                        
+                        # If it's a MultiTaskLightningModule, use it directly
+                        if isinstance(loaded_model, MultiTaskLightningModule):
+                            lightning_model = loaded_model
+                        else:
+                            # If it's just the inner model, update our lightning_model
+                            lightning_model.model = loaded_model
+                except Exception as e:
+                    print(f"Error loading as MLflow model: {e}")
+                    raise
+            
+            model = lightning_model
+        else:
+            raise ValueError("Could not get model parameters from MLflow or data_config")
+            
     except Exception as e:
         print(f"Failed to load model: {e}")
         import traceback
