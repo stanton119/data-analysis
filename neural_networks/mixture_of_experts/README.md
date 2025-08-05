@@ -221,12 +221,12 @@ uv run python src/train.py --model_name MixtureOfExperts --dataset uci_census --
 uv run python src/train.py --model_name MultiGateMixtureOfExperts --dataset uci_census --num_epochs 50 --batch_size 4096
 ```
 
-uv run python src/train.py --model_name MultiSingleTaskModel --dataset uci_census --num_epochs 2 --batch_size 4096
-
 Run all evaluations:
 ```bash
-uv run python src/evaluate.py --mlflow_experiment_name "Multi-Task Learning Models" --mlflow_run_name "SharedBottomModel" --dataset uci_census
 uv run python src/evaluate.py --mlflow_experiment_name "Multi-Task Learning Models" --mlflow_run_name "MultiSingleTaskModel" --dataset uci_census
+uv run python src/evaluate.py --mlflow_experiment_name "Multi-Task Learning Models" --mlflow_run_name "SharedBottomModel" --dataset uci_census
+uv run python src/evaluate.py --mlflow_experiment_name "Multi-Task Learning Models" --mlflow_run_name "MixtureOfExperts_experts4" --dataset uci_census
+uv run python src/evaluate.py --mlflow_experiment_name "Multi-Task Learning Models" --mlflow_run_name "MultiGateMixtureOfExperts_experts4" --dataset uci_census
 ```
 
 ### Training Individual Models
