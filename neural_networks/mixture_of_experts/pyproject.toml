@@ -1,0 +1,19 @@
+[project]
+name = "mixture_of_experts"
+version = "0.1.0"
+description = "A project for mixture of experts analysis."
+requires-python = ">=3.12"
+dependencies = [
+    "torch",
+    "pytorch-lightning",
+    "polars",
+    "numpy",
+    "ipykernel",
+    "mlflow",
+]
+
+[tool.setuptools]
+packages = ["src"]
+
+[tool.uv]
+package = true
