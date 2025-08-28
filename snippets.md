@@ -75,6 +75,22 @@ sns.histplot(data=plot_df, x="value", hue="variable", stat="probability", common
 fig.show()
 ```
 
+Errorbars from mean/std columns:
+```python
+df_with_bounds = pl.concat(
+    [
+        df.with_columns(value=pl.col("value_mean")),
+        df.with_columns(value=pl.col("value_mean") - pl.col("value_std")),
+        df.with_columns(value=pl.col("value_mean") + pl.col("value_std")),
+    ]
+)
+fig, ax = plt.subplots(figsize=(6, 4))
+sns.lineplot(
+    data=df_with_bounds.to_pandas(), y="value", errorbar=("pi", 100), ax=ax
+)
+fig.show()
+```
+
 ## Docker
 ```
 CMD ["val"]
@@ -334,6 +350,13 @@ Profiling within Notebooks using `pyinstrument`:
 import pyinstrument
 with pyinstrument.profile():
     ...code...
+```
+or
+```python
+import pyinstrument
+with pyinstrument.Profiler() as profiler:
+    ...code...
+profiler.print()
 ```
 
 Memory profile within Notebooks:
