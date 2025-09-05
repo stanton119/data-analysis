@@ -312,3 +312,24 @@ Read 2025/05
   * Has loss functions to ensure the new embeddings preserve similarities
 * Thoughts
   * Needs to be retrained for each embedding corpus
+
+### Variation Due to Regularization Tractably Recovers Bayesian Deep Learning Uncertainty [2025]
+https://proceedings.mlr.press/v258/mcinerney25a.html
+Read 2025/09
+* Summary
+  * train a model and train again with L2 regularisation
+  * predict both models and take the difference in predictions: this relates to the output uncertainty
+  * faster inference time as most other approaches need many forward passes (of different networks on randomised through 1 network)
+* More details
+  * They take the Laplacian of the trained model weights as representing uncertainty
+  * A large weights variance indicates uncertainty in the model weight
+  * The Laplacian is taken from a 2nd order Taylor expansion around the optima to get the Hessian
+  * Calculating the Hessian is hard as we need the weights have dimension
+  * They approximate the Hessian through a linear decomposition of the original and fine tuned regularised models
+  * This holds for small regularisation lambdas
+  * We can take a model and fine tune it with a different loss function including regularisation
+  * They use MAP to train their models and take a gaussian prior on the weights which relates to L2 regularisation
+  * They show better calibration compared with other methods
+  * For classification problems they produce gaussians to represent class logits, then use the standard deviations to produce an 'uncertainty weighting' which acts like temperature in a softmax to produce more uniform class probabilites (extended probit approximation)
+* Thoughts
+  * sgd already does some regularisation - for out of distribution points with a small batch size we have high regularisation, adding regularisation against to estimate variance, would this underestimate true variance
