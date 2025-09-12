@@ -1,6 +1,6 @@
 """
 Matrix Factorization for Collaborative Filtering
-Classic approach that decomposes the user-item interaction matrix into 
+Classic approach that decomposes the user-item interaction matrix into
 low-dimensional user and item embeddings.
 
 Predicts ratings as the inner product of user and item embeddings plus bias terms:

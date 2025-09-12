@@ -10,13 +10,13 @@ y = w0 + Σ(wi * xi) + Σ(Σ(<vi, vj> * xi * xj))
 
 Where:
 - w0: global bias
-- wi: linear weights  
+- wi: linear weights
 - vi: embedding vectors for feature interactions
 - <vi, vj>: dot product of embeddings
 
 The input features, xi, are one hot encoding of user/items concatenated together.
 
-For user-item recommendation, this reduces to matrix factorization when only 
+For user-item recommendation, this reduces to matrix factorization when only
 user and item features are present. The linear weights become the user/item bias terms:
 
 • FM: y = w0 + wu + wi + <vu, vi>
@@ -24,7 +24,7 @@ user and item features are present. The linear weights become the user/item bias
 
 Where:
 • w0 = global bias μ
-• wu, wi = user/item biases bu, bi 
+• wu, wi = user/item biases bu, bi
 • <vu, vi> = user-item interaction <pu, qi>
 """
 

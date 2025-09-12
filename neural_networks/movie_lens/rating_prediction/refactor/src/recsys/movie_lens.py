@@ -13,7 +13,15 @@ DEFAULT_DATA_DIR = PROJECT_ROOT / "data" / "raw"
 
 
 class MovieLensDataset(Dataset):
-    def __init__(self, interactions, num_users, num_items, item_features=None, user_features=None, num_negatives=4):
+    def __init__(
+        self,
+        interactions,
+        num_users,
+        num_items,
+        item_features=None,
+        user_features=None,
+        num_negatives=4,
+    ):
         self.interactions = interactions
         self.num_users = num_users
         self.num_items = num_items
@@ -52,23 +60,35 @@ class MovieLensDataset(Dataset):
         result = {
             "user_id": torch.tensor(user_id, dtype=torch.long),
             "item_id": torch.tensor(item_id, dtype=torch.long),
-            "rating": torch.tensor(1.0 if sample_type == 0 else 0.0, dtype=torch.float32),
+            "rating": torch.tensor(
+                1.0 if sample_type == 0 else 0.0, dtype=torch.float32
+            ),
         }
-        
+
         # Add user features if available
         if self.user_features is not None:
             # Split continuous and embedding features
-            result["user_continuous"] = torch.tensor(self.user_features[user_id][:2], dtype=torch.float32)  # age, gender
-            result["user_occupation"] = torch.tensor(self.user_features[user_id][2], dtype=torch.long)  # occupation_id
+            result["user_continuous"] = torch.tensor(
+                self.user_features[user_id][:2], dtype=torch.float32
+            )  # age, gender
+            result["user_occupation"] = torch.tensor(
+                self.user_features[user_id][2], dtype=torch.long
+            )  # occupation_id
             if self.user_features.shape[1] > 3:  # has zip_code
-                result["user_zip"] = torch.tensor(self.user_features[user_id][3], dtype=torch.long)
-        
+                result["user_zip"] = torch.tensor(
+                    self.user_features[user_id][3], dtype=torch.long
+                )
+
         # Add item features if available
         if self.item_features is not None:
-            result["item_genres"] = torch.tensor(self.item_features[item_id][:19], dtype=torch.float32)  # 19 genres
+            result["item_genres"] = torch.tensor(
+                self.item_features[item_id][:19], dtype=torch.float32
+            )  # 19 genres
             if self.item_features.shape[1] > 19:  # has release_year
-                result["item_year"] = torch.tensor(self.item_features[item_id][19], dtype=torch.long)
-            
+                result["item_year"] = torch.tensor(
+                    self.item_features[item_id][19], dtype=torch.long
+                )
+
         return result
 
 
@@ -127,81 +147,103 @@ def download_movielens(version="100k", data_dir=None):
     return extract_path
 
 
-def load_user_features(version="100k", user_encoder=None, data_dir=None, use_occupation_embedding=False, use_zip_embedding=False):
+def load_user_features(
+    version="100k",
+    user_encoder=None,
+    data_dir=None,
+    use_occupation_embedding=False,
+    use_zip_embedding=False,
+):
     """Load user features (age, gender, occupation) for MovieLens dataset"""
     if version not in ["100k", "1m"]:
         print(f"User features not available for {version}")
         return None
-        
+
     config = DATASET_CONFIGS[version]
     extract_path = download_movielens(version, data_dir)
-    
+
     if version == "100k":
         # Load u.user file: user_id | age | gender | occupation | zip_code
         users_path = extract_path / "u.user"
         users = pl.read_csv(users_path, separator="|", has_header=False)
         users.columns = ["user_id", "age", "gender", "occupation", "zip_code"]
-        
+
         # Encode categorical features
         gender_map = {"M": 0, "F": 1}
-        users = users.with_columns([
-            pl.col("gender").map_elements(lambda x: gender_map.get(x, 0), return_dtype=pl.Int32),
-            pl.col("age").cast(pl.Float32) / 100.0,  # Normalize age
-        ])
-        
+        users = users.with_columns(
+            [
+                pl.col("gender").map_elements(
+                    lambda x: gender_map.get(x, 0), return_dtype=pl.Int32
+                ),
+                pl.col("age").cast(pl.Float32) / 100.0,  # Normalize age
+            ]
+        )
+
         # Handle occupation encoding
         occupation_encoder = LabelEncoder()
-        occupation_encoded = occupation_encoder.fit_transform(users["occupation"].to_numpy())
-        
+        occupation_encoded = occupation_encoder.fit_transform(
+            users["occupation"].to_numpy()
+        )
+
         features = [users["age"].to_numpy(), users["gender"].to_numpy()]
-        
+
         if use_occupation_embedding:
-            features.append(occupation_encoded.reshape(-1, 1))  # Single column for embedding
+            features.append(
+                occupation_encoded.reshape(-1, 1)
+            )  # Single column for embedding
         else:
             # One-hot encode occupation
-            occupation_onehot = np.eye(len(occupation_encoder.classes_))[occupation_encoded]
+            occupation_onehot = np.eye(len(occupation_encoder.classes_))[
+                occupation_encoded
+            ]
             features.append(occupation_onehot)
-            
+
         if use_zip_embedding:
             # Encode zip codes for embedding
             zip_encoder = LabelEncoder()
             zip_encoded = zip_encoder.fit_transform(users["zip_code"].to_numpy())
             features.append(zip_encoded.reshape(-1, 1))
-        
+
         user_features = np.column_stack(features)
-        
+
         # Map to encoded user IDs
         if user_encoder is not None:
-            encoded_features = np.zeros((len(user_encoder.classes_), user_features.shape[1]))
+            encoded_features = np.zeros(
+                (len(user_encoder.classes_), user_features.shape[1])
+            )
             for i, orig_id in enumerate(user_encoder.classes_):
                 if orig_id <= len(user_features):
                     encoded_features[i] = user_features[orig_id - 1]
             return encoded_features
-            
+
     return None
 
 
-def load_item_features(version="100k", item_encoder=None, data_dir=None, use_year_embedding=False):
+def load_item_features(
+    version="100k", item_encoder=None, data_dir=None, use_year_embedding=False
+):
     """Load item features (genres) for MovieLens dataset"""
     if version not in ["100k", "1m"]:
         print(f"Genre features not available for {version}")
         return None
-        
+
     config = DATASET_CONFIGS[version]
     extract_path = download_movielens(version, data_dir)
-    
+
     if version == "100k":
         # Load u.item file
         items_path = extract_path / "u.item"
-        items = pl.read_csv(items_path, separator="|", has_header=False, encoding="latin1")
-        
+        items = pl.read_csv(
+            items_path, separator="|", has_header=False, encoding="latin1"
+        )
+
         features = []
-        
+
         # Extract genre columns (last 19 columns)
         genre_cols = [f"column_{i}" for i in range(6, 25)]
         genres = items.select([pl.col(col) for col in genre_cols]).to_numpy()
         features.append(genres)
-        
+
         if use_year_embedding:
             # Extract release year from date (column_3: release_date)
             release_dates = items.select(pl.col("column_3")).to_numpy().flatten()
@@ -209,24 +251,26 @@ def load_item_features(version="100k", item_encoder=None, data_dir=None, use_yea
             for date_str in release_dates:
                 try:
                     # Parse date format like "01-Jan-1995"
-                    year = int(date_str.split('-')[-1]) if date_str else 1995
+                    year = int(date_str.split("-")[-1]) if date_str else 1995
                     years.append(year - 1900)  # Normalize to start from 0
                 except:
                     years.append(95)  # Default to 1995
             features.append(np.array(years).reshape(-1, 1))
-        
+
         item_features = np.column_stack(features)
-        
+
         # Map original item IDs to encoded IDs
         if item_encoder is not None:
-            encoded_features = np.zeros((len(item_encoder.classes_), item_features.shape[1]))
+            encoded_features = np.zeros(
+                (len(item_encoder.classes_), item_features.shape[1])
+            )
             item_ids = items.select(pl.col("column_1")).to_numpy().flatten()
             for i, orig_id in enumerate(item_encoder.classes_):
                 idx = np.where(item_ids == orig_id)[0]
                 if len(idx) > 0:
                     encoded_features[i] = item_features[idx[0]]
             return encoded_features
-            
+
     return None
 
 
@@ -274,16 +318,29 @@ def load_movielens(version="100k", data_dir=None, min_rating=4.0):
 
 
 def get_dataloaders(
-    version="100k", batch_size=1024, num_negatives=4, val_split=0.1, test_split=0.1, use_features=True
+    version="100k",
+    batch_size=1024,
+    num_negatives=4,
+    val_split=0.1,
+    test_split=0.1,
+    use_features=True,
 ):
     """Get train/val/test dataloaders with negative sampling (80/10/10 split)"""
     interactions, num_users, num_items, user_enc, item_enc = load_movielens(version)
-    
+
     # Load features if requested
     item_features = user_features = None
     if use_features:
-        item_features = load_item_features(version, item_enc, data_dir=None, use_year_embedding=True)
-        user_features = load_user_features(version, user_enc, data_dir=None, use_occupation_embedding=True, use_zip_embedding=True)
+        item_features = load_item_features(
+            version, item_enc, data_dir=None, use_year_embedding=True
+        )
+        user_features = load_user_features(
+            version,
+            user_enc,
+            data_dir=None,
+            use_occupation_embedding=True,
+            use_zip_embedding=True,
+        )
         if item_features is not None:
             print(f"Loaded item features with shape: {item_features.shape}")
         if user_features is not None:
@@ -300,13 +357,28 @@ def get_dataloaders(
 
     # Create datasets
     train_dataset = MovieLensDataset(
-        train_interactions, num_users, num_items, item_features, user_features, num_negatives
+        train_interactions,
+        num_users,
+        num_items,
+        item_features,
+        user_features,
+        num_negatives,
     )
     val_dataset = MovieLensDataset(
-        val_interactions, num_users, num_items, item_features, user_features, num_negatives
+        val_interactions,
+        num_users,
+        num_items,
+        item_features,
+        user_features,
+        num_negatives,
     )
     test_dataset = MovieLensDataset(
-        test_interactions, num_users, num_items, item_features, user_features, num_negatives
+        test_interactions,
+        num_users,
+        num_items,
+        item_features,
+        user_features,
+        num_negatives,
     )
 
     # Create dataloaders
@@ -319,7 +391,9 @@ def get_dataloaders(
 
 if __name__ == "__main__":
     # Test the module
-    train_loader, val_loader, test_loader, num_users, num_items = get_dataloaders(version="100k")
+    train_loader, val_loader, test_loader, num_users, num_items = get_dataloaders(
+        version="100k"
+    )
 
     print(f"Train batches: {len(train_loader)}")
     print(f"Val batches: {len(val_loader)}")
@@ -331,8 +405,8 @@ if __name__ == "__main__":
     print(f"User IDs shape: {batch['user_id'].shape}")
     print(f"Item IDs shape: {batch['item_id'].shape}")
     print(f"Ratings shape: {batch['rating'].shape}")
-    if 'user_features' in batch:
+    if "user_features" in batch:
         print(f"User features shape: {batch['user_features'].shape}")
-    if 'item_features' in batch:
+    if "item_features" in batch:
         print(f"Item features shape: {batch['item_features'].shape}")
     print(f"Sample ratings: {batch['rating'][:10]}")
