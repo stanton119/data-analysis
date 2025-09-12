@@ -1,7 +1,7 @@
 [project]
-name = "refactor"
+name = "recsys"
 version = "0.1.0"
-description = "Add your description here"
+description = "Recommendation system with neural collaborative filtering"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
@@ -9,13 +9,16 @@ dependencies = [
     "polars>=1.22.0",
     "pytorch-lightning>=2.4.0",
     "torch>=2.5.1",
+    "pandas",
+    "numpy",
+    "scikit-learn",
+    "pyyaml",
 ]
 
 [dependency-groups]
 dev = [
     "ipykernel>=6.29.5",
     "pytest>=8.3.4",
-    "refactor",
 ]
 
 [tool.uv]

@@ -8,11 +8,12 @@ import torch.optim as optim
 import torch.nn as nn
 import pytorch_lightning as pyl
 import yaml
-from models import get_model
-from dataloaders import get_dataloaders
+from recsys.models import get_model
+from recsys.movie_lens import get_dataloaders
 from datetime import datetime
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 
 class DefaultLightningModule(pyl.LightningModule):
@@ -20,36 +21,50 @@ class DefaultLightningModule(pyl.LightningModule):
         self,
         model: torch.nn.Module,
         learning_rate: float = 5e-3,
+        loss_function: str = "mse",
     ):
         super().__init__()
         self.model = model
         self.learning_rate = learning_rate
+        
+        loss_functions = {
+            "mse": nn.MSELoss(),
+            "bce": nn.BCEWithLogitsLoss(),
+            "mae": nn.L1Loss(),
+        }
+        self.criterion = loss_functions[loss_function]
         self.save_hyperparameters(ignore=["model"])
 
-    def forward(self, user_ids, movie_ids):
-        return self.model(user_ids, movie_ids)
+    def forward(self, user_ids, item_ids):
+        return self.model(user_ids, item_ids)
 
     def training_step(self, batch, batch_idx):
-        user_ids, movie_ids, ratings = batch
-        predictions = self(user_ids, movie_ids)
-        loss = nn.MSELoss()(predictions, ratings)
+        user_ids = batch["user_id"]
+        item_ids = batch["item_id"]
+        ratings = batch["rating"]
+        predictions = self(user_ids, item_ids)
+        loss = self.criterion(predictions, ratings)
         self.log(
             name="train_loss", value=loss, on_step=True, on_epoch=True, prog_bar=True
         )
         return loss
 
     def validation_step(self, batch, batch_idx):
-        user_ids, movie_ids, ratings = batch
-        predictions = self(user_ids, movie_ids)
-        loss = nn.MSELoss()(predictions, ratings)
+        user_ids = batch["user_id"]
+        item_ids = batch["item_id"]
+        ratings = batch["rating"]
+        predictions = self(user_ids, item_ids)
+        loss = self.criterion(predictions, ratings)
         self.log(
             name="val_loss", value=loss, on_step=True, on_epoch=True, prog_bar=True
         )
 
     def test_step(self, batch, batch_idx):
-        user_ids, movie_ids, ratings = batch
-        predictions = self(user_ids, movie_ids)
-        loss = nn.MSELoss()(predictions, ratings)
+        user_ids = batch["user_id"]
+        item_ids = batch["item_id"]
+        ratings = batch["rating"]
+        predictions = self(user_ids, item_ids)
+        loss = self.criterion(predictions, ratings)
         self.log(
             name="test_loss", value=loss, on_step=True, on_epoch=True, prog_bar=True
         )
@@ -62,14 +77,14 @@ def setup_experiment(experiment_name: str, run_name: str):
     from pytorch_lightning.loggers import MLFlowLogger
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    tracking_path = pathlib.Path(__file__).absolute().parents[1] / "experiments"
+    tracking_path = pathlib.Path(__file__).absolute().parents[2] / "experiments"
     mlflow.set_tracking_uri(tracking_path)
     mlflow.set_experiment(experiment_name)
     mlf_logger = MLFlowLogger(
         experiment_name=experiment_name,
         tracking_uri=str(tracking_path),
         run_name=run_name + "_" + timestamp,
-        log_model=True,
+        # log_model=True,
     )
     return mlf_logger
 
@@ -78,7 +93,10 @@ def get_callbacks():
     from pytorch_lightning.callbacks import Callback, EarlyStopping, ModelCheckpoint
 
     checkpoint_callback = ModelCheckpoint(
-        dirpath="checkpoints", save_top_k=1, monitor="val_loss"
+        dirpath="checkpoints",
+        save_top_k=1,
+        monitor="val_loss",
+        # filename="best_model",
     )
 
     class LayerwiseGradientNormLogger(Callback):
@@ -131,44 +149,45 @@ def train(model, train_loader, eval_loader, mlf_logger, callbacks, training_para
     )
     trainer.fit(model, train_loader, eval_loader)
 
-    return trainer.test(model, eval_loader)
+    return trainer
 
 
-def main(args):
-    # Load configuration from YAML file
-    with open(args.config, "r") as f:
-        config = yaml.safe_load(f)
+def main(config):
     logger.info(f"Configuration: {config}")
 
     mlf_logger = setup_experiment(**config["logging"])
 
-    # Load model dynamically
+    # Prepare dataset first to get num_users and num_items
+    logger.info(f"Loading dataset: {config['dataset']}")
+    train_loader, test_loader, num_users, num_items = get_dataloaders(
+        **config["dataset"]
+    )
+
+    # Load model dynamically with dataset info
     logger.info(f"Loading model: {config['model']['architecture']}")
-    model = get_model(**config["model"])
+    model_config = config["model"].copy()
+    model_config["num_users"] = num_users
+    model_config["num_items"] = num_items
+    model = get_model(**model_config)
     lightning_model = DefaultLightningModule(
-        model=model, learning_rate=config["training"].get("learning_rate", 5e-3)
+        model=model, 
+        learning_rate=config["training"].get("learning_rate", 5e-3),
+        loss_function=config["training"].get("loss_function", "mse")
     )
     callbacks = get_callbacks()
 
-    # Prepare dataset
-    logger.info(f"Loading dataset: {config['dataset']['name']}")
-    train_loader, eval_loader = get_dataloaders(**config["dataset"])
-
-    loss = train(
+    trainer = train(
         model=lightning_model,
         train_loader=train_loader,
-        eval_loader=eval_loader,
+        eval_loader=test_loader,
         mlf_logger=mlf_logger,
         callbacks=callbacks,
         training_params=config["training"],
     )
 
     with mlflow.start_run(run_id=mlf_logger.run_id):
-        model_info = mlflow.pytorch.log_model(model, "model", code_paths=["src"])
-        # model_info = mlflow.pytorch.log_model(model, "model2", code_paths=["models"])
-        print(model_info.model_uri)
-        print(model_info)
-        mlflow.pytorch.log_model(lightning_model, "lightning_model")
+        mlflow.log_artifact(trainer.checkpoint_callback.best_model_path, "checkpoints")
+        mlflow.log_dict(config, "config.yaml")
         mlflow.log_params(config)
 
 
@@ -183,4 +202,8 @@ if __name__ == "__main__":
     )
 
     args = parser.parse_args()
-    main(args)
+
+    with open(args.config, "r") as f:
+        config = yaml.safe_load(f)
+
+    main(config)

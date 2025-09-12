@@ -1,0 +1,19 @@
+dataset:
+  version: "100k"
+  batch_size: 1024
+
+model:
+  architecture: "NeuMF"
+  mf_dim: 8
+  mlp_dim: 32
+  layers: [64, 32, 16]
+  include_bias: true
+
+training:
+  epochs: 50
+  learning_rate: 0.001
+  loss_function: "bce"
+
+logging:
+  experiment_name: "movielens_rating_prediction"
+  run_name: "neumf"

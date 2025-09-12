@@ -1,0 +1,19 @@
+dataset:
+  version: "100k"
+  batch_size: 1024
+
+model:
+  architecture: "WideAndDeep"
+  embedding_dim: 64
+  deep_layers: [512, 256, 128]
+  dropout: 0.2
+  include_bias: true
+
+training:
+  epochs: 50
+  learning_rate: 0.001
+  loss_function: "bce"
+
+logging:
+  experiment_name: "movielens_rating_prediction"
+  run_name: "wide_and_deep"

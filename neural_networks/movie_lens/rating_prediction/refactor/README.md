@@ -1,26 +1,32 @@
 # ml-project/ml-project/README.md
 
-# ML Project
+# Recsys
 
-This project is a machine learning framework that integrates MLflow for tracking experiments and managing models. It includes various components for data processing, model training, evaluation, and exploratory data analysis.
+This project is a recommendation system using neural collaborative filtering with MLflow for experiment tracking.
+
+## Dataset Processing
+
+The MovieLens dataset is processed as follows:
+1. **Binary conversion**: Ratings ≥4.0 become positive (1), others negative (0)
+2. **Negative sampling**: For each positive interaction, generates 4 random negative samples (items user hasn't interacted with)
+3. **Label encoding**: Users and items are encoded to sequential integers starting from 0
+4. **Train/test split**: 80/20 split with shuffling
+
+This creates a balanced binary classification problem for implicit feedback recommendation.
+
+## Usage
+```bash
+uv run python src/recsys/train.py --config configs/nn_colab_filter_non_linear.yaml
+```
 
 Run MLFlow UI as:
-```
+```bash
 uv run mlflow ui --backend-store-uri experiments
 ```
 
 To clear deleted runs:
-```
-uv run mlflow gc
-```
-
-```
-export UV_PROJECT_ENVIRONMENT=/Users/rich/Developer/Github/VariousDataAnalysis/neural_networks/movie_lens/rating_prediction/refactor/.venv
-```
-
-## Usage
 ```bash
-uv run python src/train.py --config configs/nn_colab_filter_non_linear.yaml
+uv run mlflow gc
 ```
 
 ## Insights summary
@@ -32,6 +38,12 @@ uv run python src/train.py --config configs/nn_colab_filter_non_linear.yaml
    1. use lack of rating as a negative event - people dont watch movies by random, they select ones they are interested in
    2. positive rating = 1, low rating or no rating = 0
    3. balance negative samples against positive
+2. Models
+   1. RQ-VAE
+   2. Diffusion based recsys
+   3. Deep and cross
+   4. Wide and deep
+3. Update readme project structure
 
 Resources:
 1. https://developers.google.com/machine-learning/recommendation/dnn/softmax

@@ -1,0 +1,19 @@
+dataset:
+  version: "100k"
+  batch_size: 512
+
+model:
+  architecture: "MultVAE"
+  hidden_dim: 600
+  latent_dim: 200
+  dropout: 0.5
+  include_bias: true
+
+training:
+  epochs: 100
+  learning_rate: 0.001
+  loss_function: "bce"
+
+logging:
+  experiment_name: "movielens_rating_prediction"
+  run_name: "mult_vae"
