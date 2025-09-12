@@ -8,6 +8,7 @@ rating = user_embedding · item_embedding + user_bias + item_bias
 
 Uses sigmoid activation for binary classification (implicit feedback).
 """
+
 import torch
 import torch.nn as nn
 
@@ -24,7 +25,7 @@ class Model(torch.nn.Module):
         super().__init__()
         self.user_embedding = nn.Embedding(num_users, embedding_dim)
         self.item_embedding = nn.Embedding(num_items, embedding_dim)
-        
+
         # Bias terms
         self.user_bias = nn.Embedding(num_users, 1) if include_bias else None
         self.item_bias = nn.Embedding(num_items, 1) if include_bias else None

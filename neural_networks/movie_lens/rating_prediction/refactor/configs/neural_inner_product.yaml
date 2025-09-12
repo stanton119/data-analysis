@@ -1,21 +1,17 @@
 dataset:
   version: "100k"
-  batch_size: 4096
-  test_split: 0.2
-  num_negatives: 4
+  batch_size: 1024
 
 model:
   architecture: "NeuralInnerProduct"
   embedding_dim: 10
-  num_users: 943
-  num_items: 1682
   include_bias: true
 
 training:
-  epochs: 40
-  learning_rate: 0.001
-  loss_function: "mse"
+  epochs: 100
+  learning_rate: 0.005
+  loss_function: "bce"
 
 logging:
   experiment_name: "movielens_rating_prediction"
-  run_name: "nn_inner_product"
+  run_name: "neural_inner_product"

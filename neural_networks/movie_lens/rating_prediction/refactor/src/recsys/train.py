@@ -26,7 +26,7 @@ class DefaultLightningModule(pyl.LightningModule):
         super().__init__()
         self.model = model
         self.learning_rate = learning_rate
-        
+
         loss_functions = {
             "mse": nn.MSELoss(),
             "bce": nn.BCEWithLogitsLoss(),
@@ -140,14 +140,14 @@ def get_callbacks():
     return callbacks
 
 
-def train(model, train_loader, eval_loader, mlf_logger, callbacks, training_params):
+def train(model, train_loader, val_loader, mlf_logger, callbacks, training_params):
     trainer = pyl.Trainer(
         max_epochs=training_params.get("epochs", 10),
         logger=mlf_logger,
         log_every_n_steps=1,
         callbacks=callbacks,
     )
-    trainer.fit(model, train_loader, eval_loader)
+    trainer.fit(model, train_loader, val_loader)
 
     return trainer
 
@@ -159,7 +159,7 @@ def main(config):
 
     # Prepare dataset first to get num_users and num_items
     logger.info(f"Loading dataset: {config['dataset']}")
-    train_loader, test_loader, num_users, num_items = get_dataloaders(
+    train_loader, val_loader, test_loader, num_users, num_items = get_dataloaders(
         **config["dataset"]
     )
 
@@ -170,16 +170,16 @@ def main(config):
     model_config["num_items"] = num_items
     model = get_model(**model_config)
     lightning_model = DefaultLightningModule(
-        model=model, 
+        model=model,
         learning_rate=config["training"].get("learning_rate", 5e-3),
-        loss_function=config["training"].get("loss_function", "mse")
+        loss_function=config["training"].get("loss_function", "mse"),
     )
     callbacks = get_callbacks()
 
     trainer = train(
         model=lightning_model,
         train_loader=train_loader,
-        eval_loader=test_loader,
+        val_loader=val_loader,
         mlf_logger=mlf_logger,
         callbacks=callbacks,
         training_params=config["training"],

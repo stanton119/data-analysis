@@ -1,0 +1,17 @@
+dataset:
+  version: "100k"
+  batch_size: 1024
+
+model:
+  architecture: "FactorizationMachines"
+  embedding_dim: 10
+  include_bias: true
+
+training:
+  epochs: 100
+  learning_rate: 0.005
+  loss_function: "bce"
+
+logging:
+  experiment_name: "movielens_rating_prediction"
+  run_name: "factorization_machines"

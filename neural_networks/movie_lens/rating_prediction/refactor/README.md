@@ -31,6 +31,10 @@ uv run mlflow gc
 
 ## Insights summary
 1. Need intercept on customers and items to control for bias.
+2. Movie Lens 100k
+   1. Inner product models perform well. This is a small dataset and is expected.
+   2. We dont have any side features to take advantage of here, so pure colab filtering is the only option.
+   3. We havent tuned embedding sizes.
 
 ## Todo
 

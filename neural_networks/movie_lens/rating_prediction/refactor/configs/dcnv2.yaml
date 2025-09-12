@@ -3,11 +3,11 @@ dataset:
   batch_size: 1024
 
 model:
-  architecture: "NeuMF"
-  mf_dim: 8
-  mlp_dim: 32
-  layers: [64, 32, 16]
-  include_bias: true
+  architecture: "DCNV2"
+  embedding_dim: 64
+  cross_layers: 3
+  deep_layers: [512, 256, 128]
+  dropout: 0.2
 
 training:
   epochs: 50
@@ -16,4 +16,4 @@ training:
 
 logging:
   experiment_name: "movielens_rating_prediction"
-  run_name: "neumf"
+  run_name: "dcnv2"

@@ -2,16 +2,15 @@ import importlib
 import pytorch_lightning as pyl
 
 MODEL_REGISTRY = {
-    "NeuralColabFilterSigmoid": "recsys.models.neural_colab_filter_sigmoid",
-    "NeuralColabFilter": "recsys.models.neural_colab_filter",
-    "NeuralColabFilterNonLinear": "recsys.models.neural_colab_filter_non_linear",
     "NeuralInnerProduct": "recsys.models.neural_inner_product",
-    "NeuMF": "recsys.models.neumf",
+    "NeuralColabFilter": "recsys.models.neural_colab_filter",
     "MultVAE": "recsys.models.mult_vae",
     "DCN": "recsys.models.dcn",
+    "DCNV2": "recsys.models.dcnv2",
     "LightGCN": "recsys.models.lightgcn",
     "WideAndDeep": "recsys.models.wide_and_deep",
     "AutoInt": "recsys.models.autoint",
+    "FactorizationMachines": "recsys.models.factorization_machines",
 }
 
 

@@ -1,37 +1,29 @@
 """
-Deep & Cross Network for Ad Click Predictions - 2017
-https://arxiv.org/abs/1708.05123
+DCN V2: Improved Deep & Cross Network and Practical Lessons for Web-scale Learning to Rank Systems - 2020
+https://arxiv.org/abs/2008.13535
 
-Linear weighting of cross and deep networks.
+V1 had the limitation that in cross networks the weights were a vector.
+As such we had a scalar weighting multiplied by the input features.
+Making this a matrix allows multiple interactions per layer and is more efficient.
 
-Cross network - models interactions through multiplying by input layer at each stage
-1. Concat user/item embeddings to give the layer input features
-1. linear weights applied to the input features to give a scalar
-2. multiply that scalar by the input features again to give an interaction effect
-1. x_{l+1} = x_0 ⊙ (w_l^T * x_l + b_l) + x_l
-3. Each cross layer adds one degree of polynomial interaction
-4. E.g. weights = [1, 0, 0] -> x0*x0 = x0^2
-
-Deep network - learns deep non-linear relationships
-1. Concat user/item embeddings
-2. MLP
+The deep network is the same as before.
 """
 
 import torch
 import torch.nn as nn
 
 
-class CrossLayer(nn.Module):
+class CrossLayerV2(nn.Module):
     def __init__(self, input_dim):
         super().__init__()
-        self.weight = nn.Parameter(torch.randn(input_dim))
+        self.weight = nn.Parameter(torch.randn(input_dim, input_dim))
         self.bias = nn.Parameter(torch.zeros(input_dim))
 
     def forward(self, x0, xl):
-        return x0 * (torch.sum(xl * self.weight, dim=1, keepdim=True) + self.bias) + xl
+        return x0 * (xl @ self.weight + self.bias) + xl
 
 
-class DCN(nn.Module):
+class DCNV2(nn.Module):
     def __init__(
         self,
         num_users,
@@ -48,9 +40,9 @@ class DCN(nn.Module):
 
         input_dim = embedding_dim * 2
 
-        # Cross Network
+        # Cross Network V2
         self.cross_layers = nn.ModuleList(
-            [CrossLayer(input_dim) for _ in range(cross_layers)]
+            [CrossLayerV2(input_dim) for _ in range(cross_layers)]
         )
 
         # Deep Network
@@ -75,7 +67,7 @@ class DCN(nn.Module):
 
         x0 = torch.cat([user_embed, item_embed], dim=1)
 
-        # Cross Network
+        # Cross Network V2
         xl = x0
         for cross_layer in self.cross_layers:
             xl = cross_layer(x0, xl)
@@ -88,4 +80,4 @@ class DCN(nn.Module):
         return self.output(combined)
 
 
-Model = DCN
+Model = DCNV2

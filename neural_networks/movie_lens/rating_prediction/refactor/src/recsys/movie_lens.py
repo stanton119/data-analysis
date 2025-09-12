@@ -142,11 +142,10 @@ def load_movielens(version="100k", data_dir=None, min_rating=4.0):
 
     user_ids = user_encoder.fit_transform(positive_ratings["user_id"].to_numpy())
     item_ids = item_encoder.fit_transform(positive_ratings["item_id"].to_numpy())
-    
-    positive_ratings = positive_ratings.with_columns([
-        pl.Series("user_id", user_ids),
-        pl.Series("item_id", item_ids)
-    ])
+
+    positive_ratings = positive_ratings.with_columns(
+        [pl.Series("user_id", user_ids), pl.Series("item_id", item_ids)]
+    )
 
     num_users = len(user_encoder.classes_)
     num_items = len(item_encoder.classes_)
@@ -157,20 +156,27 @@ def load_movielens(version="100k", data_dir=None, min_rating=4.0):
     return positive_ratings, num_users, num_items, user_encoder, item_encoder
 
 
-def get_dataloaders(version="100k", batch_size=1024, num_negatives=4, test_split=0.2):
-    """Get train/test dataloaders with negative sampling"""
+def get_dataloaders(
+    version="100k", batch_size=1024, num_negatives=4, val_split=0.1, test_split=0.1
+):
+    """Get train/val/test dataloaders with negative sampling (80/10/10 split)"""
     interactions, num_users, num_items, user_enc, item_enc = load_movielens(version)
 
-    # Train/test split
-    interactions = interactions.sample(fraction=1, shuffle=True)  # Shuffle
-    split_idx = int(len(interactions) * (1 - test_split))
+    # Train/val/test split (80/10/10)
+    interactions = interactions.sample(fraction=1, seed=42)
+    val_idx = int(len(interactions) * (1 - val_split - test_split))
+    test_idx = int(len(interactions) * (1 - test_split))
 
-    train_interactions = interactions[:split_idx]
-    test_interactions = interactions[split_idx:]
+    train_interactions = interactions[:val_idx]
+    val_interactions = interactions[val_idx:test_idx]
+    test_interactions = interactions[test_idx:]
 
     # Create datasets
     train_dataset = MovieLensDataset(
         train_interactions, num_users, num_items, num_negatives
+    )
+    val_dataset = MovieLensDataset(
+        val_interactions, num_users, num_items, num_negatives
     )
     test_dataset = MovieLensDataset(
         test_interactions, num_users, num_items, num_negatives
@@ -178,9 +184,10 @@ def get_dataloaders(version="100k", batch_size=1024, num_negatives=4, test_split
 
     # Create dataloaders
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
-    return train_loader, test_loader, num_users, num_items
+    return train_loader, val_loader, test_loader, num_users, num_items
 
 
 if __name__ == "__main__":
