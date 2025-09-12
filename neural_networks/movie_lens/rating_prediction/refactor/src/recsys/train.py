@@ -8,6 +8,7 @@ import torch.optim as optim
 import torch.nn as nn
 import pytorch_lightning as pyl
 import yaml
+from torchmetrics import AUROC, AveragePrecision
 from recsys.models import get_model
 from recsys.movie_lens import get_dataloaders
 from datetime import datetime
@@ -33,6 +34,17 @@ class DefaultLightningModule(pyl.LightningModule):
             "mae": nn.L1Loss(),
         }
         self.criterion = loss_functions[loss_function]
+        
+        # Initialize metrics for binary classification
+        # Separate instances needed because torchmetrics are stateful and accumulate across batches
+        self.train_auc = AUROC(task="binary")
+        self.val_auc = AUROC(task="binary")
+        self.test_auc = AUROC(task="binary")
+        
+        self.train_pr_auc = AveragePrecision(task="binary")
+        self.val_pr_auc = AveragePrecision(task="binary")
+        self.test_pr_auc = AveragePrecision(task="binary")
+        
         self.save_hyperparameters(ignore=["model"])
 
     def forward(self, user_ids, item_ids):
@@ -44,9 +56,15 @@ class DefaultLightningModule(pyl.LightningModule):
         ratings = batch["rating"]
         predictions = self(user_ids, item_ids)
         loss = self.criterion(predictions, ratings.unsqueeze(1))
-        self.log(
-            name="train_loss", value=loss, on_step=True, on_epoch=True, prog_bar=True
-        )
+        
+        # Compute metrics for binary classification
+        probs = torch.sigmoid(predictions.squeeze())
+        self.train_auc(probs, ratings.int())
+        self.train_pr_auc(probs, ratings.int())
+        
+        self.log("train_loss", loss, on_step=True, on_epoch=True, prog_bar=True)
+        self.log("train_auc", self.train_auc, on_step=False, on_epoch=True)
+        self.log("train_pr_auc", self.train_pr_auc, on_step=False, on_epoch=True)
         return loss
 
     def validation_step(self, batch, batch_idx):
@@ -55,9 +73,15 @@ class DefaultLightningModule(pyl.LightningModule):
         ratings = batch["rating"]
         predictions = self(user_ids, item_ids)
         loss = self.criterion(predictions, ratings.unsqueeze(1))
-        self.log(
-            name="val_loss", value=loss, on_step=True, on_epoch=True, prog_bar=True
-        )
+        
+        # Compute metrics for binary classification
+        probs = torch.sigmoid(predictions.squeeze())
+        self.val_auc(probs, ratings.int())
+        self.val_pr_auc(probs, ratings.int())
+        
+        self.log("val_loss", loss, on_step=True, on_epoch=True, prog_bar=True)
+        self.log("val_auc", self.val_auc, on_step=False, on_epoch=True)
+        self.log("val_pr_auc", self.val_pr_auc, on_step=False, on_epoch=True)
 
     def test_step(self, batch, batch_idx):
         user_ids = batch["user_id"]
@@ -65,9 +89,15 @@ class DefaultLightningModule(pyl.LightningModule):
         ratings = batch["rating"]
         predictions = self(user_ids, item_ids)
         loss = self.criterion(predictions, ratings.unsqueeze(1))
-        self.log(
-            name="test_loss", value=loss, on_step=True, on_epoch=True, prog_bar=True
-        )
+        
+        # Compute metrics for binary classification
+        probs = torch.sigmoid(predictions.squeeze())
+        self.test_auc(probs, ratings.int())
+        self.test_pr_auc(probs, ratings.int())
+        
+        self.log("test_loss", loss, on_step=True, on_epoch=True, prog_bar=True)
+        self.log("test_auc", self.test_auc, on_step=False, on_epoch=True)
+        self.log("test_pr_auc", self.test_pr_auc, on_step=False, on_epoch=True)
 
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters(), lr=self.learning_rate)
