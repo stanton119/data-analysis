@@ -1,4 +1,13 @@
-import pytorch_lightning as pyl
+"""
+Matrix Factorization for Collaborative Filtering
+Classic approach that decomposes the user-item interaction matrix into 
+low-dimensional user and item embeddings.
+
+Predicts ratings as the inner product of user and item embeddings plus bias terms:
+rating = user_embedding · item_embedding + user_bias + item_bias
+
+Uses sigmoid activation for binary classification (implicit feedback).
+"""
 import torch
 import torch.nn as nn
 
@@ -15,12 +24,10 @@ class Model(torch.nn.Module):
         super().__init__()
         self.user_embedding = nn.Embedding(num_users, embedding_dim)
         self.item_embedding = nn.Embedding(num_items, embedding_dim)
-        self.user_biases = nn.Embedding(num_users, 1)
-        self.item_biases = nn.Embedding(num_items, 1)
-        self.include_bias = include_bias
-
-        self.max_rating = 5.0
-        self.min_rating = 0.5
+        
+        # Bias terms
+        self.user_bias = nn.Embedding(num_users, 1) if include_bias else None
+        self.item_bias = nn.Embedding(num_items, 1) if include_bias else None
 
     def forward(self, user_ids, item_ids):
         user_embeds = self.user_embedding(user_ids)
@@ -28,12 +35,10 @@ class Model(torch.nn.Module):
 
         dot_product = torch.sum(user_embeds * item_embeds, dim=1, keepdim=True)
 
-        if self.include_bias:
-            user_bias = self.user_biases(user_ids)
-            item_bias = self.item_biases(item_ids)
-            prediction = dot_product + user_bias + item_bias
-        else:
-            prediction = dot_product
+        # Add bias terms
+        if self.user_bias is not None:
+            dot_product += self.user_bias(user_ids)
+        if self.item_bias is not None:
+            dot_product += self.item_bias(item_ids)
 
-        prediction = torch.clamp(prediction, min=self.min_rating, max=self.max_rating)
-        return prediction
+        return dot_product

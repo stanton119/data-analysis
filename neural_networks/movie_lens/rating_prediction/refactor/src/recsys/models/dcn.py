@@ -61,4 +61,4 @@ class Model(torch.nn.Module):
         
         # Combine cross and deep
         combined = torch.cat([xl, deep_out], dim=1)
-        return torch.sigmoid(self.output(combined))
+        return self.output(combined)

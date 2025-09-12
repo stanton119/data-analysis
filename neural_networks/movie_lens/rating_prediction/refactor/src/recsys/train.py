@@ -43,7 +43,7 @@ class DefaultLightningModule(pyl.LightningModule):
         item_ids = batch["item_id"]
         ratings = batch["rating"]
         predictions = self(user_ids, item_ids)
-        loss = self.criterion(predictions, ratings)
+        loss = self.criterion(predictions, ratings.unsqueeze(1))
         self.log(
             name="train_loss", value=loss, on_step=True, on_epoch=True, prog_bar=True
         )
@@ -54,7 +54,7 @@ class DefaultLightningModule(pyl.LightningModule):
         item_ids = batch["item_id"]
         ratings = batch["rating"]
         predictions = self(user_ids, item_ids)
-        loss = self.criterion(predictions, ratings)
+        loss = self.criterion(predictions, ratings.unsqueeze(1))
         self.log(
             name="val_loss", value=loss, on_step=True, on_epoch=True, prog_bar=True
         )
@@ -64,7 +64,7 @@ class DefaultLightningModule(pyl.LightningModule):
         item_ids = batch["item_id"]
         ratings = batch["rating"]
         predictions = self(user_ids, item_ids)
-        loss = self.criterion(predictions, ratings)
+        loss = self.criterion(predictions, ratings.unsqueeze(1))
         self.log(
             name="test_loss", value=loss, on_step=True, on_epoch=True, prog_bar=True
         )

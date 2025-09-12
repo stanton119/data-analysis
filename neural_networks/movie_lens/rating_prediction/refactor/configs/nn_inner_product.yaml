@@ -9,6 +9,7 @@ model:
   embedding_dim: 10
   num_users: 943
   num_items: 1682
+  include_bias: true
 
 training:
   epochs: 40

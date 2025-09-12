@@ -1,3 +1,17 @@
+"""
+Neural Collaborative Filtering - 2017
+https://arxiv.org/abs/1708.05031
+
+Combines traditional matrix factorization with neural networks to learn
+non-linear user-item interactions. Uses embeddings for users and items
+that are processed through a multi-layer perceptron to predict ratings.
+
+The NCF framework includes three instantiations:
+1. Generalized Matrix Factorization (GMF) - Element-wise product of user and item embeddings (linear interactions)
+2. Multi-Layer Perceptron (MLP) - Concatenated embeddings passed through deep layers (non-linear interactions)
+3. Neural Matrix Factorization (NeuMF) - which combines GMF and MLP
+
+"""
 import torch
 import torch.nn as nn
 
@@ -62,4 +76,4 @@ class Model(torch.nn.Module):
         if self.item_bias is not None:
             output += self.item_bias(item_ids)
             
-        return torch.sigmoid(output)
+        return output

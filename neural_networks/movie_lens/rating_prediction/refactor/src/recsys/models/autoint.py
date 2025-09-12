@@ -75,4 +75,4 @@ class Model(torch.nn.Module):
         
         # Flatten and output
         x = x.view(x.size(0), -1)
-        return torch.sigmoid(self.output(x))
+        return self.output(x)

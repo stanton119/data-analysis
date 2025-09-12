@@ -55,7 +55,7 @@ class Model(torch.nn.Module):
         if edge_index is None:
             user_embed = self.user_embedding(user_ids)
             item_embed = self.item_embedding(item_ids)
-            return torch.sigmoid(torch.sum(user_embed * item_embed, dim=1, keepdim=True))
+            return torch.sum(user_embed * item_embed, dim=1, keepdim=True)
         
         # Full graph convolution
         all_embeddings = torch.cat([self.user_embedding.weight, self.item_embedding.weight])
@@ -74,4 +74,4 @@ class Model(torch.nn.Module):
         user_embed = user_embeddings[user_ids]
         item_embed = item_embeddings[item_ids]
         
-        return torch.sigmoid(torch.sum(user_embed * item_embed, dim=1, keepdim=True))
+        return torch.sum(user_embed * item_embed, dim=1, keepdim=True)
