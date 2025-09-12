@@ -5,6 +5,7 @@ MODEL_REGISTRY = {
     "NeuralInnerProduct": "recsys.models.neural_inner_product",
     "NeuralColabFilter": "recsys.models.neural_colab_filter",
     "MultVAE": "recsys.models.mult_vae",
+    "RQVAE": "recsys.models.rq_vae",
     "DCN": "recsys.models.dcn",
     "DCNV2": "recsys.models.dcnv2",
     "LightGCN": "recsys.models.lightgcn",

@@ -45,9 +45,6 @@ uv run mlflow gc
 2. Models
    1. RQ-VAE
    2. Diffusion based recsys
-   3. Deep and cross
-   4. Wide and deep
-   5. Factorisation machines
 3. Update readme project structure
 
 Resources:
