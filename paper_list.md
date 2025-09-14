@@ -333,3 +333,14 @@ Read 2025/09
   * For classification problems they produce gaussians to represent class logits, then use the standard deviations to produce an 'uncertainty weighting' which acts like temperature in a softmax to produce more uniform class probabilites (extended probit approximation)
 * Thoughts
   * sgd already does some regularisation - for out of distribution points with a small batch size we have high regularisation, adding regularisation against to estimate variance, would this underestimate true variance
+
+### Better Generalization With Semantic IDs: A Case Study In Ranking For Recommendations [2024]
+https://arxiv.org/pdf/2306.08121
+Read 2025/09
+* Summary
+  * Residual quantisation variational autoencoder - RQ-VAE
+  * Take an embedding, push through auto encoder
+  * In the latent space we iteratively quantise it
+  * Cluster them, then within each cluster, cluster again
+  * Similar to hierarchical clustering on embeddings, but RQ-VAE can be applied to new items without refitting
+  * Iteratively makes quantised representation
