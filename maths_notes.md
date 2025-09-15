@@ -113,6 +113,20 @@ In Bayes rule, P(x|θ), the observed evidence is considered fixed, so this is a 
 Epistemic - reduces with more data rows (same features).
 Aleatoric - given infinity data rows, the remaining irreducible uncertainty.
 
-## Bandits
+## Reinforcement learning
+1. Policy - selects action given state: π(a|s)
+1. Value - a state can be associated with a value, e.g. the average long term reward from being in a state.
+   1. V(s) = E[R₁ + γR₂ + γ²R₃ + ... | S₀ = s]
+   2. Q(s,a) = E[R₁ + γR₂ + γ²R₃ + ... | S₀ = s, A₀ = a]
+
+2. Q learning - estimates Q as the expected reward over the next N states given action choice of a (long term reward)
+3. Policy gradient approaches
+
+### Bandits
+1. Bandits are single step RL. The value and policy models are tightly coupled.
 
 We explore over epistemic uncertainty, not aleatoric. For example fitting a beta distribution, the variance shrinks with new data - thus reducing epistemic uncertainty and reducing exploration.
+
+## Attention
+
+Attention in NNs is a way to aggregate over a list, where the aggregation weights are defined based on the data itself. The difference to convolution/mean/weighted sum based approaches (which can also aggregate a list) - is that in convolution etc. we learn the aggregation weights, whereas in attention the weights are a function of the data and we learn that function.
