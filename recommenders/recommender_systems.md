@@ -1,5 +1,11 @@
 # Recommender systems
 
+## Literature reviews
+1. Conferences
+   1. Recsys, SIGIR
+
+
+## Notes
 *   Collaborative filtering
     *   Filter items to predict user preference
     *   Based on information from other users
@@ -87,6 +93,36 @@
             *   https://arxiv.org/abs/1901.00450
             *   Ferraro, 2019
 
+### Thoughts
+1. When ranking millions of items we use
+   1. a candidate selection model to fast filter items down to a 100 or so
+      1. Inner product based is common for scalability and speed. Aims to have high recall to capture anything that is relevant to the user.
+   2. a ranker which runs more detailed scoring
+      1. Aims to have high precision to focus on high quality items.
+2. Recommender systems vs bandits?
+   1. Any recommender system becomes a bandit by introducing exploration
+   2. This could be by adding an uncertainty layer and then sample from it. Or just an epsilon greedy or UCB heuristic approach.
+3. 2025 themes
+   1. Long sequences
+      1. How long do sequences have to be to be a problem at current?
+      2. Long in terms of time or number of items?
+      3. What if users have limited sequence lengths?
+   2. LLM augmentation
+      1. Features that come from LLMs
+   3. Diffusion models
+      1. To model user/item interaction matrix with diffusion.
+   4. Semantic IDs
+      1. Instead of items having random ordinal IDs, use a hieracrchical ID setup
+   5. Generative models
+4. Propensity scores
+   1. Needed for accurate OPE
+   2. Not required for training models
+
+## Main concepts
+1.  Implicit vs explicit feedback
+    1.  Explicit = users giving direct ratings/feedback/relevance labels on an item. Harder to gather, less biased.
+    2.  Implicit = assumed relevance from user actions like clicks/purchases etc. to inform positive relevance. Assumes non acted items are negatives/non-positives. Easier to gather data, adds bias.
+
 ## Bandit models
 *   Multi armed bandits
     *   https://www.youtube.com/watch?v=e3L4VocZnnQ&list=WL&index=22
@@ -146,3 +182,31 @@
 *   Datasets
     *   https://grouplens.org/datasets/movielens/25m/
     *   https://research.atspotify.com/datasets/
+*   
+
+## Colaborative filters
+Data format is typically taken in the format of user/item interactions:
+```
+User ID	Item ID	Time
+User 1	Item 1	2015/06/20T10:00:00
+User 1	Item 1	2015/06/28T11:00:00
+User 1	Item 2	2015/08/28T11:01:00
+User 1	Item 2	2015/08/28T12:00:01
+```
+
+1.  Singular value decomposition SVD
+    1.  Given a user/item rating matrix (R), decompose in to U and V. Where U/V are user/item latent embeddings of dimension L. L << R.
+    2.  U/V dimensions are orthogonal.
+2.  Neural colab filters
+    1.  Combines two avenues which are concatenated and projected to a scalar:
+        1.  Inner product of user and item embeddings and
+        2.  Given user and item embeddings, concatenate them and push through an MLP
+3.  SAR - Smart Adaptive Recommendations
+    1.  Based on implicit feedback
+    2.  https://github.com/Microsoft/Product-Recommendations/blob/master/doc/sar.md
+4.  DCN - deep and cross network (+v2)
+    1.  Cross network - explicit feature interactions from cross multiplications
+        1.  Features are multiplied by weight matrices that are multipled by the features again
+        2.  Weight matrices are decomposed into e.g U/V matrices for efficiency
+    2.  Deep network - typical MLP
+5.  
