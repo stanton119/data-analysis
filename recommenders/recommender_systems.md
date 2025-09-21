@@ -102,6 +102,17 @@
 2. Recommender systems vs bandits?
    1. Any recommender system becomes a bandit by introducing exploration
    2. This could be by adding an uncertainty layer and then sample from it. Or just an epsilon greedy or UCB heuristic approach.
+   3. Bandits are used to explore around epistemic uncertainty
+      1. Epistemic uncertainty relates to areas in the data space which are unexplored
+      2. Bandits select actions with higher epistemic uncertainty
+      3. Epsilon greedy uniformly collects data, regardless of where epistemic uncertainty is high. Thompson sampling samples from the action reward posterior distributions which optimises rewards in the presence of epistemic uncertainty.
+   4. Recommender systems typically train on very large datasets where we assume epistemic uncertainty is lower
+      1. However many systems have long tailed item distributions, cold start issues etc., meaning exploration is still necessary
+   5. Propensity scores
+      1. Needed for accurate OPE
+      2. Not always required for training models - if confounding features (those that relate to the selection bias) are present, then no need for inverse propensity scoring (direct modelling causal approach)
+      3. Recommender systems typically dont explore to create accurate propensities. Therefore they are evaluated with NCDG/precision/recall
+      4. Well defined exploration strategies enable accurate OPE which would be preferred if possible.
 3. 2025 themes
    1. Long sequences
       1. How long do sequences have to be to be a problem at current?
@@ -114,9 +125,6 @@
    4. Semantic IDs
       1. Instead of items having random ordinal IDs, use a hieracrchical ID setup
    5. Generative models
-4. Propensity scores
-   1. Needed for accurate OPE
-   2. Not required for training models
 
 ## Main concepts
 1.  Implicit vs explicit feedback
