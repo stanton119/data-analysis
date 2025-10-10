@@ -45,6 +45,7 @@ uv run mlflow gc
 2. Models
    1. RQ-VAE
    2. Diffusion based recsys
+   3. DLRM - Deep Learning Recommendation Model for Personalization and Recommendation Systems - https://arxiv.org/abs/1906.00091
 3. Update readme project structure
 
 Resources:
