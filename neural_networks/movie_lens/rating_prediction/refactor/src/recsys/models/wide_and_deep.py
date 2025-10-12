@@ -68,7 +68,7 @@ class Model(nn.Module):
     def forward(self, batch):
         user_ids = batch["user_id"]
         item_ids = batch["item_id"]
-        
+
         # Wide component
         user_wide = self.user_wide(user_ids)
         item_wide = self.item_wide(item_ids)

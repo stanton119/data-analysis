@@ -202,7 +202,7 @@ def main(config):
     if item_feature_dims:
         model_config["item_continuous_dim"] = item_feature_dims["continuous_dim"]
         model_config["item_categorical_dims"] = item_feature_dims["categorical_dims"]
-        
+
     model = get_model(**model_config)
     lightning_model = DefaultLightningModule(
         model=model,
