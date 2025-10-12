@@ -55,7 +55,10 @@ class Model(torch.nn.Module):
         if avg_rating:
             self.output.bias.data.fill_(avg_rating)
 
-    def forward(self, user_ids, item_ids):
+    def forward(self, batch):
+        user_ids = batch["user_id"]
+        item_ids = batch["item_id"]
+
         # GMF path
         user_mf = self.user_mf_embedding(user_ids)
         item_mf = self.item_mf_embedding(item_ids)

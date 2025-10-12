@@ -47,15 +47,13 @@ class DefaultLightningModule(pyl.LightningModule):
 
         self.save_hyperparameters(ignore=["model"])
 
-    def forward(self, user_ids, item_ids):
-        return self.model(user_ids, item_ids)
+    def forward(self, batch):
+        return self.model(batch)
 
     def training_step(self, batch, batch_idx):
-        user_ids = batch["user_id"]
-        item_ids = batch["item_id"]
-        ratings = batch["rating"]
-        predictions = self(user_ids, item_ids)
-        loss = self.criterion(predictions, ratings.unsqueeze(1))
+        ratings = batch.pop("rating")
+        predictions = self(batch)
+        loss = self.criterion(predictions, ratings)
 
         # Compute metrics for binary classification
         probs = torch.sigmoid(predictions.squeeze())
@@ -68,11 +66,9 @@ class DefaultLightningModule(pyl.LightningModule):
         return loss
 
     def validation_step(self, batch, batch_idx):
-        user_ids = batch["user_id"]
-        item_ids = batch["item_id"]
-        ratings = batch["rating"]
-        predictions = self(user_ids, item_ids)
-        loss = self.criterion(predictions, ratings.unsqueeze(1))
+        ratings = batch.pop("rating")
+        predictions = self(batch)
+        loss = self.criterion(predictions, ratings)
 
         # Compute metrics for binary classification
         probs = torch.sigmoid(predictions.squeeze())
@@ -84,11 +80,9 @@ class DefaultLightningModule(pyl.LightningModule):
         self.log("val_pr_auc", self.val_pr_auc, on_step=False, on_epoch=True)
 
     def test_step(self, batch, batch_idx):
-        user_ids = batch["user_id"]
-        item_ids = batch["item_id"]
-        ratings = batch["rating"]
-        predictions = self(user_ids, item_ids)
-        loss = self.criterion(predictions, ratings.unsqueeze(1))
+        ratings = batch.pop("rating")
+        predictions = self(batch)
+        loss = self.criterion(predictions, ratings)
 
         # Compute metrics for binary classification
         probs = torch.sigmoid(predictions.squeeze())
@@ -187,17 +181,28 @@ def main(config):
 
     mlf_logger = setup_experiment(**config["logging"])
 
-    # Prepare dataset first to get num_users and num_items
     logger.info(f"Loading dataset: {config['dataset']}")
-    train_loader, val_loader, test_loader, num_users, num_items = get_dataloaders(
-        **config["dataset"]
-    )
+    (
+        train_loader,
+        val_loader,
+        test_loader,
+        num_users,
+        num_items,
+        user_feature_dims,
+        item_feature_dims,
+    ) = get_dataloaders(**config["dataset"])
 
-    # Load model dynamically with dataset info
     logger.info(f"Loading model: {config['model']['architecture']}")
     model_config = config["model"].copy()
     model_config["num_users"] = num_users
     model_config["num_items"] = num_items
+    if user_feature_dims:
+        model_config["user_continuous_dim"] = user_feature_dims["continuous_dim"]
+        model_config["user_categorical_dims"] = user_feature_dims["categorical_dims"]
+    if item_feature_dims:
+        model_config["item_continuous_dim"] = item_feature_dims["continuous_dim"]
+        model_config["item_categorical_dims"] = item_feature_dims["categorical_dims"]
+        
     model = get_model(**model_config)
     lightning_model = DefaultLightningModule(
         model=model,

@@ -50,44 +50,50 @@ class MovieLensDataset(Dataset):
 
         if sample_type == 0:  # Positive sample
             item_id = row["item_id"]
+            rating = 1.0
         else:  # Negative sample
             # Sample random item not interacted with by user
             while True:
                 item_id = np.random.randint(0, self.num_items)
                 if item_id not in self.user_items[user_id]:
                     break
+            rating = 0.0
 
         result = {
             "user_id": torch.tensor(user_id, dtype=torch.long),
             "item_id": torch.tensor(item_id, dtype=torch.long),
-            "rating": torch.tensor(
-                1.0 if sample_type == 0 else 0.0, dtype=torch.float32
-            ),
+            "rating": torch.tensor(rating, dtype=torch.float32),
         }
 
         # Add user features if available
-        if self.user_features is not None:
-            # Split continuous and embedding features
-            result["user_continuous"] = torch.tensor(
-                self.user_features[user_id][:2], dtype=torch.float32
-            )  # age, gender
-            result["user_occupation"] = torch.tensor(
-                self.user_features[user_id][2], dtype=torch.long
-            )  # occupation_id
-            if self.user_features.shape[1] > 3:  # has zip_code
-                result["user_zip"] = torch.tensor(
-                    self.user_features[user_id][3], dtype=torch.long
+        if self.user_features:
+            user_feat_dict = {}
+            # Continuous features
+            if "continuous" in self.user_features:
+                user_feat_dict["continuous"] = torch.tensor(
+                    self.user_features["continuous"][user_id], dtype=torch.float32
                 )
+            # Embedding features
+            if "categorical" in self.user_features:
+                user_feat_dict["categorical"] = {
+                    k: torch.tensor(v[user_id], dtype=torch.long)
+                    for k, v in self.user_features["categorical"].items()
+                }
+            result["user_features"] = user_feat_dict
 
         # Add item features if available
-        if self.item_features is not None:
-            result["item_genres"] = torch.tensor(
-                self.item_features[item_id][:19], dtype=torch.float32
-            )  # 19 genres
-            if self.item_features.shape[1] > 19:  # has release_year
-                result["item_year"] = torch.tensor(
-                    self.item_features[item_id][19], dtype=torch.long
+        if self.item_features:
+            item_feat_dict = {}
+            if "continuous" in self.item_features:
+                item_feat_dict["continuous"] = torch.tensor(
+                    self.item_features["continuous"][item_id], dtype=torch.float32
                 )
+            if "categorical" in self.item_features:
+                item_feat_dict["categorical"] = {
+                    k: torch.tensor(v[item_id], dtype=torch.long)
+                    for k, v in self.item_features["categorical"].items()
+                }
+            result["item_features"] = item_feat_dict
 
         return result
 
@@ -147,17 +153,11 @@ def download_movielens(version="100k", data_dir=None):
     return extract_path
 
 
-def load_user_features(
-    version="100k",
-    user_encoder=None,
-    data_dir=None,
-    use_occupation_embedding=False,
-    use_zip_embedding=False,
-):
+def load_user_features(version="100k", user_encoder=None, data_dir=None):
     """Load user features (age, gender, occupation) for MovieLens dataset"""
     if version not in ["100k", "1m"]:
         print(f"User features not available for {version}")
-        return None
+        return None, None
 
     config = DATASET_CONFIGS[version]
     extract_path = download_movielens(version, data_dir)
@@ -175,7 +175,7 @@ def load_user_features(
                 pl.col("gender").map_elements(
                     lambda x: gender_map.get(x, 0), return_dtype=pl.Int32
                 ),
-                pl.col("age").cast(pl.Float32) / 100.0,  # Normalize age
+                pl.col("age").cast(pl.Float32) / 100.0,
             ]
         )
 
@@ -184,48 +184,59 @@ def load_user_features(
         occupation_encoded = occupation_encoder.fit_transform(
             users["occupation"].to_numpy()
         )
+        # Encode zip codes for embedding
+        zip_encoder = LabelEncoder()
+        zip_encoded = zip_encoder.fit_transform(users["zip_code"].to_numpy())
 
-        features = [users["age"].to_numpy(), users["gender"].to_numpy()]
+        continuous_features = users[["age", "gender"]].to_numpy()
+        categorical_features = {
+            "occupation": occupation_encoded,
+            "zip_code": zip_encoded,
+        }
 
-        if use_occupation_embedding:
-            features.append(
-                occupation_encoded.reshape(-1, 1)
-            )  # Single column for embedding
-        else:
-            # One-hot encode occupation
-            occupation_onehot = np.eye(len(occupation_encoder.classes_))[
-                occupation_encoded
-            ]
-            features.append(occupation_onehot)
+        dims = {
+            "continuous_dim": continuous_features.shape[1],
+            "categorical_dims": {
+                "occupation": len(occupation_encoder.classes_),
+                "zip_code": len(zip_encoder.classes_),
+            },
+        }
 
-        if use_zip_embedding:
-            # Encode zip codes for embedding
-            zip_encoder = LabelEncoder()
-            zip_encoded = zip_encoder.fit_transform(users["zip_code"].to_numpy())
-            features.append(zip_encoded.reshape(-1, 1))
-
-        user_features = np.column_stack(features)
-
-        # Map to encoded user IDs
         if user_encoder is not None:
-            encoded_features = np.zeros(
-                (len(user_encoder.classes_), user_features.shape[1])
-            )
-            for i, orig_id in enumerate(user_encoder.classes_):
-                if orig_id <= len(user_features):
-                    encoded_features[i] = user_features[orig_id - 1]
-            return encoded_features
+            num_users = len(user_encoder.classes_)
 
-    return None
+            # Align features with encoded user IDs
+            aligned_continuous = np.zeros((num_users, continuous_features.shape[1]))
+            aligned_categorical = {
+                k: np.zeros(num_users, dtype=int) for k in categorical_features
+            }
+
+            orig_user_ids = users["user_id"].to_numpy()
+            encoded_user_map = {
+                orig_id: enc_id for enc_id, orig_id in enumerate(user_encoder.classes_)
+            }
+
+            for i, orig_id in enumerate(orig_user_ids):
+                if orig_id in encoded_user_map:
+                    enc_id = encoded_user_map[orig_id]
+                    aligned_continuous[enc_id] = continuous_features[i]
+                    for k, v in categorical_features.items():
+                        aligned_categorical[k][enc_id] = v[i]
+
+            features = {
+                "continuous": aligned_continuous,
+                "categorical": aligned_categorical,
+            }
+            return features, dims
+
+    return None, None
 
 
-def load_item_features(
-    version="100k", item_encoder=None, data_dir=None, use_year_embedding=False
-):
+def load_item_features(version="100k", item_encoder=None, data_dir=None):
     """Load item features (genres) for MovieLens dataset"""
     if version not in ["100k", "1m"]:
         print(f"Genre features not available for {version}")
-        return None
+        return None, None
 
     config = DATASET_CONFIGS[version]
     extract_path = download_movielens(version, data_dir)
@@ -237,41 +248,55 @@ def load_item_features(
             items_path, separator="|", has_header=False, encoding="latin1"
         )
 
-        features = []
-
         # Extract genre columns (last 19 columns)
         genre_cols = [f"column_{i}" for i in range(6, 25)]
-        genres = items.select([pl.col(col) for col in genre_cols]).to_numpy()
-        features.append(genres)
+        genres = items.select(genre_cols).to_numpy()
 
-        if use_year_embedding:
-            # Extract release year from date (column_3: release_date)
-            release_dates = items.select(pl.col("column_3")).to_numpy().flatten()
-            years = []
-            for date_str in release_dates:
-                try:
-                    # Parse date format like "01-Jan-1995"
-                    year = int(date_str.split("-")[-1]) if date_str else 1995
-                    years.append(year - 1900)  # Normalize to start from 0
-                except:
-                    years.append(95)  # Default to 1995
-            features.append(np.array(years).reshape(-1, 1))
+        # Extract release year from date (column_3: release_date)
+        release_dates = items["column_3"].to_numpy()
+        year_encoder = LabelEncoder()
+        # Parse date format like "01-Jan-1995"
+        years = [
+            int(d.split("-")[-1]) if isinstance(d, str) and "-" in d else 1995
+            for d in release_dates
+        ]
+        years_encoded = year_encoder.fit_transform(years)
 
-        item_features = np.column_stack(features)
+        continuous_features = genres
+        categorical_features = {"year": years_encoded}
+
+        dims = {
+            "continuous_dim": continuous_features.shape[1],
+            "categorical_dims": {"year": len(year_encoder.classes_)},
+        }
 
         # Map original item IDs to encoded IDs
         if item_encoder is not None:
-            encoded_features = np.zeros(
-                (len(item_encoder.classes_), item_features.shape[1])
-            )
-            item_ids = items.select(pl.col("column_1")).to_numpy().flatten()
-            for i, orig_id in enumerate(item_encoder.classes_):
-                idx = np.where(item_ids == orig_id)[0]
-                if len(idx) > 0:
-                    encoded_features[i] = item_features[idx[0]]
-            return encoded_features
+            num_items = len(item_encoder.classes_)
 
-    return None
+            aligned_continuous = np.zeros((num_items, continuous_features.shape[1]))
+            aligned_categorical = {"year": np.zeros(num_items, dtype=int)}
+
+            orig_item_ids = items["column_1"].to_numpy()
+            encoded_item_map = {
+                orig_id: enc_id for enc_id, orig_id in enumerate(item_encoder.classes_)
+            }
+
+            for i, orig_id in enumerate(orig_item_ids):
+                if orig_id in encoded_item_map:
+                    enc_id = encoded_item_map[orig_id]
+                    aligned_continuous[enc_id] = continuous_features[i]
+                    aligned_categorical["year"][enc_id] = categorical_features["year"][
+                        i
+                    ]
+
+            features = {
+                "continuous": aligned_continuous,
+                "categorical": aligned_categorical,
+            }
+            return features, dims
+
+    return None, None
 
 
 def load_movielens(version="100k", data_dir=None, min_rating=4.0):
@@ -328,23 +353,15 @@ def get_dataloaders(
     """Get train/val/test dataloaders with negative sampling (80/10/10 split)"""
     interactions, num_users, num_items, user_enc, item_enc = load_movielens(version)
 
-    # Load features if requested
-    item_features = user_features = None
+    user_features, user_feature_dims = None, None
+    item_features, item_feature_dims = None, None
     if use_features:
-        item_features = load_item_features(
-            version, item_enc, data_dir=None, use_year_embedding=True
-        )
-        user_features = load_user_features(
-            version,
-            user_enc,
-            data_dir=None,
-            use_occupation_embedding=True,
-            use_zip_embedding=True,
-        )
-        if item_features is not None:
-            print(f"Loaded item features with shape: {item_features.shape}")
-        if user_features is not None:
-            print(f"Loaded user features with shape: {user_features.shape}")
+        user_features, user_feature_dims = load_user_features(version, user_enc)
+        item_features, item_feature_dims = load_item_features(version, item_enc)
+        if user_features:
+            print(f"Loaded user features with dims: {user_feature_dims}")
+        if item_features:
+            print(f"Loaded item features with dims: {item_feature_dims}")
 
     # Train/val/test split (80/10/10)
     interactions = interactions.sample(fraction=1, seed=42)
@@ -386,27 +403,45 @@ def get_dataloaders(
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
-    return train_loader, val_loader, test_loader, num_users, num_items
+    return (
+        train_loader,
+        val_loader,
+        test_loader,
+        num_users,
+        num_items,
+        user_feature_dims,
+        item_feature_dims,
+    )
 
 
 if __name__ == "__main__":
     # Test the module
-    train_loader, val_loader, test_loader, num_users, num_items = get_dataloaders(
-        version="100k"
-    )
+    (
+        train_loader,
+        val_loader,
+        test_loader,
+        num_users,
+        num_items,
+        user_dims,
+        item_dims,
+    ) = get_dataloaders(version="100k")
 
     print(f"Train batches: {len(train_loader)}")
     print(f"Val batches: {len(val_loader)}")
     print(f"Test batches: {len(test_loader)}")
+    print(f"User feature dimensions: {user_dims}")
+    print(f"Item feature dimensions: {item_dims}")
 
     # Sample batch
     batch = next(iter(train_loader))
     print(f"Batch keys: {batch.keys()}")
     print(f"User IDs shape: {batch['user_id'].shape}")
-    print(f"Item IDs shape: {batch['item_id'].shape}")
-    print(f"Ratings shape: {batch['rating'].shape}")
     if "user_features" in batch:
-        print(f"User features shape: {batch['user_features'].shape}")
-    if "item_features" in batch:
-        print(f"Item features shape: {batch['item_features'].shape}")
+        if "continuous" in batch["user_features"]:
+            print(
+                f"User continuous features shape: {batch['user_features']['continuous'].shape}"
+            )
+        if "categorical" in batch["user_features"]:
+            for k, v in batch["user_features"]["categorical"].items():
+                print(f"User categorical '{k}' shape: {v.shape}")
     print(f"Sample ratings: {batch['rating'][:10]}")
