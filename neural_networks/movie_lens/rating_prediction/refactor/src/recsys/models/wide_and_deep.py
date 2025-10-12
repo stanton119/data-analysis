@@ -30,6 +30,7 @@ class Model(nn.Module):
         dropout=0.2,
         avg_rating: float = None,
         include_bias: bool = True,
+        **kwargs,
     ):
         super().__init__()
 
@@ -64,7 +65,10 @@ class Model(nn.Module):
         if avg_rating:
             self.bias.data.fill_(avg_rating)
 
-    def forward(self, user_ids, item_ids):
+    def forward(self, batch):
+        user_ids = batch["user_id"]
+        item_ids = batch["item_id"]
+        
         # Wide component
         user_wide = self.user_wide(user_ids)
         item_wide = self.item_wide(item_ids)

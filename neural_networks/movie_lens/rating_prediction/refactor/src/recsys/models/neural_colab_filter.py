@@ -27,6 +27,7 @@ class Model(torch.nn.Module):
         layers=[64, 32, 16],
         avg_rating: float = None,
         include_bias: bool = True,
+        **kwargs,
     ):
         super().__init__()
         # GMF part

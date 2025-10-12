@@ -23,7 +23,7 @@ class CrossLayerV2(nn.Module):
         return x0 * (xl @ self.weight + self.bias) + xl
 
 
-class DCNV2(nn.Module):
+class Model(nn.Module):
     def __init__(
         self,
         num_users,
@@ -33,6 +33,7 @@ class DCNV2(nn.Module):
         deep_layers=[512, 256, 128],
         dropout=0.2,
         avg_rating: float = None,
+        **kwargs,
     ):
         super().__init__()
         self.user_embedding = nn.Embedding(num_users, embedding_dim)
@@ -61,7 +62,9 @@ class DCNV2(nn.Module):
         if avg_rating:
             self.output.bias.data.fill_(avg_rating)
 
-    def forward(self, user_ids, item_ids):
+    def forward(self, batch):
+        user_ids = batch["user_id"]
+        item_ids = batch["item_id"]
         user_embed = self.user_embedding(user_ids)
         item_embed = self.item_embedding(item_ids)
 
@@ -78,6 +81,3 @@ class DCNV2(nn.Module):
         # Combine cross and deep
         combined = torch.cat([xl, deep_out], dim=1)
         return self.output(combined)
-
-
-Model = DCNV2

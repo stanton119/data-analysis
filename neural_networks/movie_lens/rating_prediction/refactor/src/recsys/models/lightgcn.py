@@ -32,6 +32,7 @@ class Model(torch.nn.Module):
         n_layers=3,
         avg_rating: float = None,
         include_bias: bool = True,
+        **kwargs,
     ):
         super().__init__()
         self.num_users = num_users
@@ -50,7 +51,10 @@ class Model(torch.nn.Module):
         nn.init.normal_(self.user_embedding.weight, std=0.1)
         nn.init.normal_(self.item_embedding.weight, std=0.1)
 
-    def forward(self, user_ids, item_ids, edge_index=None):
+    def forward(self, batch):
+        user_ids = batch["user_id"]
+        item_ids = batch["item_id"]
+        edge_index = batch.get("edge_index", None)
         # If no edge_index provided, use simple embedding lookup
         if edge_index is None:
             user_embed = self.user_embedding(user_ids)

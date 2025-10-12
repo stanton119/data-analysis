@@ -40,6 +40,7 @@ class Model(torch.nn.Module):
         embedding_dim=10,
         avg_rating: float = None,
         include_bias: bool = True,
+        **kwargs,
     ):
         super().__init__()
 
@@ -56,7 +57,9 @@ class Model(torch.nn.Module):
         nn.init.normal_(self.embeddings.weight, std=0.01)
         nn.init.normal_(self.linear_weights.weight, std=0.01)
 
-    def forward(self, user_ids, item_ids):
+    def forward(self, batch):
+        user_ids = batch["user_id"]
+        item_ids = batch["item_id"]
         batch_size = user_ids.size(0)
 
         # Convert to feature indices

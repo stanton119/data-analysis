@@ -57,6 +57,7 @@ class Model(torch.nn.Module):
         dropout=0.1,
         avg_rating: float = None,
         include_bias: bool = True,
+        **kwargs,
     ):
         super().__init__()
         self.user_embedding = nn.Embedding(num_users, embedding_dim)
@@ -77,7 +78,9 @@ class Model(torch.nn.Module):
         if avg_rating:
             self.output.bias.data.fill_(avg_rating)
 
-    def forward(self, user_ids, item_ids):
+    def forward(self, batch):
+        user_ids = batch["user_id"]
+        item_ids = batch["item_id"]
         user_embed = self.user_embedding(user_ids).unsqueeze(1)  # [batch, 1, embed_dim]
         item_embed = self.item_embedding(item_ids).unsqueeze(1)  # [batch, 1, embed_dim]
 

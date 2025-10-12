@@ -13,6 +13,7 @@ class Model(torch.nn.Module):
         dropout=0.5,
         avg_rating: float = None,
         include_bias: bool = True,
+        **kwargs,
     ):
         super().__init__()
         self.num_items = num_items
@@ -42,7 +43,9 @@ class Model(torch.nn.Module):
     def decode(self, z):
         return self.decoder(z)
 
-    def forward(self, user_ids, item_ids=None):
+    def forward(self, batch):
+        user_ids = batch["user_id"]
+        item_ids = batch.get("item_id", None)
         # For VAE, we need user interaction vectors
         # This is a simplified version - in practice you'd need to construct user vectors
         batch_size = user_ids.size(0)

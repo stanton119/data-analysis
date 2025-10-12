@@ -42,11 +42,11 @@ uv run mlflow gc
    1. use lack of rating as a negative event - people dont watch movies by random, they select ones they are interested in
    2. positive rating = 1, low rating or no rating = 0
    3. balance negative samples against positive
-2. hybrid model refactor
-3. Models
-   1. RQ-VAE
-   2. Diffusion based recsys
-   3. DLRM - Deep Learning Recommendation Model for Personalization and Recommendation Systems - https://arxiv.org/abs/1906.00091
+2. Models
+   1. Hybrid models
+   2. RQ-VAE
+   3. Diffusion based recsys
+   4. DLRM - Deep Learning Recommendation Model for Personalization and Recommendation Systems - https://arxiv.org/abs/1906.00091
 3. Update readme project structure
 
 Resources:

@@ -21,6 +21,7 @@ class Model(torch.nn.Module):
         embedding_dim=10,
         avg_rating: float = None,
         include_bias: bool = True,
+        **kwargs,
     ):
         super().__init__()
         self.user_embedding = nn.Embedding(num_users, embedding_dim)
@@ -30,7 +31,10 @@ class Model(torch.nn.Module):
         self.user_bias = nn.Embedding(num_users, 1) if include_bias else None
         self.item_bias = nn.Embedding(num_items, 1) if include_bias else None
 
-    def forward(self, user_ids, item_ids):
+    def forward(self, batch):
+        user_ids = batch["user_id"]
+        item_ids = batch["item_id"]
+
         user_embeds = self.user_embedding(user_ids)
         item_embeds = self.item_embedding(item_ids)
 
