@@ -1,3 +1,16 @@
+"""
+AutoInt: Automatic Feature Interaction Learning via Self-Attentive Neural Networks - 2018
+https://arxiv.org/abs/1810.11921
+
+This model uses a multi-head self-attention mechanism to explicitly model the
+interactions between features. It can be used for tasks like click-through rate (CTR)
+prediction and recommendation.
+
+The core idea is to map both categorical and numerical features into a common
+low-dimensional space and then use a self-attention network to learn the
+feature interactions.
+"""
+
 import torch
 import torch.nn as nn
 import math
