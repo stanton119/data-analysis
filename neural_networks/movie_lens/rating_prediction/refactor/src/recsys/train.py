@@ -48,7 +48,7 @@ class DefaultLightningModule(pyl.LightningModule):
         self.save_hyperparameters(ignore=["model"])
 
     def forward(self, batch):
-        return self.model(batch)
+        return self.model(batch).squeeze()
 
     def training_step(self, batch, batch_idx):
         ratings = batch.pop("rating")

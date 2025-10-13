@@ -16,7 +16,7 @@ This creates a balanced binary classification problem for implicit feedback reco
 
 ## Usage
 ```bash
-uv run python src/recsys/train.py --config configs/nn_colab_filter_non_linear.yaml
+uv run python src/recsys/train.py --config configs/neural_inner_product.yaml
 ```
 
 Run MLFlow UI as:
@@ -44,6 +44,7 @@ uv run mlflow gc
    3. balance negative samples against positive
 2. Models
    1. Hybrid models
+      1. Feature ablation
    2. RQ-VAE
    3. Diffusion based recsys
    4. DLRM - Deep Learning Recommendation Model for Personalization and Recommendation Systems - https://arxiv.org/abs/1906.00091
