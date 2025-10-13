@@ -70,11 +70,26 @@ class Model(torch.nn.Module):
         dropout=0.1,
         avg_rating: float = None,
         include_bias: bool = True,
+        categorical_features: dict = None,
+        num_user_continuous: int = 0,
+        num_item_continuous: int = 0,
         **kwargs,
     ):
         super().__init__()
         self.user_embedding = nn.Embedding(num_users, embedding_dim)
         self.item_embedding = nn.Embedding(num_items, embedding_dim)
+
+        self.categorical_embeddings = nn.ModuleDict()
+        if categorical_features:
+            for feature, cardinality in categorical_features.items():
+                self.categorical_embeddings[feature] = nn.Embedding(
+                    cardinality, embedding_dim
+                )
+
+        if num_user_continuous > 0:
+            self.user_continuous_proj = nn.Linear(num_user_continuous, embedding_dim)
+        if num_item_continuous > 0:
+            self.item_continuous_proj = nn.Linear(num_item_continuous, embedding_dim)
 
         # Multi-head attention layers
         self.attention_layers = nn.ModuleList(
@@ -86,19 +101,62 @@ class Model(torch.nn.Module):
         )
 
         self.dropout = nn.Dropout(dropout)
-        self.output = nn.Linear(embedding_dim * 2, 1)
+
+        # Calculate the total number of features
+        num_features = 2  # user_id, item_id
+        if categorical_features:
+            num_features += len(categorical_features)
+        if num_user_continuous > 0:
+            num_features += 1
+        if num_item_continuous > 0:
+            num_features += 1
+
+        self.output = nn.Linear(embedding_dim * num_features, 1)
 
         if avg_rating:
             self.output.bias.data.fill_(avg_rating)
 
     def forward(self, batch):
+        embeddings = []
+
+        # User and item IDs
         user_ids = batch["user_id"]
         item_ids = batch["item_id"]
-        user_embed = self.user_embedding(user_ids).unsqueeze(1)  # [batch, 1, embed_dim]
-        item_embed = self.item_embedding(item_ids).unsqueeze(1)  # [batch, 1, embed_dim]
+        embeddings.append(self.user_embedding(user_ids).unsqueeze(1))
+        embeddings.append(self.item_embedding(item_ids).unsqueeze(1))
+
+        # Categorical features
+        if "user_features" in batch and "categorical" in batch["user_features"]:
+            for feature, embed_layer in self.categorical_embeddings.items():
+                if feature in batch["user_features"]["categorical"]:
+                    embeddings.append(
+                        embed_layer(
+                            batch["user_features"]["categorical"][feature]
+                        ).unsqueeze(1)
+                    )
+        if "item_features" in batch and "categorical" in batch["item_features"]:
+            for feature, embed_layer in self.categorical_embeddings.items():
+                if feature in batch["item_features"]["categorical"]:
+                    embeddings.append(
+                        embed_layer(
+                            batch["item_features"]["categorical"][feature]
+                        ).unsqueeze(1)
+                    )
+
+        # Continuous features
+        if "user_features" in batch and "continuous" in batch["user_features"]:
+            user_cont = self.user_continuous_proj(
+                batch["user_features"]["continuous"]
+            ).unsqueeze(1)
+            embeddings.append(user_cont)
+        if "item_features" in batch and "continuous" in batch["item_features"]:
+            item_cont = self.item_continuous_proj(
+                batch["item_features"]["continuous"]
+            ).unsqueeze(1)
+            embeddings.append(item_cont)
 
         # Stack embeddings
-        x = torch.cat([user_embed, item_embed], dim=1)  # [batch, 2, embed_dim]
+        x = torch.cat(embeddings, dim=1)
 
         # Apply attention layers
         for attention, layer_norm in zip(self.attention_layers, self.layer_norms):

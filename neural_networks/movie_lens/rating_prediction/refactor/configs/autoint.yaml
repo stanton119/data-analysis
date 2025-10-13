@@ -9,6 +9,12 @@ model:
   num_layers: 3
   dropout: 0.1
   include_bias: true
+  categorical_features:
+    occupation: 21
+    zip_code: 3439
+    year: 81
+  num_user_continuous: 2
+  num_item_continuous: 19
 
 training:
   epochs: 50
@@ -17,4 +23,4 @@ training:
 
 logging:
   experiment_name: "movielens_rating_prediction"
-  run_name: "autoint"
+  run_name: "autoint_with_features"
