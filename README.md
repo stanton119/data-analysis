@@ -32,6 +32,7 @@ Repo directory:
 *   Does initialising the output of a neural net to match your target distribution help? - Yes - [notebook](neural_networks/output_layer_bias.ipynb)
 
 ### Recommenders
+*   Recommender systems on movie lens - [readme](recommenders/recsys/README.md)
 *   Exploring multi-armed bandit benchmarks - [notebook](recommenders/multi_armed_bandits_benchmarks/multi_armed_bandits.ipynb)
 
 ### Regression
@@ -214,6 +215,15 @@ Use the `settings.json` file in the repo
     *   Association and causality
         *   Associations fast - from clustering propensity model predictions and find average features in each group.
         *   Causality - doubleML etc. to removing confounding features and finding conditional average treatment effects. How this relates to groupby and average.
+*   Literature scanning
+    *   Given a topic find the most important papers within a date range
+        *   Find papers in a topic area based on semantic search
+        *   Importance based on citation count?
+    *   Paper summary
+        *   Group papers into themes based on their methods
+    *   Given recent papers identify which are important
+        *   Predict citations of historic papers and apply model to recent papers
+        *   Find trends in historic important papers (authors etc.)
 
 ## TODO
 *   rename environment/requirements files to match the notebook
