@@ -144,12 +144,12 @@ class Model(torch.nn.Module):
                     )
 
         # Continuous features
-        if "user_features" in batch and "continuous" in batch["user_features"]:
+        if hasattr(self, "user_continuous_proj") and "user_features" in batch and "continuous" in batch["user_features"]:
             user_cont = self.user_continuous_proj(
                 batch["user_features"]["continuous"]
             ).unsqueeze(1)
             embeddings.append(user_cont)
-        if "item_features" in batch and "continuous" in batch["item_features"]:
+        if hasattr(self, "item_continuous_proj") and "item_features" in batch and "continuous" in batch["item_features"]:
             item_cont = self.item_continuous_proj(
                 batch["item_features"]["continuous"]
             ).unsqueeze(1)

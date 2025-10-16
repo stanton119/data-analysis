@@ -1,5 +1,3 @@
-# ml-project/ml-project/README.md
-
 # Recsys
 
 This project is a recommendation system using neural collaborative filtering with MLflow for experiment tracking.
@@ -97,7 +95,7 @@ ml-project
 3. Run the exploratory data analysis notebook:
    - Open `notebooks/exploratory_data_analysis.ipynb` in Jupyter Notebook.
 
-UPdating the project depedencies
+Updating the project depedencies
 ```
 uv add ...
 ```

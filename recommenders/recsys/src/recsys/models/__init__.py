@@ -12,6 +12,7 @@ MODEL_REGISTRY = {
     "WideAndDeep": "recsys.models.wide_and_deep",
     "AutoInt": "recsys.models.autoint",
     "FactorizationMachines": "recsys.models.factorization_machines",
+    "HybridModel": "recsys.models.hybrid_model",
 }
 
 

@@ -23,4 +23,4 @@ training:
 
 logging:
   experiment_name: "movielens_rating_prediction"
-  run_name: "autoint_with_features"
+  run_name: "autoint_all_features"

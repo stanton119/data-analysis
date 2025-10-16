@@ -1,0 +1,23 @@
+dataset:
+  version: "100k"
+  batch_size: 1024
+
+model:
+  architecture: "AutoInt"
+  embedding_dim: 64
+  num_heads: 8
+  num_layers: 3
+  dropout: 0.1
+  include_bias: true
+  categorical_features: null
+  num_user_continuous: 0
+  num_item_continuous: 0
+
+training:
+  epochs: 50
+  learning_rate: 0.001
+  loss_function: "bce"
+
+logging:
+  experiment_name: "movielens_rating_prediction"
+  run_name: "autoint_baseline"

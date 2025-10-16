@@ -1,3 +1,8 @@
+"""
+Residual Quantized Variational Autoencoder for Collaborative Filtering
+https://arxiv.org/pdf/2306.08121
+"""
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -64,11 +69,13 @@ class ResidualBlock(nn.Module):
 class Model(nn.Module):
     def __init__(
         self,
+        interaction_matrix: torch.Tensor,
         num_users,
         num_items,
         hidden_dim=256,
         latent_dim=64,
         num_embeddings=512,
+        num_quantizers=4,  # Number of residual quantizers
         num_residual_layers=2,
         commitment_cost=0.25,
         dropout=0.5,
@@ -79,6 +86,10 @@ class Model(nn.Module):
         self.num_items = num_items
         self.latent_dim = latent_dim
         self.dropout = nn.Dropout(dropout)
+        self.num_quantizers = num_quantizers
+
+        # Store the full user-item interaction matrix
+        self.register_buffer("interaction_matrix", interaction_matrix)
 
         # Encoder
         self.encoder_conv = nn.Conv1d(1, hidden_dim, 4, stride=2, padding=1)
@@ -87,8 +98,13 @@ class Model(nn.Module):
         )
         self.encoder_final = nn.Conv1d(hidden_dim, latent_dim, 3, padding=1)
 
-        # Vector Quantizer
-        self.vq = VectorQuantizer(num_embeddings, latent_dim, commitment_cost)
+        # Vector Quantizers
+        self.vqs = nn.ModuleList(
+            [
+                VectorQuantizer(num_embeddings, latent_dim, commitment_cost)
+                for _ in range(num_quantizers)
+            ]
+        )
 
         # Decoder
         self.decoder_conv = nn.ConvTranspose1d(
@@ -124,20 +140,35 @@ class Model(nn.Module):
         return self.output_proj(z)
 
     def forward(self, user_ids, item_ids=None):
-        batch_size = user_ids.size(0)
-        # Create user interaction vectors (simplified - in practice use actual interactions)
-        x = torch.zeros(batch_size, self.num_items, device=user_ids.device)
-
+        # Get the user-item interaction vectors for the current batch of users
+        x = self.interaction_matrix[user_ids]
         # Encode
         z_e = self.encode(self.dropout(x))
 
-        # Quantize
-        z_q, vq_loss, perplexity = self.vq(z_e)
+        # Residual Quantization
+        quantized_vectors = []
+        losses = []
+        perplexities = []
+        residual = z_e
+
+        for vq in self.vqs:
+            quantized, loss, perplexity = vq(residual)
+            residual = residual - quantized
+            quantized_vectors.append(quantized)
+            losses.append(loss)
+            perplexities.append(perplexity)
+
+        # Sum the quantized vectors to get the final quantized representation
+        z_q = torch.sum(torch.stack(quantized_vectors), dim=0)
+        vq_loss = torch.sum(torch.stack(losses))
+        # Average perplexity across quantizers
+        perplexity = torch.mean(torch.stack(perplexities))
 
         # Decode
         recon = self.decode(z_q)
 
         if item_ids is not None:
+            # For ranking/prediction, gather scores for specific items
             return recon.gather(1, item_ids.unsqueeze(1)).squeeze()
 
         return recon, vq_loss, perplexity
