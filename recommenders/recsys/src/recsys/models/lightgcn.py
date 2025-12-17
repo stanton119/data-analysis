@@ -8,6 +8,7 @@ item embeddings by linearly propagating them on the user-item interaction graph.
 The core idea is that the model only contains the most essential component of GCNs
 - neighborhood aggregation - for collaborative filtering.
 """
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
