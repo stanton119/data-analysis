@@ -98,6 +98,87 @@ class MovieLensDataset(Dataset):
         return result
 
 
+class MovieLensSequentialDataset(Dataset):
+    """
+    PyTorch Dataset for sequential movie recommendations.
+
+    For each user, the last item is used for testing, the second to last for
+    validation, and the rest for training.
+
+    Generates sequences of a fixed length for model input.
+    """
+
+    def __init__(
+        self,
+        sequences,
+        num_items,
+        max_sequence_length=50,
+        num_negatives=100,
+        is_training=True,
+    ):
+        self.sequences = sequences
+        self.num_items = num_items
+        self.max_sequence_length = max_sequence_length
+        self.num_negatives = num_negatives
+        self.is_training = is_training
+
+        # Create a pool of all possible item IDs for efficient negative sampling                                               │
+        self.all_items = np.arange(1, num_items)    
+
+        self.flat_sequences = self._flatten_sequences()
+
+    def _flatten_sequences(self):
+        flat_sequences = []
+        for user_id, sequence in self.sequences.items():
+            if self.is_training:
+                # Sliding window over the training part of the sequence.
+                # We need at least 2 items to form a training example (input, target).
+                for i in range(2, len(sequence) + 1):
+                    flat_sequences.append((user_id, sequence[:i]))
+            else:
+                # For validation/testing, use the full sequence if it has at least
+                # one input and one target item.
+                if len(sequence) > 1:
+                    flat_sequences.append((user_id, sequence))
+        return flat_sequences
+
+    def __len__(self):
+        return len(self.flat_sequences)
+
+    def __getitem__(self, idx):
+        user_id, sequence = self.flat_sequences[idx]
+
+        # The last item in the sequence is the target
+        input_sequence = sequence[:-1]
+        target_item = sequence[-1]
+
+        # Pad or truncate the input sequence
+        padded_sequence = np.zeros(self.max_sequence_length, dtype=np.int64)
+        seq_len = min(len(input_sequence), self.max_sequence_length)
+        padded_sequence[-seq_len:] = input_sequence[-seq_len:]
+
+        # Sample negative items using a fast, vectorized approach.
+        user_history = list(set(self.sequences[user_id]))
+
+        # Create a boolean mask of valid negative items (items not in user's history)
+        is_valid_negative = np.isin(self.all_items, user_history, invert=True)
+
+        # Get the actual item IDs that are valid negatives
+        valid_negative_items = self.all_items[is_valid_negative]
+
+        # Sample from the valid negative items
+        negative_samples = np.random.choice(
+            valid_negative_items, size=self.num_negatives, replace=False
+        )
+
+        return {
+            "user_id": torch.tensor(user_id, dtype=torch.long),
+            "input_sequence": torch.tensor(padded_sequence, dtype=torch.long),
+            "target_item": torch.tensor(target_item, dtype=torch.long),
+            "negative_samples": torch.tensor(negative_samples, dtype=torch.long),
+        }
+
+
 DATASET_CONFIGS = {
     "100k": {
         "url": "https://files.grouplens.org/datasets/movielens/ml-100k.zip",
@@ -299,6 +380,124 @@ def load_item_features(version="100k", item_encoder=None, data_dir=None):
     return None, None
 
 
+def load_movielens_sequential(
+    version="100k", data_dir=None, min_rating=4.0, min_interactions=5
+):
+    """
+    Load and preprocess MovieLens data for sequential models.
+    - Filters users with fewer than `min_interactions`.
+    - Creates sequences of interactions for each user, sorted by timestamp.
+    """
+    config = DATASET_CONFIGS[version]
+    extract_path = download_movielens(version, data_dir)
+
+    ratings_path = extract_path / config["ratings_file"]
+    ratings = pl.read_csv(
+        ratings_path, separator=config["separator"], new_columns=config["columns"]
+    )
+
+    if version == "25m":
+        ratings = ratings.rename({"userId": "user_id", "movieId": "item_id"})
+
+    # Filter for positive interactions
+    ratings = ratings.filter(pl.col("rating") >= min_rating)
+
+    # Filter out users with too few interactions
+    user_counts = ratings.group_by("user_id").count()
+    user_counts = user_counts.filter(pl.col("count") >= min_interactions)
+    ratings = ratings.join(user_counts.select("user_id"), on="user_id", how="inner")
+
+    # Encode users and items
+    user_encoder = LabelEncoder()
+    item_encoder = LabelEncoder()
+    # Add a padding token (0) for items
+    item_encoder.fit(np.append(ratings["item_id"].unique().to_numpy(), 0))
+
+    ratings = ratings.with_columns(
+        [
+            pl.Series(
+                "user_id", user_encoder.fit_transform(ratings["user_id"].to_numpy())
+            ),
+            pl.Series("item_id", item_encoder.transform(ratings["item_id"].to_numpy())),
+        ]
+    )
+
+    num_users = len(user_encoder.classes_)
+    # Add 1 for the padding item
+    num_items = len(item_encoder.classes_)
+
+    # Group by user and sort by timestamp to create sequences
+    sequences = (
+        ratings.sort("timestamp")
+        .group_by("user_id", maintain_order=True)
+        .agg(pl.col("item_id"))
+    )
+    sequences = {row[0]: row[1] for row in sequences.iter_rows()}
+
+    print(f"Loaded {len(sequences)} user sequences.")
+    print(f"Users: {num_users}, Items: {num_items}")
+
+    return sequences, num_users, num_items, user_encoder, item_encoder
+
+
+def get_sequential_dataloaders(
+    version="100k",
+    batch_size=128,
+    max_sequence_length=50,
+    num_negatives=100,
+    val_split="leave_one_out",
+    test_split="leave_one_out",
+):
+    """
+    Get train/val/test dataloaders for sequential models.
+    Uses leave-one-out strategy for val/test splits.
+    """
+    sequences, num_users, num_items, user_encoder, item_encoder = load_movielens_sequential(version)
+
+    train_sequences, val_sequences, test_sequences = {}, {}, {}
+
+    for user_id, sequence in sequences.items():
+        if len(sequence) < 3:
+            continue  # Need at least one item for train, val, and test
+
+        if test_split == "leave_one_out":
+            test_sequences[user_id] = sequence
+            sequence = sequence[:-1]
+        if val_split == "leave_one_out":
+            val_sequences[user_id] = sequence
+            sequence = sequence[:-1]
+
+        train_sequences[user_id] = sequence
+
+    train_dataset = MovieLensSequentialDataset(
+        train_sequences,
+        num_items,
+        max_sequence_length,
+        num_negatives,
+        is_training=True,
+    )
+    val_dataset = MovieLensSequentialDataset(
+        val_sequences,
+        num_items,
+        max_sequence_length,
+        num_negatives,
+        is_training=False,
+    )
+    test_dataset = MovieLensSequentialDataset(
+        test_sequences,
+        num_items,
+        max_sequence_length,
+        num_negatives,
+        is_training=False,
+    )
+
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
+    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
+
+    return train_loader, val_loader, test_loader, num_users, num_items
+
+
 def load_movielens(version="100k", data_dir=None, min_rating=4.0):
     """Load and preprocess MovieLens data"""
     config = DATASET_CONFIGS[version]
@@ -415,33 +614,35 @@ def get_dataloaders(
 
 
 if __name__ == "__main__":
-    # Test the module
+    # Test the sequential dataloader
     (
         train_loader,
         val_loader,
         test_loader,
         num_users,
         num_items,
-        user_dims,
-        item_dims,
-    ) = get_dataloaders(version="100k")
+    ) = get_sequential_dataloaders(version="100k")
 
+    print(f"Number of users: {num_users}")
+    print(f"Number of items: {num_items}")
     print(f"Train batches: {len(train_loader)}")
     print(f"Val batches: {len(val_loader)}")
     print(f"Test batches: {len(test_loader)}")
-    print(f"User feature dimensions: {user_dims}")
-    print(f"Item feature dimensions: {item_dims}")
 
-    # Sample batch
-    batch = next(iter(train_loader))
-    print(f"Batch keys: {batch.keys()}")
-    print(f"User IDs shape: {batch['user_id'].shape}")
-    if "user_features" in batch:
-        if "continuous" in batch["user_features"]:
-            print(
-                f"User continuous features shape: {batch['user_features']['continuous'].shape}"
-            )
-        if "categorical" in batch["user_features"]:
-            for k, v in batch["user_features"]["categorical"].items():
-                print(f"User categorical '{k}' shape: {v.shape}")
-    print(f"Sample ratings: {batch['rating'][:10]}")
+    # Sample batch from the training loader
+    if len(train_loader) > 0:
+        batch = next(iter(train_loader))
+        print("\nSample train batch keys:", batch.keys())
+        print("Input sequence shape:", batch["input_sequence"].shape)
+        print("Target item shape:", batch["target_item"].shape)
+        print("Negative samples shape:", batch["negative_samples"].shape)
+        print("Sample input sequence:", batch["input_sequence"][0])
+
+    # Sample batch from the validation loader
+    if len(val_loader) > 0:
+        batch = next(iter(val_loader))
+        print("\nSample validation batch keys:", batch.keys())
+        print("Input sequence shape:", batch["input_sequence"].shape)
+        print("Target item shape:", batch["target_item"].shape)
+        print("Negative samples shape:", batch["negative_samples"].shape)
+        print("Sample input sequence:", batch["input_sequence"][0])

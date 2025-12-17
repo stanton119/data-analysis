@@ -1,0 +1,20 @@
+dataset:
+  version: "100k"
+  batch_size: 128
+  max_sequence_length: 50
+  num_negatives: 100
+
+model:
+  architecture: "SASRec"
+  embedding_dim: 64
+  num_blocks: 2
+  num_heads: 2
+  dropout: 0.2
+
+training:
+  epochs: 50
+  learning_rate: 0.001
+
+logging:
+  experiment_name: "movielens_sequential_recommendation"
+  run_name: "sasrec_baseline"

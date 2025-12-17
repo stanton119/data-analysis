@@ -13,6 +13,7 @@ MODEL_REGISTRY = {
     "AutoInt": "recsys.models.autoint",
     "FactorizationMachines": "recsys.models.factorization_machines",
     "HybridModel": "recsys.models.hybrid_model",
+    "SASRec": "recsys.models.sasrec",
 }
 
 

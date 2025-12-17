@@ -13,6 +13,7 @@ dependencies = [
     "numpy",
     "scikit-learn",
     "pyyaml",
+    "torch-geometric>=2.7.0",
 ]
 
 [dependency-groups]

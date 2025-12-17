@@ -45,7 +45,8 @@ uv run mlflow gc
       1. Feature ablation
    2. RQ-VAE
    3. Diffusion based recsys
-   4. DLRM - Deep Learning Recommendation Model for Personalization and Recommendation Systems - https://arxiv.org/abs/1906.00091
+   4. DLRM - Deep Learning Recommendation Model for Personalization and Recommendation Systems - 2019 - https://arxiv.org/abs/1906.00091
+   5. Sequence models
 3. Update readme project structure
 
 Resources:
