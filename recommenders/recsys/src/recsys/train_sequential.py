@@ -41,7 +41,7 @@ class SequentialLightningModule(pyl.LightningModule):
 
     def training_step(self, batch, batch_idx):
         scores = self(batch)
-        
+
         # Create labels: 1 for the positive item, 0 for negative ones
         pos_labels = torch.ones(scores.size(0), 1, device=self.device)
         neg_labels = torch.zeros(scores.size(0), scores.size(1) - 1, device=self.device)
@@ -53,12 +53,12 @@ class SequentialLightningModule(pyl.LightningModule):
 
     def validation_step(self, batch, batch_idx):
         scores = self(batch)
-        
+
         # Create labels: 1 for the positive item, 0 for negative ones
         pos_labels = torch.ones(scores.size(0), 1, device=self.device)
         neg_labels = torch.zeros(scores.size(0), scores.size(1) - 1, device=self.device)
         labels = torch.cat([pos_labels, neg_labels], dim=1).long()
-        
+
         # For ranking metrics, indexes are needed
         indexes = torch.arange(scores.size(0), device=self.device)
 
@@ -70,11 +70,11 @@ class SequentialLightningModule(pyl.LightningModule):
 
     def test_step(self, batch, batch_idx):
         scores = self(batch)
-        
+
         pos_labels = torch.ones(scores.size(0), 1, device=self.device)
         neg_labels = torch.zeros(scores.size(0), scores.size(1) - 1, device=self.device)
         labels = torch.cat([pos_labels, neg_labels], dim=1).long()
-        
+
         indexes = torch.arange(scores.size(0), device=self.device)
 
         self.test_recall(scores, labels, indexes=indexes)
@@ -112,9 +112,7 @@ def get_callbacks():
         mode="max",
     )
 
-    early_stop_callback = EarlyStopping(
-        monitor="val_ndcg@10", patience=3, mode="max"
-    )
+    early_stop_callback = EarlyStopping(monitor="val_ndcg@10", patience=3, mode="max")
 
     callbacks = [
         checkpoint_callback,
@@ -156,7 +154,6 @@ def main(config):
     model_config["num_items"] = num_items
     # Add max_sequence_length to model config from dataset config
     model_config["max_sequence_length"] = config["dataset"]["max_sequence_length"]
-
 
     model = get_model(**model_config)
     lightning_model = SequentialLightningModule(

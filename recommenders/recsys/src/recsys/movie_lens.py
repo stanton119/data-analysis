@@ -123,7 +123,7 @@ class MovieLensSequentialDataset(Dataset):
         self.is_training = is_training
 
         # Create a pool of all possible item IDs for efficient negative sampling                                               │
-        self.all_items = np.arange(1, num_items)    
+        self.all_items = np.arange(1, num_items)
 
         self.flat_sequences = self._flatten_sequences()
 
@@ -452,7 +452,9 @@ def get_sequential_dataloaders(
     Get train/val/test dataloaders for sequential models.
     Uses leave-one-out strategy for val/test splits.
     """
-    sequences, num_users, num_items, user_encoder, item_encoder = load_movielens_sequential(version)
+    sequences, num_users, num_items, user_encoder, item_encoder = (
+        load_movielens_sequential(version)
+    )
 
     train_sequences, val_sequences, test_sequences = {}, {}, {}
 
