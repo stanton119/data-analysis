@@ -615,6 +615,99 @@ def get_dataloaders(
     )
 
 
+def get_movie_title(item_id, version="100k", item_encoder=None, data_dir=None):
+    """Return the movie title for a given movie id.
+
+    If item_encoder is provided, item_id is interpreted as an encoded id and
+    mapped back to the original id using item_encoder.classes_. Supports
+    MovieLens 100k (u.item) and 25m (movies.csv). Falls back to movies.dat for
+    the 1m dataset if available. Returns None if title cannot be found.
+    """
+    # Map encoded id back to original id when an encoder is provided
+    orig_id = item_id
+    if item_encoder is not None:
+        try:
+            orig_id = item_encoder.classes_[int(item_id)]
+        except Exception:
+            # If mapping fails, treat item_id as original id
+            orig_id = item_id
+
+    extract_path = download_movielens(version, data_dir)
+
+    # ML-100k: u.item (pipe-separated, latin1)
+    if version == "100k":
+        items_path = extract_path / "u.item"
+        try:
+            items = pl.read_csv(
+                items_path, separator="|", has_header=False, encoding="latin1"
+            )
+        except Exception:
+            return None
+
+        # Attempt to match by column_1 (movie id)
+        try:
+            match = items.filter(pl.col("column_1") == orig_id)
+        except Exception:
+            # Try casting types
+            try:
+                match = items.filter(pl.col("column_1").cast(pl.Int64) == int(orig_id))
+            except Exception:
+                return None
+
+        if match.is_empty():
+            return None
+
+        # title is in column_2
+        title = match.select("column_2").to_numpy()[0][0]
+        return title
+
+    # ML-25m: movies.csv (movieId,title,genres)
+    if version == "25m":
+        items_path = extract_path / "movies.csv"
+        try:
+            items = pl.read_csv(items_path)
+        except Exception:
+            return None
+
+        # Try numeric match first
+        try:
+            match = items.filter(pl.col("movieId") == int(orig_id))
+        except Exception:
+            match = items.filter(pl.col("movieId") == orig_id)
+
+        if match.is_empty():
+            return None
+
+        title = match.select("title").to_numpy()[0][0]
+        return title
+
+    # Fallback: try common movie files (useful for ML-1m)
+    movies_dat = extract_path / "movies.dat"
+    if movies_dat.exists():
+        try:
+            items = pl.read_csv(
+                movies_dat, separator="::", has_header=False, encoding="latin1"
+            )
+        except Exception:
+            return None
+
+        try:
+            match = items.filter(pl.col("column_1") == orig_id)
+        except Exception:
+            try:
+                match = items.filter(pl.col("column_1").cast(pl.Int64) == int(orig_id))
+            except Exception:
+                return None
+
+        if match.is_empty():
+            return None
+
+        title = match.select("column_2").to_numpy()[0][0]
+        return title
+
+    return None
+
+
 if __name__ == "__main__":
     # Test the sequential dataloader
     (

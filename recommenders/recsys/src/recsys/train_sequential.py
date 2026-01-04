@@ -60,7 +60,11 @@ class SequentialLightningModule(pyl.LightningModule):
         labels = torch.cat([pos_labels, neg_labels], dim=1).long()
 
         # For ranking metrics, indexes are needed
-        indexes = torch.arange(scores.size(0), device=self.device)
+        indexes = (
+            torch.arange(scores.size(0), device=self.device)
+            .unsqueeze(1)
+            .expand(-1, scores.size(1))
+        )
 
         self.val_recall(scores, labels, indexes=indexes)
         self.val_ndcg(scores, labels, indexes=indexes)
@@ -75,7 +79,11 @@ class SequentialLightningModule(pyl.LightningModule):
         neg_labels = torch.zeros(scores.size(0), scores.size(1) - 1, device=self.device)
         labels = torch.cat([pos_labels, neg_labels], dim=1).long()
 
-        indexes = torch.arange(scores.size(0), device=self.device)
+        indexes = (
+            torch.arange(scores.size(0), device=self.device)
+            .unsqueeze(1)
+            .expand(-1, scores.size(1))
+        )
 
         self.test_recall(scores, labels, indexes=indexes)
         self.test_ndcg(scores, labels, indexes=indexes)
