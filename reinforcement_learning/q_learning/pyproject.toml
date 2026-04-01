@@ -1,0 +1,26 @@
+[project]
+name = "q-learning"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "ale-py>=0.11.2",
+    "gymnasium[box2d,classic-control]>=1.0.0",
+    "ipykernel>=6.29.5",
+    "matplotlib>=3.10.0",
+    "numpy>=2.2.3",
+    "polars>=1.39.0",
+    "seaborn>=0.13.2",
+    "setuptools<70.0.0",
+    "stable-baselines3[extra]>=2.7.1",
+    "tensorboard>=2.20.0",
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
