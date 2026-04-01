@@ -5,7 +5,6 @@ import pathlib
 from typing import List, Tuple
 import numpy as np
 
-
 DATA_PATH = pathlib.Path(__file__).absolute().parent / "data" / "ml-25m"
 DATA_ZIP_PATH = pathlib.Path(__file__).absolute().parent / "data" / "ml-25m.zip"
 

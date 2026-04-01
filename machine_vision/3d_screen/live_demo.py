@@ -8,6 +8,7 @@ Amount it moves depends on the depth between the squares.
 
 Build with a graphics engine?
 """
+
 # %%
 # draw squares
 
