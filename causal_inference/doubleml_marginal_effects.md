@@ -192,7 +192,6 @@ import econml.dml
 import sklearn.ensemble
 import sklearn.linear_model
 
-
 est = econml.dml.LinearDML(
     model_t=sklearn.linear_model.LinearRegression(),
     model_y=sklearn.linear_model.LinearRegression(),

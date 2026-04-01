@@ -585,7 +585,6 @@ We can fit the same model directly with `sklearn` to double check our understand
 ```python
 import sklearn.linear_model
 
-
 model = sklearn.linear_model.LinearRegression()
 model.fit(df[[t_col, x_cols[1]]], df[y_col])
 print(model.coef_)
@@ -881,7 +880,6 @@ causal_model._treatment
 
 ```python
 import sklearn.linear_model
-
 
 model = sklearn.linear_model.LinearRegression()
 model.fit(df[[t_col]], df[y_col])
@@ -1267,7 +1265,6 @@ model_fit.summary()
 
 ```python
 import sklearn.linear_model
-
 
 model = sklearn.linear_model.LinearRegression()
 model.fit(df[[t_col]], df[y_col])

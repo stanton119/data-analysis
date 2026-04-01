@@ -94,7 +94,6 @@ import pandas as pd
 import sklearn.decomposition
 import sklearn.metrics
 
-
 component_range = np.array(list(range(1, 11)) + [50, 100, 200, 500])
 
 print(f"training components: {component_range.max()}")

@@ -234,7 +234,6 @@ We can test the fitting time on different number of samples to find out. We will
 import timeit
 import tqdm
 
-
 times = []
 n_features = 10
 n_trials = 10
